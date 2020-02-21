@@ -12,7 +12,7 @@ public final class Preconditions {
             throw new IllegalArgumentException();
         }
     }
-
+    //on va avoir 6/6 lol
     public static double checkInInterval(Interval interval, double value) {
         checkArgument(interval.contains(value));
         return value;
