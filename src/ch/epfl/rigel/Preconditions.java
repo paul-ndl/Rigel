@@ -13,6 +13,7 @@ public final class Preconditions {
         }
     }
     //on va avoir 6/6 lol
+    //c'est le week end
     public static double checkInInterval(Interval interval, double value) {
         checkArgument(interval.contains(value));
         return value;
