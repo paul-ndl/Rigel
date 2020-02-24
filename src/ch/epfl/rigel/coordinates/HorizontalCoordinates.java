@@ -42,7 +42,7 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
     }
 
     public String azOctantName(String n, String e, String s, String w){
-        String azOctant = "";
+        String azOctant = new String();
         if (RightOpenInterval.of(0, 22.5).contains(azDeg()) || RightOpenInterval.of(337.5, 360).contains(azDeg())){
             azOctant = n;
         }
