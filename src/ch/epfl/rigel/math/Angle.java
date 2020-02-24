@@ -6,8 +6,8 @@ public final class Angle {
 
     public final static double TAU = 2 * Math.PI;
     private static final double RAD_PER_SEC = TAU / 1296000;
-    private static final double RAD_PER_HR = Math.toRadians(15);
-    private static final double HR_PER_RAD = 1/RAD_PER_HR;
+    private static final double RAD_PER_HR = TAU / 24;
+    private static final double HR_PER_RAD = 24 / TAU;
 
     public static double normalizePositive(double rad){
         double result = rad;

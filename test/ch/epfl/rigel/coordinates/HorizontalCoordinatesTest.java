@@ -84,6 +84,7 @@ public class HorizontalCoordinatesTest {
         assertEquals("(az=350.0000°, alt=7.2000°)", HorizontalCoordinates.ofDeg(350, 7.2).toString());
         assertEquals("(az=4.1112°, alt=80.8000°)", HorizontalCoordinates.ofDeg(4.11122, 80.8).toString());
         assertEquals("(az=254.0900°, alt=-9.5400°)", HorizontalCoordinates.ofDeg(254.09, -9.54).toString());
+        assertEquals("(az=60.0000°, alt=0.0000°)", HorizontalCoordinates.of(Angle.TAU/6, 0).toString());
     }
 
 }
