@@ -1,24 +1,23 @@
 package ch.epfl.rigel.astronomy;
 
 import ch.epfl.rigel.coordinates.GeographicCoordinates;
+import ch.epfl.rigel.math.Angle;
 
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
+import java.time.*;
+import java.time.temporal.ChronoUnit;
 
+public final class SideralTime {
 
-public abstract class SideralTime {
-
-    public static double greenwich(ZonedDateTime when){
-        ZonedDateTime greenwich = when;
-        //greenwich = when.
-        //return when.withZoneSameInstant(ZoneOffset.UTC);
-        return 0;
+    public double greenwich(ZonedDateTime when){
+        ZonedDateTime whenGreenwichStartDay = when.withZoneSameInstant(ZoneOffset.UTC).truncatedTo(ChronoUnit.DAYS);
+        double centuries = Epoch.J2000.julianCenturiesUntil(whenGreenwichStartDay);
+        double hours = whenGreenwichStartDay.until(when, ChronoUnit.MILLIS)/3600000;
+        double sA = 0.000025862 * centuries * centuries + 2400.051336 * centuries + 6.697374558;
+        double sB = 1.002737909 * hours;
+        return Angle.normalizePositive(Angle.ofHr(sA + sB));
     }
 
-    public static double local(ZonedDateTime when, GeographicCoordinates where){
-        return 0;
+    public double local(ZonedDateTime when, GeographicCoordinates where){
+        return Angle.normalizePositive(greenwich(when) + where.lon());
     }
-
-
-
 }
