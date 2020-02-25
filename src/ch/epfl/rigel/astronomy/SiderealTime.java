@@ -6,9 +6,9 @@ import ch.epfl.rigel.math.Angle;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 
-public final class SideralTime {
+public final class SiderealTime {
 
-    public double greenwich(ZonedDateTime when){
+    public static double greenwich(ZonedDateTime when){
         ZonedDateTime whenGreenwichStartDay = when.withZoneSameInstant(ZoneOffset.UTC).truncatedTo(ChronoUnit.DAYS);
         double centuries = Epoch.J2000.julianCenturiesUntil(whenGreenwichStartDay);
         double hours = whenGreenwichStartDay.until(when, ChronoUnit.MILLIS)/3600000;
@@ -17,7 +17,7 @@ public final class SideralTime {
         return Angle.normalizePositive(Angle.ofHr(sA + sB));
     }
 
-    public double local(ZonedDateTime when, GeographicCoordinates where){
+    public static double local(ZonedDateTime when, GeographicCoordinates where){
         return Angle.normalizePositive(greenwich(when) + where.lon());
     }
 }
