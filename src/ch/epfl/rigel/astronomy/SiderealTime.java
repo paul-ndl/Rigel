@@ -14,7 +14,6 @@ public final class SiderealTime {
         double hours = (double) whenGreenwichStartDay.until(when, ChronoUnit.MILLIS)/3600000;
         double sA = 0.000025862 * centuries * centuries + 2400.051336 * centuries + 6.697374558;
         double sB = 1.002737909 * hours;
-        System.out.println(Angle.normalizePositive(Angle.ofHr(4.668120)));
         return Angle.normalizePositive(Angle.ofHr(sA + sB));
     }
 
