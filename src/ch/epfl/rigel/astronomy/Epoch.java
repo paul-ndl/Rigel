@@ -13,16 +13,12 @@ public enum Epoch {
         this.epoch = epoch;
     }
 
-    public ZonedDateTime getZonedDateTime(){
-        return this.epoch;
-    }
-
     public double daysUntil(ZonedDateTime when){
-        return (double) getZonedDateTime().until(when, ChronoUnit.MILLIS)/86400000;
+        return (double) this.epoch.until(when, ChronoUnit.MILLIS)/86400000;
     }
 
     public double julianCenturiesUntil(ZonedDateTime when){
-        return (double) getZonedDateTime().until(when, ChronoUnit.MILLIS)/3.15576e12;
+        return (double) this.epoch.until(when, ChronoUnit.MILLIS)/3.15576e12;
     }
 
 

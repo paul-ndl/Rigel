@@ -8,7 +8,7 @@ import java.time.temporal.ChronoUnit;
 
 public final class SideralTimeBis {
 
-    public static double greenwich(ZonedDateTime when){
+    public double greenwich(ZonedDateTime when){
         ZonedDateTime whenGreenwichStartDay = when.withZoneSameInstant(ZoneOffset.UTC).truncatedTo(ChronoUnit.DAYS);
         double centuries = Epoch.J2000.julianCenturiesUntil(whenGreenwichStartDay);
         double hours = whenGreenwichStartDay.until(when, ChronoUnit.MILLIS)/3600000;
