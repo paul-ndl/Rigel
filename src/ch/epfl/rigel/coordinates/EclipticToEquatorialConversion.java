@@ -38,7 +38,7 @@ public final class EclipticToEquatorialConversion implements Function<EclipticCo
     public static void main (String args[]){
         EclipticToEquatorialConversion e = new EclipticToEquatorialConversion(ZonedDateTime.of(LocalDate.of(2009, Month.JULY, 6), LocalTime.MIDNIGHT, ZoneOffset.UTC));
         System.out.println(e.apply(EclipticCoordinates.of(Angle.ofDMS(139,41,10), Angle.ofDMS(4,52,31))).toString());
-        System.out.println("ra=" + (9 + (double) 34/60 + (double) 53/3600));
+        System.out.println("ra=" + (9 + (double) 34/60 + (double) 53/3600 + (double) 32/360000));
         System.out.println("dec=" + Angle.toDeg(Angle.ofDMS(19,32,6)));
     }
 
