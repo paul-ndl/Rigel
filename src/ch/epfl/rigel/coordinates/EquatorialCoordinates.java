@@ -28,6 +28,7 @@ public final class EquatorialCoordinates extends SphericalCoordinates {
         return declinationIn.contains(decDeg);
     }
 
+
     public double ra(){
         return super.lon();
     }
