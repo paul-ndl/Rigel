@@ -10,17 +10,27 @@ public final class Polynomial {
 
     private double[] coefficients;
 
+    /**
+     * constructs a polynomial with the given coefficients
+     */
     private Polynomial (double coefficientN, double... coefficients){
         this.coefficients = new double[coefficients.length+1];
         this.coefficients[0] = coefficientN;
         arraycopy(coefficients, 0, this.coefficients, 1, coefficients.length);
     }
 
+    /**
+     * contructs a polynomial if the biggest coefficient is not null
+     * throws exception otherwise
+     */
     public static Polynomial of(double coefficientN, double... coefficients){
         Preconditions.checkArgument(coefficientN != 0);
         return new Polynomial(coefficientN, coefficients);
     }
 
+    /**
+     * calculates the polynomial with the given value
+     */
     public double at(double x){
         double result = 0;
         for(int i=0; i<coefficients.length; ++i){
@@ -29,37 +39,45 @@ public final class Polynomial {
         return result;
     }
 
+    /**
+     * returns a string representation of the polynomial
+     */
     public String toString(){
         int power = coefficients.length-1;
-        StringBuilder polynome = new StringBuilder();
+        StringBuilder polynomial = new StringBuilder();
         for (int i=0; i<coefficients.length; ++i){
             if (coefficients[i]!=0) {
                 if (coefficients[i] > 0 && i!=0) {
-                    polynome.append("+");
+                    polynomial.append("+");
                 }
                 if (coefficients[i] < 0) {
-                    polynome.append("-");
+                    polynomial.append("-");
                 }
                 if (coefficients[i] != 1 && coefficients[i] != -1) {
-                    polynome.append(String.format(Locale.ROOT, "%s", Math.abs(coefficients[i])));
+                    polynomial.append(String.format(Locale.ROOT, "%s", Math.abs(coefficients[i])));
                 }
                 if (power != 0) {
-                    polynome.append("x");
+                    polynomial.append("x");
                     if (power != 1) {
-                        polynome.append(String.format(Locale.ROOT, "^%s", power));
+                        polynomial.append(String.format(Locale.ROOT, "^%s", power));
                     }
                 }
             }
             --power;
         }
-        return polynome.toString();
+        return polynomial.toString();
     }
 
-
+    /**
+     * prevents to use this method
+     */
     public final boolean equals(Object o){
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * prevents to use this method
+     */
     public final int hashCode(){
         throw new UnsupportedOperationException();
     }
