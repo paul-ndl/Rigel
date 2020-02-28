@@ -10,14 +10,14 @@ import java.util.Locale;
 public final class EclipticCoordinates extends SphericalCoordinates {
 
     /**
-     * constructs geographic coordinates with the given longitude and latitude
+     * constructs ecliptic coordinates with the given longitude and latitude
      */
     private EclipticCoordinates(double eclipticLongitude, double eclipticLatitude){
         super(eclipticLongitude, eclipticLatitude);
     }
 
     /**
-     * constructs horizontal coordinates with the given longitude and latitude (in radians) if they are correct
+     * constructs ecliptic coordinates with the given longitude and latitude (in radians) if they are correct
      * throws exception otherwise
      */
     public static EclipticCoordinates of(double lon, double lat){
@@ -80,6 +80,7 @@ public final class EclipticCoordinates extends SphericalCoordinates {
     /**
      * returns a string representation of the coordinates
      */
+    @Override
     public String toString(){
         return String.format(Locale.ROOT,"(λ=%.4f°, β=%.4f°)", lonDeg(), latDeg());
     }

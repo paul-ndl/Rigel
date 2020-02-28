@@ -71,6 +71,7 @@ public final class Polynomial {
     /**
      * prevents to use this method
      */
+    @Override
     public final boolean equals(Object o){
         throw new UnsupportedOperationException();
     }
@@ -78,6 +79,7 @@ public final class Polynomial {
     /**
      * prevents to use this method
      */
+    @Override
     public final int hashCode(){
         throw new UnsupportedOperationException();
     }

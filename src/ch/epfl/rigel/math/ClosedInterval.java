@@ -57,6 +57,7 @@ public final class ClosedInterval extends Interval {
     /**
      * returns a string form of the interval
      */
+    @Override
     public String toString(){
         return String.format(Locale.ROOT,"[%s,%s]",super.low(),super.high());
     }

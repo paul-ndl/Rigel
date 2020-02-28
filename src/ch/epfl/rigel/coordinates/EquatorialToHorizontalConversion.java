@@ -18,6 +18,7 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
         sideralTime = SiderealTime.local(when, where);
     }
 
+    @Override
     public HorizontalCoordinates apply(EquatorialCoordinates equ){
         double ascRight = equ.ra();
         double dec = equ.dec();
@@ -27,10 +28,12 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
         return HorizontalCoordinates.of(azimut, hauteur);
     }
 
+    @Override
     public final boolean equals(Object o){
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public final int hashCode(){
         throw new UnsupportedOperationException();
     }

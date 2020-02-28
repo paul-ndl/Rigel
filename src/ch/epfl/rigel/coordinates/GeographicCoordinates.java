@@ -80,6 +80,7 @@ public final class GeographicCoordinates extends SphericalCoordinates{
     /**
      * returns a string representation of the coordinates
      */
+    @Override
     public String toString(){
         return String.format(Locale.ROOT,"(lon=%.4f°, lat=%.4f°)", lonDeg(), latDeg());
     }

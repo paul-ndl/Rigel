@@ -19,6 +19,7 @@ public final class EclipticToEquatorialConversion implements Function<EclipticCo
         obliquitySin = Math.sin(epsilon);
     }
 
+    @Override
     public EquatorialCoordinates apply(EclipticCoordinates ecl){
         double lonEcl = ecl.lon();
         double latEcl = ecl.lat();
@@ -27,10 +28,12 @@ public final class EclipticToEquatorialConversion implements Function<EclipticCo
         return  EquatorialCoordinates.of(ascRight, dec);
     }
 
+    @Override
     public final boolean equals(Object o){
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public final int hashCode(){
         throw new UnsupportedOperationException();
     }

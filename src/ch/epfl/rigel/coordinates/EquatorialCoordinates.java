@@ -10,14 +10,14 @@ import java.util.Locale;
 public final class EquatorialCoordinates extends SphericalCoordinates {
 
     /**
-     * constructs geographic coordinates with the given rigth ascension and declination
+     * constructs equatorial coordinates with the given rigth ascension and declination
      */
     private EquatorialCoordinates(double rightAscension, double declination){
         super(rightAscension, declination);
     }
 
     /**
-     * constructs horizontal coordinates with the given right ascension and declination (in radians) if they are correct
+     * constructs equatorial coordinates with the given right ascension and declination (in radians) if they are correct
      * throws exception otherwise
      */
     public static EquatorialCoordinates of(double ra, double dec){
@@ -79,6 +79,7 @@ public final class EquatorialCoordinates extends SphericalCoordinates {
     /**
      * returns a string representation of the coordinates
      */
+    @Override
     public String toString(){
         return String.format(Locale.ROOT,"(ra=%.4fh, dec=%.4f°)", raHr(), decDeg());
     }
