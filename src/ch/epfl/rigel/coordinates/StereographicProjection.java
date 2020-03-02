@@ -50,6 +50,6 @@ public final class StereographicProjection implements Function<HorizontalCoordin
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public String toString(){ return String.format(Locale.ROOT,"les coordonnées du centre de la projection sont ", circleCenterForParallel());}
+    //@Override
+    //public String toString(){ return String.format(Locale.ROOT,"les coordonnées du centre de la projection sont ", circleCenterForParallel());}
 }

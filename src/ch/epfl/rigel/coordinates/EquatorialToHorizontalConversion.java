@@ -23,9 +23,8 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
     public HorizontalCoordinates apply(EquatorialCoordinates equ){
         double ascRight = equ.ra();
         double dec = equ.dec();
-        //double horairAngle = sideralTime - ascRight;
-        double horairAngle = Angle.ofHr(5.862222);
-        double hauteur = Angle.normalizePositive(Math.asin(Math.sin(dec) * latSin + Math.cos(dec) * latCos * Math.cos(horairAngle)));
+        double horairAngle = sideralTime - ascRight;
+        double hauteur = Math.asin(Math.sin(dec) * latSin + Math.cos(dec) * latCos * Math.cos(horairAngle));
         double azimut = Angle.normalizePositive(Math.atan2(-Math.cos(dec) * latCos * Math.sin(horairAngle), Math.sin(dec) - latSin * Math.sin(hauteur)));
         return HorizontalCoordinates.of(azimut, hauteur);
     }
