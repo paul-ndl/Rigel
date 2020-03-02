@@ -1,45 +1,65 @@
 package ch.epfl.rigel.coordinates;
 
-import ch.epfl.rigel.math.Angle;
+import ch.epfl.test.TestRandomizer;
 import org.junit.jupiter.api.Test;
 
+import static java.lang.Math.PI;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class EclipticCoordinatesTest {
+class EclipticCoordinatesTest {
+    @Test
+    void eclOfWorksWithValidCoordinates() {
+        var rng = TestRandomizer.newRandom();
+        for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
+            var lon = rng.nextDouble(0, 2d * PI);
+            var lat = rng.nextDouble(-PI / 2d, PI / 2d);
+            var c = EclipticCoordinates.of(lon, lat);
+            assertEquals(lon, c.lon(), 1e-8);
+            assertEquals(lat, c.lat(), 1e-8);
+        }
+    }
 
     @Test
-    void ofFailsWithInvalidCoordinates(){
+    void eclOfFailsWithInvalidCoordinates() {
         assertThrows(IllegalArgumentException.class, () -> {
-            EclipticCoordinates.of(Angle.TAU, 0);
+            EclipticCoordinates.of(2d * PI + 1e-8, 0);
         });
         assertThrows(IllegalArgumentException.class, () -> {
-            EclipticCoordinates.of(-1, 0);
+            EclipticCoordinates.of(-1e-8, 0);
         });
         assertThrows(IllegalArgumentException.class, () -> {
-            EclipticCoordinates.of(Angle.TAU/2, 0.1+Angle.TAU/4);
+            EclipticCoordinates.of(0, PI + 1e-8);
         });
         assertThrows(IllegalArgumentException.class, () -> {
-            EclipticCoordinates.of(0, -1.58);
-        });
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            EclipticCoordinates.of(Angle.TAU, -1.58);
+            EclipticCoordinates.of(0, -(PI + 1e-8));
         });
     }
 
     @Test
-    void attributesCallWorksOnKnownValues(){
-        assertEquals(1.57, EclipticCoordinates.of(1.57, 0).lon());
-        assertEquals(0.3421, EclipticCoordinates.of(1.23, 0.3421).lat());
-        assertEquals(180, EclipticCoordinates.of(Angle.TAU/2, 0).lonDeg());
-        assertEquals(-45, EclipticCoordinates.of(1, -Angle.TAU/8).latDeg());
+    void lonDegAndLatDegReturnCoordinatesInDegrees() {
+        var rng = TestRandomizer.newRandom();
+        for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
+            var lon = rng.nextDouble(0, 2d * PI);
+            var lat = rng.nextDouble(-PI / 2d, PI / 2d);
+            var c = EclipticCoordinates.of(lon, lat);
+            assertEquals(Math.toDegrees(lon), c.lonDeg(), 1e-8);
+            assertEquals(Math.toDegrees(lat), c.latDeg(), 1e-8);
+        }
     }
 
     @Test
-    void toStringWorksOnKnownValues(){
-        assertEquals("(λ=60.0000°, β=0.0000°)", EclipticCoordinates.of(Angle.TAU/6, 0).toString());
-        assertEquals("(λ=180.0000°, β=46.2100°)", EclipticCoordinates.of(Angle.TAU/2, Angle.ofDeg(46.21)).toString());
-        assertEquals("(λ=8.0600°, β=-43.0000°)", EclipticCoordinates.of(Angle.ofDeg(8.06), Angle.ofDeg(-43.00002)).toString());
+    void ecEqualsThrowsUOE() {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            var c = EclipticCoordinates.of(0, 0);
+            c.equals(c);
+        });
+    }
+
+    @Test
+    void ecHashCodeThrowsUOE() {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            EclipticCoordinates.of(0, 0).hashCode();
+        });
     }
 }

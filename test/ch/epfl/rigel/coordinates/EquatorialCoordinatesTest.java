@@ -1,49 +1,76 @@
 package ch.epfl.rigel.coordinates;
 
-import ch.epfl.rigel.math.Angle;
+import ch.epfl.test.TestRandomizer;
 import org.junit.jupiter.api.Test;
 
+import static java.lang.Math.PI;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class EquatorialCoordinatesTest {
+class EquatorialCoordinatesTest {
+    @Test
+    void equOfWorksWithValidCoordinates() {
+        var rng = TestRandomizer.newRandom();
+        for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
+            var ra = rng.nextDouble(0, 2d * PI);
+            var dec = rng.nextDouble(-PI / 2d, PI / 2d);
+            var c = EquatorialCoordinates.of(ra, dec);
+            assertEquals(ra, c.ra(), 1e-8);
+            assertEquals(dec, c.dec(), 1e-8);
+        }
+    }
 
     @Test
-    void ofFailsWithInvalidCoordinates(){
+    void equOfFailsWithInvalidCoordinates() {
         assertThrows(IllegalArgumentException.class, () -> {
-            EquatorialCoordinates.of(Angle.TAU, 0);
+            EquatorialCoordinates.of(2d * PI + 1e-8, 0);
         });
         assertThrows(IllegalArgumentException.class, () -> {
-            EquatorialCoordinates.of(-1, 0);
+            EquatorialCoordinates.of(-1e-8, 0);
         });
         assertThrows(IllegalArgumentException.class, () -> {
-            EquatorialCoordinates.of(Angle.TAU/2, 0.1+Angle.TAU/4);
+            EquatorialCoordinates.of(0, PI + 1e-8);
         });
         assertThrows(IllegalArgumentException.class, () -> {
-            EquatorialCoordinates.of(0, -1.58);
-        });
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            EquatorialCoordinates.of(Angle.TAU, -1.58);
+            EquatorialCoordinates.of(0, -(PI + 1e-8));
         });
     }
 
     @Test
-    void attributesCallWorksOnKnownValues(){
-        assertEquals(1.57, EquatorialCoordinates.of(1.57, 0).ra());
-        assertEquals(0.3421, EquatorialCoordinates.of(1.23, 0.3421).dec());
-        assertEquals(180, EquatorialCoordinates.of(Angle.TAU/2, 0).raDeg());
-        assertEquals(-45, EquatorialCoordinates.of(1, -Angle.TAU/8).decDeg());
-        assertEquals(12, EquatorialCoordinates.of(Angle.TAU/2, -0.42).raHr(), 1e-9);
-        assertEquals(6, EquatorialCoordinates.of(Angle.TAU/4, -0.42).raHr(), 1e-9);
-        assertEquals(4, EquatorialCoordinates.of(Angle.TAU/6, 0.103).raHr(), 1e-9);
+    void raDegAndDecDegReturnCoordinatesInDegrees() {
+        var rng = TestRandomizer.newRandom();
+        for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
+            var ra = rng.nextDouble(0, 2d * PI);
+            var dec = rng.nextDouble(-PI / 2d, PI / 2d);
+            var c = EquatorialCoordinates.of(ra, dec);
+            assertEquals(Math.toDegrees(ra), c.raDeg(), 1e-8);
+            assertEquals(Math.toDegrees(dec), c.decDeg(), 1e-8);
+        }
     }
 
     @Test
-    void toStringWorksOnKnownValues(){
-        assertEquals("(ra=12.0000h, dec=22.5000°)", EquatorialCoordinates.of(Angle.TAU/2, Angle.TAU/16).toString());
-        assertEquals("(ra=6.0000h, dec=-45.0000°)", EquatorialCoordinates.of(Angle.TAU/4, -Angle.TAU/8).toString());
+    void raHrReturnsRightAscensionInHours() {
+        var rng = TestRandomizer.newRandom();
+        for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
+            var ra = rng.nextDouble(0, 2d * PI);
+            var dec = rng.nextDouble(-PI / 2d, PI / 2d);
+            var c = EquatorialCoordinates.of(ra, dec);
+            assertEquals(Math.toDegrees(ra) / 15d, c.raHr(), 1e-8);
+        }
     }
 
+    @Test
+    void equEqualsThrowsUOE() {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            var c = EquatorialCoordinates.of(0, 0);
+            c.equals(c);
+        });
+    }
 
+    @Test
+    void equHashCodeThrowsUOE() {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            EquatorialCoordinates.of(0, 0).hashCode();
+        });
+    }
 }
