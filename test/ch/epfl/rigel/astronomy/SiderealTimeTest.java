@@ -15,13 +15,13 @@ public class SiderealTimeTest {
     @Test
     void greenwichWorksWithKnownValues(){
         //ZonedDateTime a = ZonedDateTime.of();
-        assertEquals(Angle.ofHr(4.668119),SiderealTime.greenwich(ZonedDateTime.of(1980,4,22,14,36,51, (int) 67e7, ZoneId.of("UTC"))), 10e-7);
-
+        assertEquals(1.2221107819499082,SiderealTime.greenwich(ZonedDateTime.of(1980,4,22,14,36,51, (int) 67e7, ZoneId.of("UTC"))), 10e-7);
+        assertEquals(1.9883078130455516,SiderealTime.greenwich(ZonedDateTime.of(2001,9,11,8,14,0, 0, ZoneId.of("UTC"))), 10e-7);
     }
 
     @Test
     void localWorksWithKnownValues(){
-        assertEquals(Angle.ofHr(0.401453),SiderealTime.local(ZonedDateTime.of(1980,4,22,14,36,51, (int) 67e7, ZoneOffset.UTC), GeographicCoordinates.ofDeg(-64,45)), 10e-7);
-
+        //assertEquals(Angle.ofHr(0.401453),SiderealTime.local(ZonedDateTime.of(1980,4,22,14,36,51, (int) 67e7, ZoneOffset.UTC), GeographicCoordinates.ofDeg(-64,45)), 10e-7);
+        assertEquals(1.7456607003720603,SiderealTime.local(ZonedDateTime.of(1980,4,22,14,36,51, 27, ZoneOffset.UTC), GeographicCoordinates.ofDeg(30,45)), 10e-7);
     }
 }
