@@ -21,22 +21,33 @@ public final class StereographicProjection implements Function<HorizontalCoordin
     }
 
     public double circleRadiusForParallel(HorizontalCoordinates parallel){
-        double p = (Math.cos(parallel.alt())) / (Math.sin(parallel.alt())+Math.sin(phy));
-        return p;
+        double radius = (Math.cos(parallel.alt())) / (Math.sin(parallel.alt())+Math.sin(phy));
+        return radius;
     }
 
     public double applyToAngle(double rad){
-        return 0;
+        double diameter = 2*Math.tan(rad/4);
+        return diameter;
     }
 
     public CartesianCoordinates apply(HorizontalCoordinates azAlt){
-        return null;
+        double delta = azAlt.az()-lambda;
+        double d = (1) / (1 + Math.sin(azAlt.alt())*Math.sin(phy) + Math.cos(azAlt.alt()*Math.cos(phy)*Math.cos(delta)));
+        double x = d * Math.cos(azAlt.alt() * Math.sin(delta));
+        double y = d * (Math.sin(azAlt.alt())*Math.cos(phy) - Math.cos(azAlt.alt()*Math.sin(phy)*Math.cos(delta)));
+        return CartesianCoordinates.of(x, y);
     }
 
     public HorizontalCoordinates inverseApply(CartesianCoordinates xy){
-        return null;
+        double p = Math.sqrt(xy.x()*xy.x() + xy.y()*xy.y());
+        double sinc = (2p)/(p*p+1);
+        double cosc = (1-p*p)/(p*p+1);
+        double x = xy.x();
+        double y = xy.y();
+        double longitude = Math.atan2(x*sinc, p*Math.cos(phy)*cosc - y*Math.sin(phy)*sinc) + lambda;
+        double latitude = Math.asin((cosc*Math.sin(phy)) + ((y*sinc*Math.cos(phy))/p));
+        return HorizontalCoordinates.of(longitude, latitude);
     }
-
 
 
 
@@ -51,5 +62,5 @@ public final class StereographicProjection implements Function<HorizontalCoordin
     }
 
     @Override
-    public String toString(){ return String.format(Locale.ROOT,"les coordonnées du centre de la projection sont ", circleCenterForParallel());}
+    public String toString(){ return String.format(Locale.ROOT,"(lon=%.4f, lat=%.4f)", lambda, phy); }
 }
