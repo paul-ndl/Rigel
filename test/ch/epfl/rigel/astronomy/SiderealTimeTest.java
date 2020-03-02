@@ -15,7 +15,7 @@ public class SiderealTimeTest {
     @Test
     void greenwichWorksWithKnownValues(){
         //ZonedDateTime a = ZonedDateTime.of();
-        assertEquals(Angle.ofArcsec(16805.23),SiderealTime.greenwich(ZonedDateTime.of(1980,4,22,14,36,51,(int) 67e7, ZoneId.of("UTC"))));
+        assertEquals(Angle.ofHr(4.668119),SiderealTime.greenwich(ZonedDateTime.of(1980,4,22,14,36,51,(int) 67e7, ZoneId.of("UTC"))));
 
     }
 
