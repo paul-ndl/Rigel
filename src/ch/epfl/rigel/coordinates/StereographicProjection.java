@@ -62,5 +62,5 @@ public final class StereographicProjection implements Function<HorizontalCoordin
     }
 
     @Override
-    public String toString(){ return String.format(Locale.ROOT,"(lon=%.4f, lat=%.4f)", lambda, phy); }
+    public String toString(){ return String.format(Locale.ROOT,"(abscisse%.4f, ordonnée=%.4f)", lambda, phy); }
 }
