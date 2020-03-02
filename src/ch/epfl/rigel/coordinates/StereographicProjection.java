@@ -40,7 +40,7 @@ public final class StereographicProjection implements Function<HorizontalCoordin
 
     public HorizontalCoordinates inverseApply(CartesianCoordinates xy){
         double p = Math.sqrt(xy.x()*xy.x() + xy.y()*xy.y());
-        double sinc = (2p)/(p*p+1);
+        double sinc = (2*p)/(p*p+1);
         double cosc = (1-p*p)/(p*p+1);
         double x = xy.x();
         double y = xy.y();
