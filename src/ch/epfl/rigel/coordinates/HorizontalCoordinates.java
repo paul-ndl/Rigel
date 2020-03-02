@@ -104,7 +104,7 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
     }
 
     /**
-     * returns the altitude in radians
+     * returns the altitude in degrees
      */
     public double altDeg(){
         return super.latDeg();
