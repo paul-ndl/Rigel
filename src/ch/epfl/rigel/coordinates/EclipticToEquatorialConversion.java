@@ -23,9 +23,9 @@ public final class EclipticToEquatorialConversion implements Function<EclipticCo
     public EquatorialCoordinates apply(EclipticCoordinates ecl){
         double lonEcl = ecl.lon();
         double latEcl = ecl.lat();
-        double ascRight = Math.atan2(Math.sin(lonEcl) * obliquityCos - Math.tan(latEcl) * obliquitySin, Math.cos(lonEcl));
-        double dec = Math.asin(Math.sin(latEcl) * obliquityCos + Math.cos(latEcl) * obliquitySin * Math.sin(lonEcl));
-        return  EquatorialCoordinates.of(ascRight, dec);
+        double ascRight = Angle.normalizePositive(Math.atan2(Math.sin(lonEcl) * obliquityCos - Math.tan(latEcl) * obliquitySin, Math.cos(lonEcl)));
+        double dec = Angle.normalizePositive(Math.asin(Math.sin(latEcl) * obliquityCos + Math.cos(latEcl) * obliquitySin * Math.sin(lonEcl)));
+        return EquatorialCoordinates.of(ascRight, dec);
     }
 
     @Override
