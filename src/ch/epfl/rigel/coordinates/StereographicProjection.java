@@ -5,11 +5,13 @@ import java.util.function.Function;
 
 public final class StereographicProjection implements Function<HorizontalCoordinates, CartesianCoordinates> {
 
-    private double center;
+    private CartesianCoordinates center;
+    private double lambda, phy;
 
     public StereographicProjection(HorizontalCoordinates center){
-        this.center = center;
-        return new StereographicProjection(center)
+        lambda = center.az();
+        phy = center.alt();
+        this.center = CartesianCoordinates.of(center.az(), center.alt());
     }
 
     public CartesianCoordinates circleCenterForParallel(HorizontalCoordinates hor){
@@ -19,8 +21,20 @@ public final class StereographicProjection implements Function<HorizontalCoordin
     }
 
     public double circleRadiusForParallel(HorizontalCoordinates parallel){
-        double p = (Math.cos(parallel.alt())) / (Math.cos(parallel.alt())+Math.sin(phy));
+        double p = (Math.cos(parallel.alt())) / (Math.sin(parallel.alt())+Math.sin(phy));
         return p;
+    }
+
+    public double applyToAngle(double rad){
+        return 0;
+    }
+
+    public CartesianCoordinates apply(HorizontalCoordinates azAlt){
+        return null;
+    }
+
+    public HorizontalCoordinates inverseApply(CartesianCoordinates xy){
+        return null;
     }
 
 
