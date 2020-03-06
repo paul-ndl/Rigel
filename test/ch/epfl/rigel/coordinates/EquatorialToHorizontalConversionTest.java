@@ -31,4 +31,10 @@ public class EquatorialToHorizontalConversionTest {
         EquatorialToHorizontalConversion equToHor= new EquatorialToHorizontalConversion(ZonedDateTime.of(1980,4,22,14,36,51,(int)67e7, ZoneId.of("America/Puerto_Rico")), GeographicCoordinates.ofDeg(-64,45));
         assertEquals(HorizontalCoordinates.ofDeg(0,0).toString(),equToHor.apply(EquatorialCoordinates.of(Angle.ofHr(18.539167),Angle.ofDeg(-23))).toString());
     }*/
+
+    @Test
+    void rr(){
+        EquatorialToHorizontalConversion equToHor= new EquatorialToHorizontalConversion(ZonedDateTime.of(2020,3,2,17,10,57,0, ZoneId.of("Europe/Paris")), GeographicCoordinates.ofDeg(2.5,45));
+        assertEquals(HorizontalCoordinates.ofDeg(111.6819,-5.13597).toString(),equToHor.apply(EquatorialCoordinates.of(Angle.ofHr(6.01451),Angle.ofDeg(-20.00021))).toString());
+    }
 }
