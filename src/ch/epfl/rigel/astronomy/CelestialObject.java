@@ -8,7 +8,7 @@ public abstract class CelestialObject {
     private EquatorialCoordinates equatorialPos;
     private float angularSize, magnitude;
 
-    CelestialObject(String name, EquatorialCoordinates equatorialPos, float angularSize, float magnitude){
+    /*CelestialObject(String name, EquatorialCoordinates equatorialPos, float angularSize, float magnitude){
         if(angularSize < 0){
             throw new IllegalArgumentException;
         }//ici trouver comment utiliser 'Objects.requireNonNull'
@@ -20,7 +20,7 @@ public abstract class CelestialObject {
         this.equatorialPos=equatorialPos;
         this.angularSize=angularSize;
         this.magnitude=magnitude;
-    }
+    }*/
 
     public String name(){
         return  name;

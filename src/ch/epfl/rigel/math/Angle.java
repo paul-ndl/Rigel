@@ -14,18 +14,9 @@ public final class Angle {
      * normalizes an angle in the interval [0; TAU[
      */
     public static double normalizePositive(double rad){
-        double result = rad;
-        RightOpenInterval normaliseIntervalRad = RightOpenInterval.of(0,TAU);
-        if (result<0){
-            while (!normaliseIntervalRad.contains(result)){
-                result += TAU;
-            }
-        } else {
-            while (!normaliseIntervalRad.contains(result)) {
-                result -= TAU;
-            }
-        }
-        return result;
+       double result = rad%TAU;
+       result += TAU;
+       return result%TAU;
     }
 
     /**

@@ -9,6 +9,9 @@ import java.time.temporal.ChronoUnit;
 
 public final class SiderealTime {
 
+    /**
+     * returns an approximation of the greenwich sideral time of the given date
+     */
     public static double greenwich(ZonedDateTime when){
         ZonedDateTime whenGreenwichStartDay = when.withZoneSameInstant(ZoneOffset.UTC).truncatedTo(ChronoUnit.DAYS);
         double centuries = Epoch.J2000.julianCenturiesUntil(whenGreenwichStartDay);
@@ -19,6 +22,9 @@ public final class SiderealTime {
         return Angle.normalizePositive(Angle.ofHr(sA + sB));
     }
 
+    /**
+     * returns an approximation of the local sideral time of the given date
+     */
     public static double local(ZonedDateTime when, GeographicCoordinates where){
         return Angle.normalizePositive(greenwich(when) + where.lon());
     }
