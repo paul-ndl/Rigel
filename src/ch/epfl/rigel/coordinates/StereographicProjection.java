@@ -1,55 +1,52 @@
 package ch.epfl.rigel.coordinates;
 
+import ch.epfl.rigel.math.Angle;
+
 import java.util.Locale;
 import java.util.function.Function;
 
 public final class StereographicProjection implements Function<HorizontalCoordinates, CartesianCoordinates> {
 
-    private CartesianCoordinates center;
-    private double lambda, phy;
+    private double lambdaCenter, phyCenter;
+    private double phyCos, phySin;
 
     public StereographicProjection(HorizontalCoordinates center){
-        lambda = center.az();
-        phy = center.alt();
-        this.center = CartesianCoordinates.of(center.az(), center.alt());
+        lambdaCenter = center.az();
+        phyCenter = center.alt();
+        phyCos = Math.cos(phyCenter);
+        phySin = Math.sin(phyCenter);
     }
 
     public CartesianCoordinates circleCenterForParallel(HorizontalCoordinates hor){
         double x = 0;
-        double y = (Math.cos(phy)) / (Math.sin(hor.alt()) + Math.sin(phy));
-        return CartesianCoordinates.of(x, y);
+        double y = phyCos/(Math.sin(hor.alt()) + phySin);
+        return CartesianCoordinates.of(x,y);
     }
 
     public double circleRadiusForParallel(HorizontalCoordinates parallel){
-        double radius = (Math.cos(parallel.alt())) / (Math.sin(parallel.alt())+Math.sin(phy));
-        return radius;
+        return Math.cos(parallel.alt())/(Math.sin(parallel.alt()) + phySin);
     }
 
     public double applyToAngle(double rad){
-        double diameter = 2*Math.tan(rad/4);
-        return diameter;
+        return 2*Math.tan(rad/4);
     }
 
     public CartesianCoordinates apply(HorizontalCoordinates azAlt){
-        double delta = azAlt.az()-lambda;
-        double d = (1) / (1 + Math.sin(azAlt.alt())*Math.sin(phy) + Math.cos(azAlt.alt()*Math.cos(phy)*Math.cos(delta)));
-        double x = d * Math.cos(azAlt.alt() * Math.sin(delta));
-        double y = d * (Math.sin(azAlt.alt())*Math.cos(phy) - Math.cos(azAlt.alt()*Math.sin(phy)*Math.cos(delta)));
-        return CartesianCoordinates.of(x, y);
+        double delta = azAlt.az()-lambdaCenter;
+        double d = (double) 1/(1 + Math.sin(azAlt.alt())*phySin + Math.cos(azAlt.alt())*phyCos*Math.cos(delta));
+        double x = d * Math.cos(azAlt.alt()) * Math.sin(delta);
+        double y = d * (Math.sin(azAlt.alt()) * phyCos - Math.cos(azAlt.alt()) * phySin * Math.cos(delta));
+        return CartesianCoordinates.of(x,y);
     }
 
     public HorizontalCoordinates inverseApply(CartesianCoordinates xy){
         double p = Math.sqrt(xy.x()*xy.x() + xy.y()*xy.y());
-        double sinc = (2*p)/(p*p+1);
-        double cosc = (1-p*p)/(p*p+1);
-        double x = xy.x();
-        double y = xy.y();
-        double longitude = Math.atan2(x*sinc, p*Math.cos(phy)*cosc - y*Math.sin(phy)*sinc) + lambda;
-        double latitude = Math.asin((cosc*Math.sin(phy)) + ((y*sinc*Math.cos(phy))/p));
-        return HorizontalCoordinates.of(longitude, latitude);
+        double sinc = (2 * p) / (p * p + 1);
+        double cosc = (1 - p * p) / (p * p + 1);
+        double lambda = Angle.normalizePositive(Math.atan2(xy.x(), p*phyCos*cosc - xy.y()*phySin*sinc) + lambdaCenter);
+        double phy = Math.asin(cosc*phySin + (xy.y()*sinc*phyCos) / p);
+        return HorizontalCoordinates.of(lambda, phy);
     }
-
-
 
     @Override
     public final boolean equals(Object o){
@@ -62,5 +59,8 @@ public final class StereographicProjection implements Function<HorizontalCoordin
     }
 
     @Override
-    public String toString(){ return String.format(Locale.ROOT,"(abscisse%.4f, ordonnée=%.4f)", lambda, phy); }
+    public String toString(){
+        return String.format(Locale.ROOT,"StereographicProjection => Center Coordinates (λ=%.4f, ϕ=%.4f)", lambdaCenter, phyCenter);
+    }
+
 }
