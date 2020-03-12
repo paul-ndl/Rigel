@@ -54,4 +54,27 @@ public class StereographicProjectionTest {
         double z = e2.applyToAngle(Math.PI/2);
         System.out.println(z);
     }
+
+    @Test
+    void inverseApplyWorks(){
+        HorizontalCoordinates h1 = HorizontalCoordinates.of(Math.PI/4, Math.PI/6);
+        HorizontalCoordinates center1 = HorizontalCoordinates.of(0,0);
+        StereographicProjection e = new StereographicProjection(center1);
+        double p = Math.sqrt(6);
+        CartesianCoordinates a1 = CartesianCoordinates.of(p/(4+p), 2/(4+p));
+        CartesianCoordinates c1 = e.apply(h1);
+        HorizontalCoordinates d1 = e.inverseApply(c1);
+        assertEquals(h1.az(), d1.az(), 1e-8);
+        assertEquals(h1.alt(), d1.alt(), 1e-8);
+
+        HorizontalCoordinates h2 = HorizontalCoordinates.of(Math.PI/2, Math.PI/2);
+        HorizontalCoordinates center2 = HorizontalCoordinates.of(Math.PI/4, Math.PI/4);
+        StereographicProjection e2 = new StereographicProjection(center2);
+        double p2 = Math.sqrt(2);
+        CartesianCoordinates a2 = CartesianCoordinates.of(0, p2/(2+p2));
+        CartesianCoordinates c2 = e2.apply(h2);
+        HorizontalCoordinates d2 = e2.inverseApply(c2);
+        assertEquals(h2.az(), d2.az(), 1e-8);
+        assertEquals(h2.alt(),d2.alt(), 1e-8);
+    }
 }
