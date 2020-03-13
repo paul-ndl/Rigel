@@ -56,6 +56,6 @@ public class MoonTest {
     @Test
     void toStringTest(){
         Moon p = new Moon(EquatorialCoordinates.of(0,0), 1,2,0.5f);
-        assertEquals("Lune", p.toString());
+        assertEquals("Lune (50.0%)", p.toString());
     }
 }

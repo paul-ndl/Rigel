@@ -1,4 +1,4 @@
 package ch.epfl.rigel.astronomy;
 
-public class CelestialObjectTeat {
+public class CelestialObjectTest {
 }

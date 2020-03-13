@@ -99,4 +99,20 @@ public class StereographicProjectionTest {
         StereographicProjection e2 = new StereographicProjection(center2);
         assertEquals(String.format(Locale.ROOT,"StereographicProjection => Center Coordinates (λ=%.4f, ϕ=%.4f)", Math.PI/6, Math.PI/4), e2.toString());
     }
+
+    @Test
+    void equalsThrowsUOE() {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            CartesianCoordinates coordonnées= CartesianCoordinates.of(9,0);
+            coordonnées.equals(coordonnées);
+        });
+    }
+
+    @Test
+    void hashCodeThrowsUOE() {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            CartesianCoordinates coordinates = CartesianCoordinates.of(0, 75);
+            coordinates.hashCode();
+        });
+    }
 }
