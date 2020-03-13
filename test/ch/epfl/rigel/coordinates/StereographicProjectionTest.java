@@ -76,6 +76,13 @@ public class StereographicProjectionTest {
         assertEquals(h1.alt(), d1.alt(), 1e-8);
 
 
+        HorizontalCoordinates h2 = HorizontalCoordinates.of(Math.PI/2, (Math.PI/2)-0.1);
+        HorizontalCoordinates center2 = HorizontalCoordinates.of(Math.PI/4, Math.PI/4);
+        StereographicProjection e2 = new StereographicProjection(center2);
+        CartesianCoordinates c2 = e2.apply(h2);
+        assertEquals(h2.az(), e2.inverseApply(c2).az(), 1e-12);
+        assertEquals(h2.alt(), e2.inverseApply(c2).alt(), 1e-12);
+
         double az1 = (new StereographicProjection(HorizontalCoordinates.ofDeg(45,45))).inverseApply(CartesianCoordinates.of(10,0)).az();
         double az2 = (new StereographicProjection(HorizontalCoordinates.ofDeg(45,20)).inverseApply(CartesianCoordinates.of(0,25)).az());
         double alt1 = (new StereographicProjection(HorizontalCoordinates.ofDeg(45,20)).inverseApply(CartesianCoordinates.of(0,25)).alt());
