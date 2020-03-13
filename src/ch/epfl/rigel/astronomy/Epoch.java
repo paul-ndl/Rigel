@@ -18,7 +18,7 @@ public enum Epoch {
     /**
      * constructor for the epoch
      */
-    private Epoch(ZonedDateTime epoch){
+    Epoch(ZonedDateTime epoch){
         this.epoch = epoch;
     }
 
