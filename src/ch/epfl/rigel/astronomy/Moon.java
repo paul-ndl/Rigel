@@ -6,11 +6,11 @@ import ch.epfl.rigel.math.ClosedInterval;
 
 import java.util.Locale;
 
-public final class MoonB extends CelestialObjectB{
+public final class Moon extends CelestialObject {
 
     private float phase;
 
-    public MoonB(EquatorialCoordinates equatorialPos, float angularSize, float magnitude, float phase){
+    public Moon(EquatorialCoordinates equatorialPos, float angularSize, float magnitude, float phase){
         super("Lune", equatorialPos, angularSize, magnitude);
         this.phase = phase;
         Preconditions.checkInInterval(ClosedInterval.of(0,1), phase);

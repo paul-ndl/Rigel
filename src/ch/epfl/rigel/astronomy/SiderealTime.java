@@ -20,7 +20,7 @@ public final class SiderealTime {
         double sA = p.at(centuries);
         double sB = 1.002737909 * hours;
         return Angle.normalizePositive(Angle.ofHr(sA + sB));
-    }
+}
 
     /**
      * returns an approximation of the local sideral time of the given date

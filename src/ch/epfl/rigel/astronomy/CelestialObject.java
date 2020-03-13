@@ -1,6 +1,9 @@
 package ch.epfl.rigel.astronomy;
 
+import ch.epfl.rigel.Preconditions;
 import ch.epfl.rigel.coordinates.EquatorialCoordinates;
+
+import java.util.Objects;
 
 public abstract class CelestialObject {
 
@@ -8,38 +11,37 @@ public abstract class CelestialObject {
     private EquatorialCoordinates equatorialPos;
     private float angularSize, magnitude;
 
-    /*CelestialObject(String name, EquatorialCoordinates equatorialPos, float angularSize, float magnitude){
-        if(angularSize < 0){
-            throw new IllegalArgumentException;
-        }//ici trouver comment utiliser 'Objects.requireNonNull'
-
-        if(name==null || equatorialPos==null){
-            throw new NullPointerException;
-        }
-        this.name=name;
-        this.equatorialPos=equatorialPos;
-        this.angularSize=angularSize;
-        this.magnitude=magnitude;
-    }*/
+    CelestialObject(String name, EquatorialCoordinates equatorialPos, float angularSize, float magnitude){
+        Preconditions.checkArgument(angularSize>0);
+        this.name = Objects.requireNonNull(name);
+        this.equatorialPos = Objects.requireNonNull(equatorialPos);
+        this.angularSize = angularSize;
+        this.magnitude = magnitude;
+    }
 
     public String name(){
-        return  name;
+        return name;
+    }
+
+    public double angularSize(){
+        return angularSize;
+    }
+
+    public double magnitude(){
+        return magnitude;
     }
 
     public EquatorialCoordinates equatorialPos(){
         return equatorialPos;
     }
 
-    public double angularSize(){
-       return angularSize;
+    public String info(){
+        return name;
     }
-    public double magnitude(){
-        return magnitude;
-    }
-    //retourne une nouvelle chaine de caractère
-    public abstract String info();
 
+    @Override
     public String toString(){
         return info();
     }
+
 }

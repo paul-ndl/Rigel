@@ -12,7 +12,7 @@ public final class CartesianCoordinates {
     }
 
     public static CartesianCoordinates of(double x, double y){
-        return new CartesianCoordinates(x,y);
+        return new CartesianCoordinates(x, y);
     }
 
     public double x(){
@@ -34,5 +34,8 @@ public final class CartesianCoordinates {
     }
 
     @Override
-    public String toString(){ return String.format(Locale.ROOT,"abscisse=%.4f, ordonnée=%.4f", x(), y());}
+    public String toString(){
+        return String.format(Locale.ROOT,"(abs=%.4f, ord=%.4f)", x, y);
+    }
+
 }
