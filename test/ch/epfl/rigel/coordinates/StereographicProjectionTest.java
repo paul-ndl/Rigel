@@ -3,6 +3,8 @@ package ch.epfl.rigel.coordinates;
 import ch.epfl.rigel.math.Angle;
 import org.junit.jupiter.api.Test;
 
+import java.util.Locale;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -89,5 +91,12 @@ public class StereographicProjectionTest {
         assertEquals(3.648704634091643, az1, 1e-8);
         assertEquals( 3.9269908169872414, az2, 1e-8);
         assertEquals(-0.2691084761522857, alt1, 1e-8);
+    }
+
+    @Test
+    void toStringWorks(){
+        HorizontalCoordinates center2 = HorizontalCoordinates.of(Math.PI/6, Math.PI/4);
+        StereographicProjection e2 = new StereographicProjection(center2);
+        assertEquals(String.format(Locale.ROOT,"StereographicProjection => Center Coordinates (λ=%.4f, ϕ=%.4f)", Math.PI/6, Math.PI/4), e2.toString());
     }
 }
