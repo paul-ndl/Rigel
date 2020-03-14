@@ -6,6 +6,8 @@ import ch.epfl.rigel.coordinates.EquatorialCoordinates;
 import ch.epfl.rigel.math.Angle;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public enum PlanetModel implements CelestialObjectModel<Planet> {
@@ -26,7 +28,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
     NEPTUNE("Neptune", 165.84539, 326.895127, 23.07, 0.010483,
             30.1985, 1.7673, 131.879, 62.20, -6.87);
 
-    public static List<PlanetModel> ALL;
+    public static List<PlanetModel> ALL = Arrays.asList(PlanetModel.values());
 
     private String name;
 
