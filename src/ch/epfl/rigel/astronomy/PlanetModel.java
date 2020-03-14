@@ -32,9 +32,9 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
 
     private String name;
 
-    private double t, lonJ2010, lonPer, e, a, i, omega, angularsize, magnitude;
+    private double t, lonJ2010, lonPer, e, a, i, omega, teta, magnitude;
 
-    PlanetModel(String name, double t, double lonJ2010, double lonPer, double e, double a, double i, double omega, double angularsize, double magnitude){
+    PlanetModel(String name, double t, double lonJ2010, double lonPer, double e, double a, double i, double omega, double teta, double magnitude){
         this.name = name;
         this.t = t;
         this.lonJ2010 = Angle.ofDeg(lonJ2010);
@@ -43,25 +43,33 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         this.a = a;
         this.i = Angle.ofDeg(i);
         this.omega = Angle.ofDeg(omega);
-        this.angularsize = angularsize;
+        this.teta = Angle.ofArcsec(teta);
         this.magnitude = magnitude;
     }
 
     public Planet at(double daysSinceJ2010, EclipticToEquatorialConversion eclipticToEquatorialConversion){
         double [] rlp = rlp(daysSinceJ2010);
-        double r = rlp[0];
-        double l = rlp[1];
-        double psi = rlp[2];
-        double rEarth = EARTH.rlp(daysSinceJ2010)[0];
-        double lEarth = EARTH.rlp(daysSinceJ2010)[1];
+        double r0 = rlp[0];
+        double l0 = rlp[1];
+        double r = rlp[2];
+        double l = rlp[3];
+        double psi = rlp[4];
+        double rEarth = EARTH.rlp(daysSinceJ2010)[2];
+        double lEarth = EARTH.rlp(daysSinceJ2010)[3];
         double lambda, beta;
         if(this.name()=="Mercure" || this.name()=="Vénus"){
-            lambda = Math.PI + lEarth + Math.atan2(r*Math.sin(lEarth-l), rEarth-r*Math.cos(lEarth-l));
+            lambda = Angle.normalizePositive(Math.PI + lEarth + Math.atan2(r*Math.sin(lEarth-l), rEarth-r*Math.cos(lEarth-l)));
         } else {
-            lambda = l + Math.atan2(rEarth*Math.sin(l-lEarth), r-rEarth*Math.cos(l-lEarth));
+            lambda = Angle.normalizePositive(l + Math.atan2(rEarth*Math.sin(l-lEarth), r-rEarth*Math.cos(l-lEarth)));
         }
         beta = Math.atan2(r*Math.tan(psi)*Math.sin(lambda-l), rEarth*Math.sin(l-lEarth));
-        return new Planet(name, eclipticToEquatorialConversion.apply(EclipticCoordinates.of(lambda, beta)), (float)angularsize, (float)magnitude);
+        System.out.println(lambda);
+        System.out.println(beta);
+        double p = Math.sqrt(rEarth*rEarth + r0*r0 - 2*rEarth*r0*Math.cos(l0-lEarth)*Math.cos(psi));
+        double angularSize = teta/p;
+        double f = (1+Math.cos(lambda-l0))/2;
+        double magnitudeF = magnitude + 5*Math.log10(r*p/Math.sqrt(f));
+        return new Planet(name, eclipticToEquatorialConversion.apply(EclipticCoordinates.of(lambda, beta)), (float) angularSize, (float) magnitudeF);
     }
 
     private double[] rlp (double daysSinceJ2010){
@@ -73,7 +81,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         double psi = Math.asin(Math.sin(l0-omega)*Math.sin(i));
         double r = r0 * Math.cos(psi);
         double l = Math.atan2(Math.sin(l0-omega)*Math.cos(i), Math.cos(l0-omega)) + omega;
-        double[] rlp = {r, l, psi};
+        double[] rlp = {r0, l0, r, l, psi};
         return rlp;
     }
 
