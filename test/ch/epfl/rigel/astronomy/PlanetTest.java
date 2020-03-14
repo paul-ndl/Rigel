@@ -17,7 +17,7 @@ public class PlanetTest {
             new Planet("Saturne", null, 1f, -17f);
         });
         assertThrows(IllegalArgumentException.class, () -> {
-            new Planet("Uranus", EquatorialCoordinates.of(0,0), 0f, -17f);
+            new Planet("Uranus", EquatorialCoordinates.of(0,0), -0.1f, -17f);
         });
     }
 

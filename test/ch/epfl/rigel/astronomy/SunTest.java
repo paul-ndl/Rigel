@@ -18,7 +18,7 @@ public class SunTest {
             new Sun(EclipticCoordinates.of(0,0), null, 1f, -17f);
         });
         assertThrows(IllegalArgumentException.class, () -> {
-            new Sun(EclipticCoordinates.of(0,0), EquatorialCoordinates.of(0,0), 0f, -17f);
+            new Sun(EclipticCoordinates.of(0,0), EquatorialCoordinates.of(0,0), -0.1f, -17f);
         });
     }
 

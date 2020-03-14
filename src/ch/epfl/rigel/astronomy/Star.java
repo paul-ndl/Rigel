@@ -25,6 +25,6 @@ public final class Star extends CelestialObject {
     }
 
     public int colorTemperature(){
-        return (int) Math.floor(4600*(1/(0.92*colorIndex+0.67) + 1/(0.92*colorIndex+1.7)));
+        return (int) Math.floor(4600*(1/(0.92*colorIndex+1.7) + 1/(0.92*colorIndex+0.62)));
     }
 }

@@ -12,7 +12,7 @@ public abstract class CelestialObject {
     private float angularSize, magnitude;
 
     CelestialObject(String name, EquatorialCoordinates equatorialPos, float angularSize, float magnitude){
-        Preconditions.checkArgument(angularSize>0);
+        Preconditions.checkArgument(angularSize>=0);
         this.name = Objects.requireNonNull(name);
         this.equatorialPos = Objects.requireNonNull(equatorialPos);
         this.angularSize = angularSize;
