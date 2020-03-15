@@ -10,7 +10,7 @@ public final class Asterism {
 
     public Asterism(List<Star> stars){
         Preconditions.checkArgument(!stars.isEmpty());
-        this.stars = stars;
+        this.stars = List.copyOf(stars);
     }
 
     public List<Star> stars(){
