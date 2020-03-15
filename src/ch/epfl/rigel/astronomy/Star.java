@@ -14,7 +14,7 @@ public final class Star extends CelestialObject {
 
     public Star(int hipparcosId, String name, EquatorialCoordinates equatorialPos, float magnitude, float colorIndex){
         super(name, equatorialPos, 0,magnitude);
-        Preconditions.checkArgument(hipparcosId>0);
+        Preconditions.checkArgument(hipparcosId>=0);
         Preconditions.checkInInterval(ClosedInterval.of(-0.5,5.5), colorIndex);
         this.hipparcosId = hipparcosId;
         this.colorIndex = colorIndex;

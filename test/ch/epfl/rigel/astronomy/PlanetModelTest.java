@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class PlanetModelTest {
 
     @Test
-
     void atWorksOnKnownValues(){
         EquatorialCoordinates eq1 = PlanetModel.JUPITER.at(-2231.0, new EclipticToEquatorialConversion(ZonedDateTime.of(LocalDate.of(2003, Month.NOVEMBER, 22), LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC))).equatorialPos();
         assertEquals(11.18715493470968, eq1.raHr(), 1e-12);
