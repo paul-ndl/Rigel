@@ -1,14 +1,12 @@
 package ch.epfl.rigel.astronomy;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public final class StarCatalogue {
 
     private List<Star> stars;
     private List<Asterism> asterisms;
+    private Map<Asterism, List<Integer>> map;
 
     public StarCatalogue(List<Star> stars, List<Asterism> asterisms){
         for(Asterism a : asterisms){
@@ -18,8 +16,23 @@ public final class StarCatalogue {
                 }
             }
         }
+
         this.stars = List.copyOf(stars);
         this.asterisms = List.copyOf(asterisms);
+
+        List<Integer> list = new ArrayList<>();
+        for(Asterism a : asterisms){
+            for(Star s : a.stars()){
+                for (int i=0; i<stars.size(); ++i){
+                    if(s.hipparcosId()==stars.get(i).hipparcosId()){
+                        list.add(i);
+                    }
+                }
+            }
+            map.put(a, list);
+            list.clear();
+        }
+
     }
 
     public List<Star> stars(){
@@ -31,14 +44,6 @@ public final class StarCatalogue {
     }
 
     public List<Integer> asterismIndices (Asterism asterism){
-        List<Integer> indices = new ArrayList<>();
-        for(Star a : asterism.stars()){
-            for (int s=0; s<stars.size(); ++s){
-                if(a.hipparcosId()==stars.get(s).hipparcosId()){
-                    indices.add(s);
-                }
-            }
-        }
-        return indices;
+        return map.get(asterism);
     }
 }
