@@ -47,6 +47,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         this.magnitude = magnitude;
     }
 
+    @Override
     public Planet at(double daysSinceJ2010, EclipticToEquatorialConversion eclipticToEquatorialConversion){
         double [] rlp = rlp(daysSinceJ2010);
         double r = rlp[0];

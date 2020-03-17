@@ -13,7 +13,7 @@ public enum SunModel implements CelestialObjectModel<Sun> {
     private final static double e = 0.016705;
     private final static double teta0 = Angle.ofDeg(0.533128);
 
-
+    @Override
     public Sun at(double daysSinceJ2010, EclipticToEquatorialConversion eclipticToEquatorialConversion){
         double d = daysSinceJ2010;
         double m = (Angle.TAU/365.242191) * d + lonJ2010 - lonPer;

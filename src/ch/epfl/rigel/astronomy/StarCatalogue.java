@@ -1,5 +1,7 @@
 package ch.epfl.rigel.astronomy;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 public final class StarCatalogue {
@@ -45,5 +47,41 @@ public final class StarCatalogue {
 
     public List<Integer> asterismIndices (Asterism asterism){
         return map.get(asterism);
+    }
+
+    public final static class Builder{
+        private List<Star> stars;
+        private List<Asterism> asterisms;
+
+        public Builder addStar(Star star){
+            this.stars.add(star);
+            return new StarCatalogue.Builder();
+        }
+
+        public List<Star> stars(){
+            return Collections.unmodifiableList(stars);
+        }
+
+        public Builder addAsterism(Asterism asterism){
+            this.asterisms.add(asterism);
+            return new StarCatalogue.Builder();
+        }
+
+        public List<Asterism> asterisms(){
+            return Collections.unmodifiableList(asterisms);
+        }
+
+        public Builder loadFrom(InputStream inputStream, Loader loader) throws IOException{
+            return new StarCatalogue.Builder();
+        }
+
+        public StarCatalogue build(){
+            return new StarCatalogue(stars, asterisms);
+        }
+
+    }
+
+    public interface Loader{
+        public void load(InputStream inputStream, Builder builder) throws IOException;
     }
 }
