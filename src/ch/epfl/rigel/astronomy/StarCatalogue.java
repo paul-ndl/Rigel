@@ -9,7 +9,6 @@ import java.util.*;
 public final class StarCatalogue {
 
     private List<Star> stars;
-    private List<Asterism> asterisms;
     private Map<Asterism, List<Integer>> map = new HashMap<>();
 
     public StarCatalogue(List<Star> stars, List<Asterism> asterisms){
@@ -22,7 +21,6 @@ public final class StarCatalogue {
         }
 
         this.stars = List.copyOf(stars);
-        this.asterisms = List.copyOf(asterisms);
 
         List<Integer> list = new ArrayList<>();
         for(Asterism a : asterisms){
@@ -39,11 +37,11 @@ public final class StarCatalogue {
     }
 
     public Set<Asterism> asterisms(){
-        return new HashSet<>(asterisms);
+        return map.keySet();
     }
 
     public List<Integer> asterismIndices (Asterism asterism){
-        Preconditions.checkArgument(asterisms.contains(asterism));
+        Preconditions.checkArgument(asterisms().contains(asterism));
         return map.get(asterism);
     }
 

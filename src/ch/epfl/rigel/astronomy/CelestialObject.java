@@ -36,7 +36,7 @@ public abstract class CelestialObject {
     }
 
     public String info(){
-        return name;
+        return name();
     }
 
     @Override
