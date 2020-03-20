@@ -22,12 +22,10 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader{
     @Override
     public void load(InputStream inputStream, StarCatalogue.Builder builder) throws IOException {
         Charset c = StandardCharsets.US_ASCII;
-        String s;
         String[] columns;
-        int count = 1;
         try(BufferedReader r = new BufferedReader(new InputStreamReader(inputStream, c))){
             r.readLine();
-            while(count!=5068){
+            while(r.ready()){
                 columns = r.readLine().split(",");
                 int hip = (!columns[HIP].isEmpty() ? Integer.parseInt(columns[HIP]) : 0);
                 String name = ((!columns[PROPER].isEmpty()) ? columns[PROPER] : ((!columns[BAYER].isEmpty() ? columns[BAYER] : "?") + " " + columns[CON]));
@@ -35,7 +33,6 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader{
                 Float magnitude = (!columns[MAG].isEmpty() ? Float.parseFloat(columns[MAG]) : 0);
                 Float colorIndex = (!columns[CI].isEmpty() ? Float.parseFloat(columns[CI]) : 0);
                 builder.addStar(new Star(hip, name, eq, magnitude, colorIndex));
-                ++count;
             }
         }
     }

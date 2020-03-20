@@ -10,7 +10,7 @@ public final class StarCatalogue {
 
     private List<Star> stars;
     private List<Asterism> asterisms;
-    private Map<Asterism, List<Integer>> map;
+    private Map<Asterism, List<Integer>> map = new HashMap<>();
 
     public StarCatalogue(List<Star> stars, List<Asterism> asterisms){
         for(Asterism a : asterisms){
@@ -27,16 +27,11 @@ public final class StarCatalogue {
         List<Integer> list = new ArrayList<>();
         for(Asterism a : asterisms){
             for(Star s : a.stars()){
-                for (int i=0; i<stars.size(); ++i){
-                    if(s.hipparcosId()==stars.get(i).hipparcosId()){
-                        list.add(i);
-                    }
-                }
+                list.add(stars.indexOf(s));
             }
-            map.put(a, list);
+            map.put(a, List.copyOf(list));
             list.clear();
         }
-
     }
 
     public List<Star> stars(){
