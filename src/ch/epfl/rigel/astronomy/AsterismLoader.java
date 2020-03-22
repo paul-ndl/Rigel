@@ -30,7 +30,7 @@ public enum AsterismLoader implements StarCatalogue.Loader {
             while(r.ready()){
                 hip = r.readLine().split(",");
                 for (String h : hip) {
-                    stars.add(map.get(h));
+                    stars.add(map.get(Integer.parseInt(h)));
                 }
                 builder.addAsterism(new Asterism(List.copyOf(stars)));
                 stars.clear();

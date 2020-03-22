@@ -21,6 +21,6 @@ public class SunModelTest {
         assertEquals(5.9325494700300885, eq2.ra());
 
         Sun s = SunModel.SUN.at(-7494, new EclipticToEquatorialConversion(ZonedDateTime.of(LocalDate.of(1988, Month.JULY, 27), LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC)));
-        //assertEquals(Angle.ofDMS(0,31,30), Angle.ofDeg(s.angularSize()));
+        assertEquals(1.5977027361288134E-4, Angle.ofDeg(s.angularSize()));
     }
 }
