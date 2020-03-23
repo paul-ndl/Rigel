@@ -58,7 +58,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         double rEarth = EARTH.rlp(daysSinceJ2010)[0];
         double lEarth = EARTH.rlp(daysSinceJ2010)[1];
         double lambda, beta;
-        if(this.a<1){
+        if(a<1){
             lambda = Angle.normalizePositive(Math.PI + lEarth + Math.atan2(rFinal*Math.sin(lEarth-lFinal), rEarth-rFinal*Math.cos(lEarth-lFinal)));
         } else {
             lambda = Angle.normalizePositive(lFinal + Math.atan2(rEarth*Math.sin(lFinal-lEarth), rFinal-rEarth*Math.cos(lFinal-lEarth)));
@@ -72,8 +72,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
     }
 
     private double[] rlp (double daysSinceJ2010){
-        double d = daysSinceJ2010;
-        double m = (Angle.TAU/365.242191) * d/t + lonJ2010 - lonPer;
+        double m = (Angle.TAU/365.242191) * daysSinceJ2010/t + lonJ2010 - lonPer;
         double nu = m + 2*e*Math.sin(m);
         double r = (a*(1-e*e)/(1+e*Math.cos(nu)));
         double l = nu + lonPer;

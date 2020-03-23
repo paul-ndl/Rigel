@@ -19,11 +19,10 @@ public enum MoonModel implements CelestialObjectModel<Moon> {
 
     @Override
     public Moon at(double daysSinceJ2010, EclipticToEquatorialConversion eclipticToEquatorialConversion){
-        double d = daysSinceJ2010;
         double lambdaS = SunModel.SUN.at(daysSinceJ2010, eclipticToEquatorialConversion).eclipticPos().lon();
         double mS = SunModel.SUN.at(daysSinceJ2010, eclipticToEquatorialConversion).meanAnomaly();
-        double l = Angle.ofDeg(13.1763966) * d + l0;
-        double mM = l - Angle.ofDeg(0.1114041)*d - p0;
+        double l = Angle.ofDeg(13.1763966) * daysSinceJ2010 + l0;
+        double mM = l - Angle.ofDeg(0.1114041)*daysSinceJ2010 - p0;
         double eV = Angle.ofDeg(1.2739) * Math.sin(2*(l-lambdaS) - mM);
         double aE = Angle.ofDeg(0.1858) * Math.sin(mS);
         double a3 = Angle.ofDeg(0.37) * Math.sin(mS);
@@ -33,7 +32,7 @@ public enum MoonModel implements CelestialObjectModel<Moon> {
         double lF1 = l + eV + eC -aE + a4;
         double v = Angle.ofDeg(0.6583) * Math.sin(2*(lF1-lambdaS));
         double orbitalLon = lF1 + v;
-        double n = n0 - Angle.ofDeg(0.0529539) * d;
+        double n = n0 - Angle.ofDeg(0.0529539) * daysSinceJ2010;
         double nFinal = n - Angle.ofDeg(0.16)*Math.sin(mS);
         double lambda = Angle.normalizePositive(Math.atan2(Math.sin(orbitalLon-nFinal)*Math.cos(i), Math.cos(orbitalLon-nFinal)) + nFinal);
         double beta = Math.asin(Math.sin(orbitalLon-nFinal) * Math.sin(i));

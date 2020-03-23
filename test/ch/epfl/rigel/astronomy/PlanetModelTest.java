@@ -15,7 +15,7 @@ public class PlanetModelTest {
     void atWorksOnKnownValues(){
         EquatorialCoordinates eq1 = PlanetModel.JUPITER.at(-2231.0, new EclipticToEquatorialConversion(ZonedDateTime.of(LocalDate.of(2003, Month.NOVEMBER, 22), LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC))).equatorialPos();
         assertEquals(11.18675858733765, eq1.raHr(), 1e-12);
-        assertEquals(6.342636155333278, eq1.decDeg(), 1e-12);
+        assertEquals(6.3426361553333095, eq1.decDeg(), 1e-12);
 
         EquatorialCoordinates eq2 = PlanetModel.MERCURY.at(-2231.0, new EclipticToEquatorialConversion(ZonedDateTime.of(LocalDate.of(2003, Month.NOVEMBER, 22), LocalTime.of(0, 0, 0, 0), ZoneOffset.UTC))).equatorialPos();
         assertEquals(16.8279572540347, eq2.raHr(), 1e-12);

@@ -15,8 +15,7 @@ public enum SunModel implements CelestialObjectModel<Sun> {
 
     @Override
     public Sun at(double daysSinceJ2010, EclipticToEquatorialConversion eclipticToEquatorialConversion){
-        double d = daysSinceJ2010;
-        double m = (Angle.TAU/365.242191) * d + lonJ2010 - lonPer;
+        double m = (Angle.TAU/365.242191) * daysSinceJ2010 + lonJ2010 - lonPer;
         double nu = m + 2*e*Math.sin(m);
         double angularSize = teta0 * (1+e*Math.cos(nu))/(1-e*e);
         double lambda = Angle.normalizePositive(nu + lonPer);
