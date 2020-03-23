@@ -1,35 +1,37 @@
 package ch.epfl.rigel.coordinates;
 
+import ch.epfl.test.TestRandomizer;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CartesianCoordinatesTest {
+    @Test
+    void ofAndGettersWork() {
+        var rng = TestRandomizer.newRandom();
+        for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
+            var x = rng.nextDouble(-1e6, 1e6);
+            var y = rng.nextDouble(-1e6, 1e6);
+            var c = CartesianCoordinates.of(x, y);
+            assertEquals(x, c.x());
+            assertEquals(y, c.y());
+        }
+    }
 
     @Test
-    public void isConstructorValid(){
-        CartesianCoordinates c1= CartesianCoordinates.of(12.5,45.6);
-        assertEquals(12.5,c1.x());
-        assertEquals(45.6,c1.y());
-        CartesianCoordinates c2 = CartesianCoordinates.of(56.9876372949,87.98299479739874);
-        assertEquals(56.9876372949,c2.x());
-        assertEquals(87.98299479739874,c2.y()); }
-
-    @Test
-    void equalsThrowsUOE() {
+    void ccEqualsThrowsUOE() {
         assertThrows(UnsupportedOperationException.class, () -> {
-            CartesianCoordinates coordonnées= CartesianCoordinates.of(9,0);
-            coordonnées.equals(coordonnées);
+            var c = CartesianCoordinates.of(0, 0);
+            c.equals(c);
         });
     }
 
     @Test
-    void hashCodeThrowsUOE() {
+    void ccHashCodeThrowsUOE() {
         assertThrows(UnsupportedOperationException.class, () -> {
-            CartesianCoordinates coordinates = CartesianCoordinates.of(0, 75);
-            coordinates.hashCode();
+            CartesianCoordinates.of(0, 0).hashCode();
         });
     }
+
 }
-
