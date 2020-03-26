@@ -13,11 +13,9 @@ public final class StarCatalogue {
 
     public StarCatalogue(List<Star> stars, List<Asterism> asterisms){
         for(Asterism a : asterisms){
-            for(Star s : a.stars()){
-                if(!stars.contains(s)){
+                if(!stars.containsAll(a.stars())){
                     throw new IllegalArgumentException();
                 }
-            }
         }
 
         this.stars = List.copyOf(stars);

@@ -62,7 +62,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         } else {
             lambda = Angle.normalizePositive(lFinal + Math.atan2(rEarth*Math.sin(lFinal-lEarth), rFinal-rEarth*Math.cos(lFinal-lEarth)));
         }
-        beta = Math.atan(rFinal*Math.tan(psi)*Math.sin(lambda-lFinal)/rEarth*Math.sin(lFinal-lEarth));
+        beta = Math.atan((rFinal*Math.tan(psi)*Math.sin(lambda-lFinal))/(rEarth*Math.sin(lFinal-lEarth)));
         double p = Math.sqrt(rEarth*rEarth + r*r - 2*rEarth*r*Math.cos(l-lEarth)*Math.cos(psi));
         double angularSize = teta0/p;
         double f = (1+Math.cos(lambda-l))/2;
