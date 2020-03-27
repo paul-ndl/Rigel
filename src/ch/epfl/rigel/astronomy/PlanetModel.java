@@ -28,7 +28,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
     NEPTUNE("Neptune", 165.84539, 326.895127, 23.07, 0.010483,
             30.1985, 1.7673, 131.879, 62.20, -6.87);
 
-    public static List<PlanetModel> ALL = Arrays.asList(PlanetModel.values());
+    public static List<PlanetModel> ALL = List.of(values());
 
     private String name;
 
