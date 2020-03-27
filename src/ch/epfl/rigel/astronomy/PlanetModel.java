@@ -49,13 +49,13 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
 
     @Override
     public Planet at(double daysSinceJ2010, EclipticToEquatorialConversion eclipticToEquatorialConversion){
-        double r = rl(daysSinceJ2010)[0];
-        double l = rl(daysSinceJ2010)[1];
+        double r = orbitalCoordinates(daysSinceJ2010)[0];
+        double l = orbitalCoordinates(daysSinceJ2010)[1];
         double psi = Math.asin(Math.sin(l-omega)*Math.sin(i));
         double rFinal = r * Math.cos(psi);
         double lFinal = Math.atan2(Math.sin(l-omega)*Math.cos(i), Math.cos(l-omega)) + omega;
-        double rEarth = EARTH.rl(daysSinceJ2010)[0];
-        double lEarth = EARTH.rl(daysSinceJ2010)[1];
+        double rEarth = EARTH.orbitalCoordinates(daysSinceJ2010)[0];
+        double lEarth = EARTH.orbitalCoordinates(daysSinceJ2010)[1];
         double lambda, beta;
         if(a<1){
             lambda = Angle.normalizePositive(Math.PI + lEarth + Math.atan2(rFinal*Math.sin(lEarth-lFinal), rEarth-rFinal*Math.cos(lEarth-lFinal)));
@@ -70,8 +70,8 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         return new Planet(name, eclipticToEquatorialConversion.apply(EclipticCoordinates.of(lambda, beta)), (float) angularSize, (float) magnitudeF);
     }
 
-    private double[] rl(double daysSinceJ2010){
-        double m = (Angle.TAU/365.242191) * daysSinceJ2010/t + lonJ2010 - lonPer;
+    private double[] orbitalCoordinates(double daysSinceJ2010){
+        double m = (Angle.TAU/365.242191) * (daysSinceJ2010/t) + lonJ2010 - lonPer;
         double nu = m + 2*e*Math.sin(m);
         double r = (a*(1-e*e)/(1+e*Math.cos(nu)));
         double l = nu + lonPer;
