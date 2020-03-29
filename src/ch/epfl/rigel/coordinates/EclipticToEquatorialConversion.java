@@ -11,7 +11,7 @@ import java.util.function.Function;
  * Une conversion de coordonnées écliptiques à équatoriales
  *
  * @author Paul Nadal (300843)
- * @author Alexandre Brun
+ * @author Alexandre Brun (302477)
  */
 public final class EclipticToEquatorialConversion implements Function<EclipticCoordinates, EquatorialCoordinates> {
 

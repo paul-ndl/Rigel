@@ -11,7 +11,7 @@ import java.util.Locale;
  * Des coordonnées horizontales
  *
  * @author Paul Nadal (300843)
- * @author Alexandre Brun
+ * @author Alexandre Brun (302477)
  */
 public final class HorizontalCoordinates extends SphericalCoordinates {
 

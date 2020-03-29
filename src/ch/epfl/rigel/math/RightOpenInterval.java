@@ -7,7 +7,7 @@ import java.util.Locale;
  * Un intervalle ouvert à droite
  *
  * @author Paul Nadal (300843)
- * @author Alexandre Brun
+ * @author Alexandre Brun (302477)
  */
 public final class RightOpenInterval extends Interval {
 

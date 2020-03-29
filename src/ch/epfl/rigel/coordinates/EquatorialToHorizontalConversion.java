@@ -10,7 +10,7 @@ import java.util.function.Function;
  * Une conversion de coordonnées équatoriales à horizontales
  *
  * @author Paul Nadal (300843)
- * @author Alexandre Brun
+ * @author Alexandre Brun (302477)
  */
 public final class EquatorialToHorizontalConversion implements Function<EquatorialCoordinates, HorizontalCoordinates> {
 

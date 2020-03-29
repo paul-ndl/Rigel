@@ -7,7 +7,7 @@ import ch.epfl.rigel.math.Angle;
  * Des coordonnées sphériques
  *
  * @author Paul Nadal (300843)
- * @author Alexandre Brun
+ * @author Alexandre Brun (302477)
  */
 abstract class SphericalCoordinates {
 

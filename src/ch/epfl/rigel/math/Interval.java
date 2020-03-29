@@ -4,7 +4,7 @@ package ch.epfl.rigel.math;
  * Un intervalle
  *
  * @author Paul Nadal (300843)
- * @author Alexandre Brun
+ * @author Alexandre Brun (302477)
  */
 public abstract class Interval {
 
