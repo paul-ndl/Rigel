@@ -46,7 +46,7 @@ public final class GeographicCoordinates extends SphericalCoordinates{
      * @return vrai si la longitude est valide
      */
     public static boolean isValidLonDeg(double lonDeg){
-        RightOpenInterval longitudeIn = RightOpenInterval.symmetric(360);
+        final RightOpenInterval longitudeIn = RightOpenInterval.symmetric(360);
         return longitudeIn.contains(lonDeg);
     }
 
@@ -56,7 +56,7 @@ public final class GeographicCoordinates extends SphericalCoordinates{
      * @return vrai si la latitude est valide
      */
     public static boolean isValidLatDeg(double latDeg){
-        ClosedInterval latitudeIn = ClosedInterval.symmetric(180);
+        final ClosedInterval latitudeIn = ClosedInterval.symmetric(180);
         return latitudeIn.contains(latDeg);
     }
 

@@ -60,6 +60,8 @@ abstract class SphericalCoordinates {
 
     /**
      * Empêche d'utiliser cette méthode
+     * @param o
+     *          un objet
      * @throws UnsupportedOperationException
      */
     @Override

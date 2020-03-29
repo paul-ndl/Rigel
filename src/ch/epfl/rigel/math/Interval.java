@@ -57,7 +57,7 @@ public abstract class Interval {
     /**
      * Empêche d'utiliser cette méthode
      * @param o
-     *          l'objet
+     *          un objet
      * @throws UnsupportedOperationException
      */
     @Override

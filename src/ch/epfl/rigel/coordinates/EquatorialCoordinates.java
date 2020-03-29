@@ -44,7 +44,7 @@ public final class EquatorialCoordinates extends SphericalCoordinates {
      * @return vrai si l'ascension droite est valide
      */
     public static boolean isValidRa(double ra){
-        RightOpenInterval rightAscensionIn = RightOpenInterval.of(0, Angle.TAU);
+        final RightOpenInterval rightAscensionIn = RightOpenInterval.of(0, Angle.TAU);
         return rightAscensionIn.contains(ra);
     }
 
@@ -54,7 +54,7 @@ public final class EquatorialCoordinates extends SphericalCoordinates {
      * @return vrai si la déclinaison est valide
      */
     public static boolean isValidDec(double dec){
-        ClosedInterval declinationIn = ClosedInterval.symmetric(Angle.TAU/2);
+        final ClosedInterval declinationIn = ClosedInterval.symmetric(Angle.TAU/2);
         return declinationIn.contains(dec);
     }
 

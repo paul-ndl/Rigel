@@ -46,7 +46,7 @@ public final class EclipticCoordinates extends SphericalCoordinates {
      * @return vrai si la longitude est valide
      */
     public static boolean isValidLon(double lon){
-        RightOpenInterval eclipticLongitudeIn = RightOpenInterval.of(0, Angle.TAU);
+        final RightOpenInterval eclipticLongitudeIn = RightOpenInterval.of(0, Angle.TAU);
         return eclipticLongitudeIn.contains(lon);
     }
 
@@ -56,7 +56,7 @@ public final class EclipticCoordinates extends SphericalCoordinates {
      * @return vrai si la latitude est valide
      */
     public static boolean isValidLat(double lat){
-        ClosedInterval eclipticLatitudeIn = ClosedInterval.symmetric(Angle.TAU/2);
+        final ClosedInterval eclipticLatitudeIn = ClosedInterval.symmetric(Angle.TAU/2);
         return eclipticLatitudeIn.contains(lat);
     }
 

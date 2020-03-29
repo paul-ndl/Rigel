@@ -60,7 +60,7 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      * @return vrai si l'azimut est valide
      */
     public static boolean isValidAzDeg(double azDeg){
-        RightOpenInterval azimutIn = RightOpenInterval.of(0, 360);
+        final RightOpenInterval azimutIn = RightOpenInterval.of(0, 360);
         return azimutIn.contains(azDeg);
     }
 
@@ -70,7 +70,7 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      * @return vrai si l'altitude est valide
      */
     public static boolean isValidAltDeg(double altDeg){
-        ClosedInterval altitudeIn = ClosedInterval.symmetric(180);
+        final ClosedInterval altitudeIn = ClosedInterval.symmetric(180);
         return altitudeIn.contains(altDeg);
     }
 
@@ -142,8 +142,7 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      * @return la distance angulaire entre le récepteur et le point donné en argument
      */
     public double angularDistanceTo(HorizontalCoordinates that){
-        double angularDistance;
-        angularDistance = Math.acos(Math.sin(this.alt()) * Math.sin(that.alt()) + Math.cos(this.alt()) * Math.cos(that.alt()) * (Math.cos(this.az() - that.az())));
+        final double angularDistance = Math.acos(Math.sin(this.alt()) * Math.sin(that.alt()) + Math.cos(this.alt()) * Math.cos(that.alt()) * (Math.cos(this.az() - that.az())));
         return angularDistance;
     }
 

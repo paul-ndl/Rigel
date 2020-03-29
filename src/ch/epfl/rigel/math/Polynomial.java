@@ -91,7 +91,7 @@ public final class Polynomial {
     /**
      * Empêche d'utiliser cette méthode
      * @param o
-     *          l'objet
+     *          un objet
      * @throws UnsupportedOperationException
      */
     @Override
