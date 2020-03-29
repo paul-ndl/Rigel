@@ -51,8 +51,8 @@ public final class Angle {
      * @return l'angle convertit
      */
     public static double ofDMS(int deg, int min, double sec){
-        Preconditions.checkInInterval(ClosedInterval.of(0,60), min);
-        Preconditions.checkInInterval(ClosedInterval.of(0,60), sec);
+        Preconditions.checkInInterval(RightOpenInterval.of(0,60), min);
+        Preconditions.checkInInterval(RightOpenInterval.of(0,60), sec);
         double totalDeg = deg + (double) min/60 + sec/3600;
         return Math.toRadians(totalDeg);
     }
