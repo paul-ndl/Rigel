@@ -48,9 +48,8 @@ public final class ClosedInterval extends Interval {
      * @return un intervalle fermé centré en 0 et de taille donnée
      */
     public static ClosedInterval symmetric(double size){
-        double symmetricBound = size/2;
         Preconditions.checkArgument(size>0);
-        return new ClosedInterval(-symmetricBound,symmetricBound);
+        return new ClosedInterval(-size/2,size/2);
     }
 
     /**
@@ -71,13 +70,7 @@ public final class ClosedInterval extends Interval {
      * @return la valeur écrêtée
      */
     public double clip (double v){
-        if (v<super.low()){
-            return super.low();
-        } else if (v>super.high()){
-            return super.high();
-        } else {
-            return v;
-        }
+        return Math.max(Math.min(v,super.high()), super.low());
     }
 
     /**

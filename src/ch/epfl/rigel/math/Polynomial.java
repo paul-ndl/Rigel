@@ -2,6 +2,7 @@ package ch.epfl.rigel.math;
 
 import ch.epfl.rigel.Preconditions;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 import static java.lang.System.arraycopy;
@@ -14,7 +15,7 @@ import static java.lang.System.arraycopy;
  */
 public final class Polynomial {
 
-    private double[] coefficients;
+    private final double[] coefficients;
 
     /**
      * Construit un polynôme
@@ -51,8 +52,8 @@ public final class Polynomial {
      */
     public double at(double x){
         double result = 0;
-        for(int i=0; i<coefficients.length; ++i){
-            result = result * x + coefficients[i];
+        for(double coeff : coefficients){
+            result = result * x + coeff;
         }
         return result;
     }
@@ -63,7 +64,7 @@ public final class Polynomial {
      */
     public String toString(){
         int power = coefficients.length-1;
-        StringBuilder polynomial = new StringBuilder();
+        final StringBuilder polynomial = new StringBuilder();
         for (int i=0; i<coefficients.length; ++i){
             if (coefficients[i]!=0) {
                 if (coefficients[i] > 0 && i!=0) {

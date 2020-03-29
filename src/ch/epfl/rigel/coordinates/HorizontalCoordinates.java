@@ -103,7 +103,7 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      * @return une représentation textuelle de l'octant dans lequel se trouve l'azimut
      */
     public String azOctantName(String n, String e, String s, String w) {
-        StringBuilder azOctant = new StringBuilder();
+        final StringBuilder azOctant = new StringBuilder();
         if (RightOpenInterval.of(0, 67.5).contains(azDeg()) || RightOpenInterval.of(292.5, 360).contains(azDeg())) {
             azOctant.append(n);
         }

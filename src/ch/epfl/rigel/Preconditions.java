@@ -18,9 +18,8 @@ public final class Preconditions {
      *          si l'argument est faux
      */
     public static void checkArgument(boolean isTrue){
-        if (!isTrue) {
+        if (!isTrue)
             throw new IllegalArgumentException();
-        }
     }
 
     /**

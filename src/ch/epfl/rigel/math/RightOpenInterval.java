@@ -46,9 +46,8 @@ public final class RightOpenInterval extends Interval {
      * @return un intervalle ouvert à droite centré en 0 et de taille donnée
      */
     public static RightOpenInterval symmetric(double size){
-        double symmetricBound = size/2;
         Preconditions.checkArgument(size>0);
-        return new RightOpenInterval(-symmetricBound,symmetricBound);
+        return new RightOpenInterval(-size/2,size/2);
     }
 
     /**

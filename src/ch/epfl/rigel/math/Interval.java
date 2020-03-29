@@ -54,7 +54,6 @@ public abstract class Interval {
      */
     public abstract boolean contains(double v);
 
-
     /**
      * Empêche d'utiliser cette méthode
      * @param o
