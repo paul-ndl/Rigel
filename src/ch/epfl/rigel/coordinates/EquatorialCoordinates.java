@@ -7,77 +7,100 @@ import ch.epfl.rigel.math.RightOpenInterval;
 
 import java.util.Locale;
 
+/**
+ * Des coordonnées équatoriales
+ *
+ * @author Paul Nadal (300843)
+ * @author Alexandre Brun
+ */
 public final class EquatorialCoordinates extends SphericalCoordinates {
 
     /**
-     * constructs equatorial coordinates with the given rigth ascension and declination
+     * Construit des coordonnées équatoriales
+     * @param rightAscension
+     *          l'ascension droite
+     * @param declination
+     *          la déclinaison
      */
     private EquatorialCoordinates(double rightAscension, double declination){
         super(rightAscension, declination);
     }
 
     /**
-     * constructs equatorial coordinates with the given right ascension and declination (in radians) if they are correct
-     * throws exception otherwise
+     * Construit des coordonnées équatoriales avec des arguments en radians
+     * @param ra
+     *          l'ascension droite en radians
+     * @param dec
+     *          la déclinaison en radians
      */
     public static EquatorialCoordinates of(double ra, double dec){
-        Preconditions.checkArgument(isValidRaDeg(Angle.toDeg(ra)) && isValidDecDeg(Angle.toDeg(dec)));
+        Preconditions.checkArgument(isValidRa(ra) && isValidDec(dec));
         return new EquatorialCoordinates(ra, dec);
     }
 
     /**
-     * checks if the right ascension is in the good interval
+     * Vérifie que l'ascension droite est valide (appartient à l'intervalle [0, 2*PI[)
+     * @param ra
+     * @return vrai si l'ascension droite est valide
      */
-    public static boolean isValidRaDeg(double raDeg){
-        RightOpenInterval rightAscensionIn = RightOpenInterval.of(0, 360);
-        return rightAscensionIn.contains(raDeg);
+    public static boolean isValidRa(double ra){
+        RightOpenInterval rightAscensionIn = RightOpenInterval.of(0, Angle.TAU);
+        return rightAscensionIn.contains(ra);
     }
 
     /**
-     * checks if the declination is in the good interval
+     * Vérifie que la déclinaison est valide (appartient à l'intervalle [-PI/4, PI/4])
+     * @param dec
+     * @return vrai si la déclinaison est valide
      */
-    public static boolean isValidDecDeg(double decDeg){
-        ClosedInterval declinationIn = ClosedInterval.symmetric(180);
-        return declinationIn.contains(decDeg);
+    public static boolean isValidDec(double dec){
+        ClosedInterval declinationIn = ClosedInterval.symmetric(Angle.TAU/2);
+        return declinationIn.contains(dec);
     }
 
     /**
-     * returns the right ascension in radians
+     * Retourne l'ascension droite en radians
+     * @see SphericalCoordinates#lon()
      */
     public double ra(){
         return super.lon();
     }
 
     /**
-     * returns the right ascension in degrees
+     * Retourne l'ascension droite en degrés
+     * @see SphericalCoordinates#lonDeg()
      */
     public double raDeg(){
         return  super.lonDeg();
     }
 
     /**
-     * returns the right ascension in hours
+     * Retourne l'ascension droite en heures
+     * @return l'ascension droite en heures
      */
     public double raHr(){
         return  Angle.toHr(super.lon());
     }
 
     /**
-     * returns the declination in radians
+     * Retourne la déclinaison en radians
+     * @see SphericalCoordinates#lat()
      */
     public double dec(){
         return super.lat();
     }
 
     /**
-     * returns the declination in degrees
+     * Retourne la déclinaison en degrés
+     * @see SphericalCoordinates#latDeg()
      */
     public double decDeg(){
         return super.latDeg();
     }
 
     /**
-     * returns a string representation of the coordinates
+     * Retourne une représentation textuelle des coordonnées (précision à 4 décimales)
+     * @return une représentation textuelle des coordonnées (précision à 4 décimales)
      */
     @Override
     public String toString(){
