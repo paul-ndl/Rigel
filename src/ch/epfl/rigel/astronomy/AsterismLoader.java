@@ -13,22 +13,37 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Un chargeur de catalogue d'astérismes
+ *
+ * @author Paul Nadal (300843)
+ * @author Alexandre Brun (302477)
+ */
 public enum AsterismLoader implements StarCatalogue.Loader {
     INSTANCE;
 
+    private final static Charset c = StandardCharsets.US_ASCII;
+
+    /**
+     * Charge les astérismes du flot d'entrée et les ajoute au bâtisseur
+     * @see ch.epfl.rigel.astronomy.StarCatalogue.Loader#load(InputStream, StarCatalogue.Builder)
+     * @param inputStream
+     *          le flot d'entrée
+     * @param builder
+     *          le bâtisseur
+     * @throws IOException
+     *          en cas d'erreur entrée/sortie
+     */
     @Override
     public void load(InputStream inputStream, StarCatalogue.Builder builder) throws IOException {
-        Charset c = StandardCharsets.US_ASCII;
-        String[] hip;
-        List<Star> catalogue = builder.stars();
-        List<Star> stars = new ArrayList();
-        Map<Integer, Star> map = new HashMap<>();
-        for (Star s : catalogue){
+        final Map<Integer, Star> map = new HashMap<>();
+        for (Star s : builder.stars()){
             map.put(s.hipparcosId(), s);
         }
         try(BufferedReader r = new BufferedReader(new InputStreamReader(inputStream, c))){
+            final List<Star> stars = new ArrayList();
             while(r.ready()){
-                hip = r.readLine().split(",");
+                final String[] hip = r.readLine().split(",");
                 for (String h : hip) {
                     stars.add(map.get(Integer.parseInt(h)));
                 }

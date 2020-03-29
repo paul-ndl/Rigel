@@ -10,7 +10,11 @@ import ch.epfl.rigel.Preconditions;
  */
 public final class Angle {
 
+    /**
+     * La variable TAU = 2*PI
+     */
     public final static double TAU = 2 * Math.PI;
+
     private final static double RAD_PER_SEC = TAU / 1296000;
     private final static double RAD_PER_HR = TAU / 24;
     private final static double HR_PER_RAD = 24 / TAU;
