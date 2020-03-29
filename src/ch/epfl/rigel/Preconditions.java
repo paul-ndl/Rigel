@@ -2,12 +2,20 @@ package ch.epfl.rigel;
 
 import ch.epfl.rigel.math.Interval;
 
-
+/**
+ * Vérifie si une condition est vraie ou fausse
+ *
+ * @author Paul Nadal (300843)
+ * @author Alexandre Brun
+ */
 public final class Preconditions {
     private Preconditions() {}
 
     /**
-     * throws an exception if the argument is false
+     * @param isTrue
+     *          argument à vérifier
+     * @throws IllegalArgumentException
+     *          si l'argument est faux
      */
     public static void checkArgument(boolean isTrue){
         if (!isTrue) {
@@ -16,8 +24,14 @@ public final class Preconditions {
     }
 
     /**
-     * returns value if it is in the interval
-     * throws an exception otherwise
+     * Retourne la valeur
+     * @param interval
+     *          l'intervalle
+     * @param value
+     *          la valeur
+     * @throws IllegalArgumentException
+     *          si la valeur n'appartient pas à l'intervalle
+     * @return la valeur
      */
     public static double checkInInterval(Interval interval, double value) {
         checkArgument(interval.contains(value));

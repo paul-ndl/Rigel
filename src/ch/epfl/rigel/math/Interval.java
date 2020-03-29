@@ -1,11 +1,21 @@
 package ch.epfl.rigel.math;
 
+/**
+ * Un intervalle
+ *
+ * @author Paul Nadal (300843)
+ * @author Alexandre Brun
+ */
 public abstract class Interval {
 
     private final double lowerBound, upperBound;
 
     /**
-     * constructs an interval with the given bounds
+     * Construit un intervalle
+     * @param lowerBound
+     *          la borne inférieure
+     * @param upperBound
+     *          la borne supérieure
      */
     protected Interval (double lowerBound,double upperBound){
         this.lowerBound = lowerBound;
@@ -13,34 +23,43 @@ public abstract class Interval {
     }
 
     /**
-     * returns the lowerBound
+     * Retourne la borne inférieure
+     * @return la borne inférieure
      */
     public double low(){
         return lowerBound;
     }
 
     /**
-     * returns the upperBound
+     * Retourne la borne supérieure
+     * @return la borne supérieure
      */
     public double high(){
         return upperBound;
     }
 
     /**
-     * returns the size of the interval
+     * Retourne la taille de l'intervalle
+     * @return la taille de l'intervalle
      */
     public double size(){
-        return upperBound-lowerBound;
+        return (upperBound-lowerBound);
     }
 
     /**
-     * checks if the interval contains v
+     * Vérifie que la valeur appartient à l'intervalle
+     * @param v
+     *          la valeur
+     * @return vrai si la valeur appartient à l'intervalle
      */
     public abstract boolean contains(double v);
 
 
     /**
-     * prevents to use this method
+     * Empêche d'utiliser cette méthode
+     * @param o
+     *          l'objet
+     * @throws UnsupportedOperationException
      */
     @Override
     public final boolean equals(Object o){
@@ -48,7 +67,8 @@ public abstract class Interval {
     }
 
     /**
-     * prevents to use this method
+     * Empêche d'utiliser cette méthode
+     * @throws UnsupportedOperationException
      */
     @Override
     public final int hashCode(){

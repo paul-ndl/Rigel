@@ -40,7 +40,7 @@ public enum MoonModel implements CelestialObjectModel<Moon> {
         double phase = (1-Math.cos(orbitalLon-lambdaS))/2;
         double p = (1-e*e) / (1+e*Math.cos(mMCorrected+eC));
         double angularSize = theta0/p;
-        return new Moon(eclipticToEquatorialConversion.apply(ec), (float) angularSize, 0, (float) phase);
+        return new Moon(eclipticToEquatorialConversion.apply(ec), (float) angularSize, 0f, (float) phase);
     }
 
 
