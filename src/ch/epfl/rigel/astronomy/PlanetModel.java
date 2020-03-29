@@ -10,6 +10,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * Un modèle d'une planète
+ *
+ * @author Paul Nadal (300843)
+ * @author Alexandre Brun (302477)
+ */
 public enum PlanetModel implements CelestialObjectModel<Planet> {
     MERCURY("Mercure", 0.24085, 75.5671, 77.612, 0.205627,
             0.387098, 7.0051, 48.449, 6.74, -0.42),
@@ -28,12 +34,38 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
     NEPTUNE("Neptune", 165.84539, 326.895127, 23.07, 0.010483,
             30.1985, 1.7673, 131.879, 62.20, -6.87);
 
-    public static List<PlanetModel> ALL = List.of(values());
+    /**
+     * La liste constituée des huits planètes dans leur ordre de déclaration
+     */
+    public final static List<PlanetModel> ALL = List.of(values());
 
-    private String name;
+    private final String name;
 
-    private double t, lonJ2010, lonPer, e, a, i, omega, teta0, magnitude;
+    private final double t, lonJ2010, lonPer, e, a, i, omega, teta0, magnitude;
 
+    /**
+     * Construit un modèle d'une planète
+     * @param name
+     *          le nom
+     * @param t
+     *          la période de révolution en années tropiques
+     * @param lonJ2010
+     *          la longitude à J2010 en degrés
+     * @param lonPer
+     *          la longitude au périgée en degrés
+     * @param e
+     *          l'excentricité
+     * @param a
+     *          le demi grand-axe de l'orbite
+     * @param i
+     *          l'inclinaison de l'orbite à l'écliptique en degrés
+     * @param omega
+     *          la longitude du noeud ascendant en degrés
+     * @param teta0
+     *          la taille angulaire en secondes d'arc
+     * @param magnitude
+     *          la magnitude
+     */
     PlanetModel(String name, double t, double lonJ2010, double lonPer, double e, double a, double i, double omega, double teta0, double magnitude){
         this.name = name;
         this.t = t;
@@ -47,35 +79,52 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         this.magnitude = magnitude;
     }
 
+    /**
+     * Retourne la planète modélisée pour les arguments donnés
+     * @see CelestialObjectModel#at(double, EclipticToEquatorialConversion)
+     * @param daysSinceJ2010
+     *             le nombre de jours depuis l'époque J2010
+     * @param eclipticToEquatorialConversion
+     *             la conversion
+     * @return la planète modélisée pour les arguments donnés
+     */
     @Override
     public Planet at(double daysSinceJ2010, EclipticToEquatorialConversion eclipticToEquatorialConversion){
-        double r = orbitalCoordinates(daysSinceJ2010)[0];
-        double l = orbitalCoordinates(daysSinceJ2010)[1];
-        double psi = Math.asin(Math.sin(l-omega)*Math.sin(i));
-        double rFinal = r * Math.cos(psi);
-        double lFinal = Math.atan2(Math.sin(l-omega)*Math.cos(i), Math.cos(l-omega)) + omega;
-        double rEarth = EARTH.orbitalCoordinates(daysSinceJ2010)[0];
-        double lEarth = EARTH.orbitalCoordinates(daysSinceJ2010)[1];
-        double lambda, beta;
+        final double r = orbitalCoordinates(daysSinceJ2010)[0];
+        final double l = orbitalCoordinates(daysSinceJ2010)[1];
+        final double psi = Math.asin(Math.sin(l-omega)*Math.sin(i));
+        final double rFinal = r * Math.cos(psi);
+        final double lFinal = Math.atan2(Math.sin(l-omega)*Math.cos(i), Math.cos(l-omega)) + omega;
+        final double rEarth = EARTH.orbitalCoordinates(daysSinceJ2010)[0];
+        final double lEarth = EARTH.orbitalCoordinates(daysSinceJ2010)[1];
+        final double lambda, beta;
         if(a<1){
             lambda = Angle.normalizePositive(Math.PI + lEarth + Math.atan2(rFinal*Math.sin(lEarth-lFinal), rEarth-rFinal*Math.cos(lEarth-lFinal)));
         } else {
             lambda = Angle.normalizePositive(lFinal + Math.atan2(rEarth*Math.sin(lFinal-lEarth), rFinal-rEarth*Math.cos(lFinal-lEarth)));
         }
         beta = Math.atan((rFinal*Math.tan(psi)*Math.sin(lambda-lFinal))/(rEarth*Math.sin(lFinal-lEarth)));
-        double p = Math.sqrt(rEarth*rEarth + r*r - 2*rEarth*r*Math.cos(l-lEarth)*Math.cos(psi));
-        double angularSize = teta0/p;
-        double f = (1+Math.cos(lambda-l))/2;
-        double magnitudeF = magnitude + 5*Math.log10(r*p/Math.sqrt(f));
+        final double p = Math.sqrt(rEarth*rEarth + r*r - 2*rEarth*r*Math.cos(l-lEarth)*Math.cos(psi));
+        final double angularSize = teta0/p;
+        final double f = (1+Math.cos(lambda-l))/2;
+        final double magnitudeF = magnitude + 5*Math.log10(r*p/Math.sqrt(f));
         return new Planet(name, eclipticToEquatorialConversion.apply(EclipticCoordinates.of(lambda, beta)), (float) angularSize, (float) magnitudeF);
     }
 
+    /**
+     * Retourne le rayon et la longitude orbitales pour
+     * le nombre de jours depuis l'époque J2010 donné
+     * @param daysSinceJ2010
+     *          le nombre de jours depuis l'époque J2010
+     * @return le rayon et la longitude orbitales pour
+     * le nombre de jours depuis l'époque J2010 donné
+     */
     private double[] orbitalCoordinates(double daysSinceJ2010){
-        double m = (Angle.TAU/365.242191) * (daysSinceJ2010/t) + lonJ2010 - lonPer;
-        double nu = m + 2*e*Math.sin(m);
-        double r = (a*(1-e*e)/(1+e*Math.cos(nu)));
-        double l = nu + lonPer;
-        double[] rl = {r, l};
+        final double m = (Angle.TAU/365.242191) * (daysSinceJ2010/t) + lonJ2010 - lonPer;
+        final double nu = m + 2*e*Math.sin(m);
+        final double r = (a*(1-e*e)/(1+e*Math.cos(nu)));
+        final double l = nu + lonPer;
+        final double[] rl = {r, l};
         return rl;
     }
 
