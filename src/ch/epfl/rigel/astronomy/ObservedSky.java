@@ -2,6 +2,7 @@ package ch.epfl.rigel.astronomy;
 
 import ch.epfl.rigel.coordinates.*;
 
+import java.lang.reflect.Array;
 import java.time.ZonedDateTime;
 import java.util.*;
 
@@ -33,7 +34,7 @@ public class ObservedSky {
 
         sun = SUN.at(daysSinceJ2010, eclipticToEquatorialConversion);
         moon = MOON.at(daysSinceJ2010, eclipticToEquatorialConversion);
-        PlanetModel.ALL.stream().filter(p -> p.name()!="Terre").forEach(p -> planets.add(p.at(daysSinceJ2010, eclipticToEquatorialConversion)));
+        PlanetModel.ALL.stream().filter(p -> p!=PlanetModel.EARTH).forEach(p -> planets.add(p.at(daysSinceJ2010, eclipticToEquatorialConversion)));
         stars = List.copyOf(catalogue.stars());
 
         sunPosition = stereographicProjection.apply(equatorialToHorizontalConversion.apply(sun.equatorialPos()));
@@ -42,13 +43,13 @@ public class ObservedSky {
         moonPosition = stereographicProjection.apply(equatorialToHorizontalConversion.apply(moon.equatorialPos()));
         coordMap.put(moon, moonPosition);
 
-        for (int i = 0; i < planets.size(); i++) {
+        for (int i = 0; i < 7; i++) {
             planetPositions[2*i] = stereographicProjection.apply(equatorialToHorizontalConversion.apply(planets.get(i).equatorialPos())).x();
             planetPositions[2*i+1] = stereographicProjection.apply(equatorialToHorizontalConversion.apply(planets.get(i).equatorialPos())).y();
             coordMap.put(planets.get(i), CartesianCoordinates.of(planetPositions[2*i], planetPositions[2*i+1]));
         }
 
-        starPositions = new double[planets.size()*2];
+        starPositions = new double[stars.size()*2];
         for (int i = 0; i < stars().size(); i++) {
             starPositions[2*i] = stereographicProjection.apply(equatorialToHorizontalConversion.apply(stars.get(i).equatorialPos())).x();
             starPositions[2*i+1] = stereographicProjection.apply(equatorialToHorizontalConversion.apply(stars.get(i).equatorialPos())).y();
@@ -74,19 +75,19 @@ public class ObservedSky {
     }
 
     public List<Planet> planets(){
-        return planets;
+        return List.copyOf(planets);
     }
 
     public double[] planetPositions(){
-        return planetPositions;
+        return planetPositions.clone();
     }
 
     public List<Star> stars(){
-        return stars;
+        return List.copyOf(stars);
     }
 
     public double[] starPositions(){
-        return starPositions;
+        return starPositions.clone();
     }
 
     public Set<Asterism> asterism(){
@@ -97,15 +98,13 @@ public class ObservedSky {
         return catalogue.asterismIndices(asterism);
     }
 
-    public CelestialObject objectClosestTo(CartesianCoordinates point, double max){
-        final Optional<CelestialObject> object;
+    public Optional<CelestialObject> objectClosestTo(CartesianCoordinates point, double max){
         final Map<Double, CelestialObject> distMap = new HashMap<>();
         for(CelestialObject c : coordMap.keySet()){
             distMap.put(calculSquaredDistance(point, coordMap.get(c)), c);
         }
         final double distMin = Collections.min(distMap.keySet());
-        object = (Math.sqrt(distMin)<max) ? Optional.of(distMap.get(distMin)) : Optional.empty();
-        return object.get();
+        return (Math.sqrt(distMin)<=max) ? Optional.of(distMap.get(distMin)) : Optional.empty();
     }
 
     private double calculSquaredDistance(CartesianCoordinates point, CartesianCoordinates position){

@@ -12,6 +12,6 @@ public class BlackBodyColorTest {
 
     @Test
     void colorForTemperatureWorks() {
-        assertEquals(Color.rgb(0xc7,0xd8, 0xff), colorForTemperature(10600));
+        assertEquals(Color.rgb(0xc7,0xd8, 0xff), colorForTemperature(10634));
     }
 }

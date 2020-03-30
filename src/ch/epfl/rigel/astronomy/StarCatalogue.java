@@ -30,9 +30,7 @@ public final class StarCatalogue {
         for(Asterism a : asterisms){
             Preconditions.checkArgument(stars.containsAll(a.stars()));
         }
-
         this.stars = List.copyOf(stars);
-
         List<Integer> list = new ArrayList<>();
         for(Asterism a : asterisms){
             for(Star s : a.stars()){
