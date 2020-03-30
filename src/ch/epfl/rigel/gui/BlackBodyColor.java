@@ -19,7 +19,7 @@ public class BlackBodyColor {
         try(BufferedReader r = new BufferedReader(new InputStreamReader(BlackBodyColor.class.getResourceAsStream(BBR_COLOR), US_ASCII))){
             while(r.ready()) {
                 final String line = r.readLine();
-                if(line.substring(0,1).equals(" ") &&line.substring(10, 15).equals("10deg")) {
+                if(line.substring(0,1).equals(" ") && line.substring(10, 15).equals("10deg")) {
                     Color color = Color.web(line.substring(80,87));
                     tempColor.put((int) Double.parseDouble(line.substring(1, 6)), color);
                 }

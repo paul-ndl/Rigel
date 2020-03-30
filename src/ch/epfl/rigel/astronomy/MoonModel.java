@@ -23,6 +23,18 @@ public enum MoonModel implements CelestialObjectModel<Moon> {
     private static final double e = 0.0549;
     private static final double theta0 = Angle.ofDeg(0.5181);
 
+    private static final double CONSTANT_L = Angle.ofDeg(13.1763966);
+    private static final double CONSTANT_MM = Angle.ofDeg(0.1114041);
+    private static final double CONSTANT_EV = Angle.ofDeg(1.2739);
+    private static final double CONSTANT_AE = Angle.ofDeg(0.1858);
+    private static final double CONSTANT_A3 = Angle.ofDeg(0.37);
+    private static final double CONSTANT_EC = Angle.ofDeg(6.2886);
+    private static final double CONSTANT_A4 = Angle.ofDeg(0.214);
+    private static final double CONSTANT_V = Angle.ofDeg(0.6583);
+    private static final double CONSTANT_N = Angle.ofDeg(0.0529539);
+    private static final double CONSTANT_NFINAL = Angle.ofDeg(0.16);
+
+
     /**
      * Retourne la Lune modélisée pour les arguments donnés
      * @see CelestialObjectModel#at(double, EclipticToEquatorialConversion)
@@ -34,28 +46,28 @@ public enum MoonModel implements CelestialObjectModel<Moon> {
      */
     @Override
     public Moon at(double daysSinceJ2010, EclipticToEquatorialConversion eclipticToEquatorialConversion){
-        final double lambdaS = SunModel.SUN.at(daysSinceJ2010, eclipticToEquatorialConversion).eclipticPos().lon();
-        final double mS = SunModel.SUN.at(daysSinceJ2010, eclipticToEquatorialConversion).meanAnomaly();
-        final double l = Angle.ofDeg(13.1763966) * daysSinceJ2010 + l0;
-        final double mM = l - Angle.ofDeg(0.1114041)*daysSinceJ2010 - p0;
-        final double eV = Angle.ofDeg(1.2739) * Math.sin(2*(l-lambdaS) - mM);
-        final double aE = Angle.ofDeg(0.1858) * Math.sin(mS);
-        final double a3 = Angle.ofDeg(0.37) * Math.sin(mS);
+        final double lambdaSun = SunModel.SUN.at(daysSinceJ2010, eclipticToEquatorialConversion).eclipticPos().lon();
+        final double mSun = SunModel.SUN.at(daysSinceJ2010, eclipticToEquatorialConversion).meanAnomaly();
+        final double l = CONSTANT_L*daysSinceJ2010 + l0;
+        final double mM = l - CONSTANT_MM*daysSinceJ2010 - p0;
+        final double eV = CONSTANT_EV * Math.sin(2*(l-lambdaSun) - mM);
+        final double aE = CONSTANT_AE * Math.sin(mSun);
+        final double a3 = CONSTANT_A3 * Math.sin(mSun);
         final double mMCorrected = mM + eV - aE - a3;
-        final double eC = Angle.ofDeg(6.2886) * Math.sin(mMCorrected);
-        final double a4 = Angle.ofDeg(0.214) * Math.sin(2*mMCorrected);
-        final double lF1 = l + eV + eC -aE + a4;
-        final double v = Angle.ofDeg(0.6583) * Math.sin(2*(lF1-lambdaS));
-        final double orbitalLon = lF1 + v;
-        final double n = n0 - Angle.ofDeg(0.0529539) * daysSinceJ2010;
-        final double nFinal = n - Angle.ofDeg(0.16)*Math.sin(mS);
+        final double eC = CONSTANT_EC * Math.sin(mMCorrected);
+        final double a4 = CONSTANT_A4 * Math.sin(2*mMCorrected);
+        final double lCorrected = l + eV + eC - aE + a4;
+        final double v = CONSTANT_V * Math.sin(2*(lCorrected-lambdaSun));
+        final double orbitalLon = lCorrected + v;
+        final double n = n0 - CONSTANT_N * daysSinceJ2010;
+        final double nFinal = n - CONSTANT_NFINAL*Math.sin(mSun);
         final double lambda = Angle.normalizePositive(Math.atan2(Math.sin(orbitalLon-nFinal)*Math.cos(i), Math.cos(orbitalLon-nFinal)) + nFinal);
         final double beta = Math.asin(Math.sin(orbitalLon-nFinal) * Math.sin(i));
-        final EclipticCoordinates ec = EclipticCoordinates.of(lambda, beta);
-        final double phase = (1-Math.cos(orbitalLon-lambdaS))/2;
-        final double p = (1-e*e) / (1+e*Math.cos(mMCorrected+eC));
+        final EclipticCoordinates ecl = EclipticCoordinates.of(lambda, beta);
+        final double phase = (1 - Math.cos(orbitalLon-lambdaSun)) / 2;
+        final double p = (1 - e*e) / (1 + e*Math.cos(mMCorrected+eC));
         final double angularSize = theta0/p;
-        return new Moon(eclipticToEquatorialConversion.apply(ec), (float) angularSize, 0f, (float) phase);
+        return new Moon(eclipticToEquatorialConversion.apply(ecl), (float) angularSize, 0f, (float) phase);
     }
 
 
