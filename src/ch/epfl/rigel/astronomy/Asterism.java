@@ -2,6 +2,7 @@ package ch.epfl.rigel.astronomy;
 
 import ch.epfl.rigel.Preconditions;
 
+import java.util.Collections;
 import java.util.List;
 
 /**

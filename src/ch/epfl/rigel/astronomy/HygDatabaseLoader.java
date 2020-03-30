@@ -23,7 +23,7 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader{
     private final static int DECRAD = 24;
     private final static int BAYER = 27;
     private final static int CON = 29;
-    private final static Charset c = StandardCharsets.US_ASCII;
+    private final static Charset US_ASCII = StandardCharsets.US_ASCII;
 
 
     /**
@@ -38,7 +38,7 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader{
      */
     @Override
     public void load(InputStream inputStream, StarCatalogue.Builder builder) throws IOException {
-        try(BufferedReader r = new BufferedReader(new InputStreamReader(inputStream, c))){
+        try(BufferedReader r = new BufferedReader(new InputStreamReader(inputStream, US_ASCII))){
             r.readLine();
             while(r.ready()){
                 final String[] columns = r.readLine().split(",");

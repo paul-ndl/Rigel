@@ -22,7 +22,7 @@ import java.util.Map;
 public enum AsterismLoader implements StarCatalogue.Loader {
     INSTANCE;
 
-    private final static Charset c = StandardCharsets.US_ASCII;
+    private final static Charset US_ASCII = StandardCharsets.US_ASCII;
 
     /**
      * Charge les astérismes du flot d'entrée et les ajoute au bâtisseur
@@ -40,7 +40,7 @@ public enum AsterismLoader implements StarCatalogue.Loader {
         for (Star s : builder.stars()){
             map.put(s.hipparcosId(), s);
         }
-        try(BufferedReader r = new BufferedReader(new InputStreamReader(inputStream, c))){
+        try(BufferedReader r = new BufferedReader(new InputStreamReader(inputStream, US_ASCII))){
             final List<Star> stars = new ArrayList();
             while(r.ready()){
                 final String[] hip = r.readLine().split(",");
