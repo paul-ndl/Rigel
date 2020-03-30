@@ -12,8 +12,9 @@ public class BlackBodyColor {
 
     private final static Charset US_ASCII = StandardCharsets.US_ASCII;
     private final static String BBR_COLOR = ("/bbr_Color.txt");
+    private final static Map<Integer, Color> COLOR_MAP = loader();
 
-    private static Map<Integer, Color> loader() throws IOException{
+    private static Map<Integer, Color> loader(){
         final Map<Integer, Color> tempColor = new HashMap();
         try(BufferedReader r = new BufferedReader(new InputStreamReader(BlackBodyColor.class.getResourceAsStream(BBR_COLOR), US_ASCII))){
             while(r.ready()) {
@@ -25,9 +26,12 @@ public class BlackBodyColor {
             }
             return tempColor;
         }
+        catch(IOException e){
+            throw new UncheckedIOException(e);
+        }
     }
 
-    public static Color colorForTemperature(double temp) throws IOException{
-        return loader().get((int) Math.round(temp/100)*100);
+    public static Color colorForTemperature(double temp) {
+        return COLOR_MAP.get((int) Math.round(temp/100)*100);
     }
 }
