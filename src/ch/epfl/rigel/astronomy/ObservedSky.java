@@ -48,7 +48,7 @@ public class ObservedSky {
     }
 
     public double[] planetPositions(){
-        double[] cartesianCoordinates = new double[14];
+        final double[] cartesianCoordinates = new double[14];
         for (int i = 0; i < planets().size(); i++) {
             cartesianCoordinates[2*i] = stereographicProjection.apply(equatorialToHorizontalConversion.apply(planets().get(i).equatorialPos())).x();
             cartesianCoordinates[2*i+1] = stereographicProjection.apply(equatorialToHorizontalConversion.apply(planets().get(i).equatorialPos())).y();
@@ -61,7 +61,7 @@ public class ObservedSky {
     }
 
     public double[] starPositions(){
-        double[] cartesianCoordinates = new double[2*stars().size()];
+        final double[] cartesianCoordinates = new double[2*stars().size()];
         for (int i = 0; i < stars().size(); i++) {
             cartesianCoordinates[2*i] = stereographicProjection.apply(equatorialToHorizontalConversion.apply(stars().get(i).equatorialPos())).x();
             cartesianCoordinates[2*i+1] = stereographicProjection.apply(equatorialToHorizontalConversion.apply(stars().get(i).equatorialPos())).y();
