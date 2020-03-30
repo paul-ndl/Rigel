@@ -105,7 +105,7 @@ public class ObservedSkyTest {
                         -1));
             }
         }
-        System.out.println((timeAvg / (total * 1000000d))+" in milliseconds"); //PERFORMANCE BENCH
+        //System.out.println((timeAvg / (total * 1000000d))+" in milliseconds"); //PERFORMANCE BENCH
     }
 
     @Test
