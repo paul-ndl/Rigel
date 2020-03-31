@@ -27,6 +27,9 @@ public class AsterismLoaderTest {
         Queue<Asterism> a = new ArrayDeque<>();
         Star beltegeuse = null;
         StarCatalogue catalogue;
+        long time0 = 0;
+        long timeAvg = 0;
+        long total = 0;
         Asterism falseAst = new Asterism(Arrays.asList(new Star(0, "Rigel", EquatorialCoordinates.of(0,0), 0f, 0f)));
         try (InputStream hygStream = getClass()
                 .getResourceAsStream(HYG_CATALOGUE_NAME)) {
@@ -35,9 +38,11 @@ public class AsterismLoaderTest {
         }
         try (InputStream astStream = getClass()
                 .getResourceAsStream(AST_CATALOGUE_NAME)) {
+            time0 = System.nanoTime();
              catalogue = builder
                     .loadFrom(astStream, AsterismLoader.INSTANCE)
                     .build();
+            timeAvg += System.nanoTime() - time0;
             for (Asterism ast : catalogue.asterisms()) {
                 for (Star s : ast.stars()) {
                     if (s.name().equalsIgnoreCase("Rigel")) {
@@ -46,7 +51,6 @@ public class AsterismLoaderTest {
                 }
             }
             for (Asterism ast : a) {
-                System.out.println(catalogue.asterismIndices(ast));
                 for (Star s : ast.stars()) {
                     if (s.name().equalsIgnoreCase("Betelgeuse")) {
                         beltegeuse = s;
@@ -58,6 +62,7 @@ public class AsterismLoaderTest {
                 catalogue.asterismIndices(falseAst);
             });
         }
+        //System.out.println((timeAvg / (1000000d))+" in milliseconds"); //PERFORMANCE BENCH
     }
 
 

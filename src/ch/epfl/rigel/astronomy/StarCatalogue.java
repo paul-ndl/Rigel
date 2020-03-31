@@ -27,12 +27,10 @@ public final class StarCatalogue {
      *          si un astérisme contient une étoile qui ne fait pas partie de la liste d'étoiles
      */
     public StarCatalogue(List<Star> stars, List<Asterism> asterisms){
-        for(Asterism a : asterisms){
-            Preconditions.checkArgument(stars.containsAll(a.stars()));
-        }
         this.stars = List.copyOf(stars);
         List<Integer> list = new ArrayList<>();
         for(Asterism a : asterisms){
+            Preconditions.checkArgument(stars.containsAll(a.stars()));
             for(Star s : a.stars()){
                 list.add(stars.indexOf(s));
             }
