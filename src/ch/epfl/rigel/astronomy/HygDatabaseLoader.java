@@ -25,7 +25,6 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader{
     private final static int CON = 29;
     private final static Charset US_ASCII = StandardCharsets.US_ASCII;
 
-
     /**
      * Charge les étoiles du flot d'entrée et les ajoute au bâtisseur
      * @see ch.epfl.rigel.astronomy.StarCatalogue.Loader#load(InputStream, StarCatalogue.Builder)
