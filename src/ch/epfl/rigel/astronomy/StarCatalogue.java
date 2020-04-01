@@ -26,18 +26,6 @@ public final class StarCatalogue {
      * @throws IllegalArgumentException
      *          si un astérisme contient une étoile qui ne fait pas partie de la liste d'étoiles
      */
-    /*public StarCatalogue(List<Star> stars, List<Asterism> asterisms){
-        this.stars = List.copyOf(stars);
-        List<Integer> list = new ArrayList<>();
-        for(Asterism a : asterisms){
-            Preconditions.checkArgument(stars.containsAll());
-            for(Star s : a.stars()){
-                list.add(stars.indexOf(s));
-            }
-            map.put(a, List.copyOf(list));
-            list.clear();
-        }
-    }*/
     public StarCatalogue(List<Star> stars, List<Asterism> asterisms){
         this.stars = List.copyOf(stars);
         final Map<Star, Integer> starsIndex= new HashMap();
