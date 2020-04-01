@@ -1,26 +1,17 @@
 package ch.epfl.rigel.astronomy;
 
-import ch.epfl.rigel.astronomy.Asterism;
-import ch.epfl.rigel.astronomy.AsterismLoader;
-import ch.epfl.rigel.astronomy.HygDatabaseLoader;
-import ch.epfl.rigel.astronomy.Star;
-import ch.epfl.rigel.astronomy.StarCatalogue;
 import ch.epfl.rigel.coordinates.EquatorialCoordinates;
-import ch.epfl.rigel.math.Angle;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class MyStarCatalogueTest {
+public class StarCatalogueTest {
 
     //Essentially tested in corresponding loaders
 
@@ -33,11 +24,11 @@ public class MyStarCatalogueTest {
 
     @BeforeAll
     static void init() throws IOException{
-        try (InputStream hygStream = MyStarCatalogueTest.class.getResourceAsStream(HYG_CATALOGUE_NAME)) {
+        try (InputStream hygStream = StarCatalogueTest.class.getResourceAsStream(HYG_CATALOGUE_NAME)) {
             builder = new StarCatalogue.Builder()
                     .loadFrom(hygStream, HygDatabaseLoader.INSTANCE);
         }
-        try (InputStream astStream = MyStarCatalogueTest.class.getResourceAsStream(AST_CATALOGUE_NAME)) {
+        try (InputStream astStream = StarCatalogueTest.class.getResourceAsStream(AST_CATALOGUE_NAME)) {
             builder.loadFrom(astStream, AsterismLoader.INSTANCE);
 
             //long time0 = System.nanoTime();
@@ -54,6 +45,9 @@ public class MyStarCatalogueTest {
             for(Star testStar : testAst.stars()) {
                 Star currentStar = catalogue.stars().get(catalogue.asterismIndices(testAst).get(testAst.stars().indexOf(testStar)));
                 assertEquals(currentStar,testStar);
+                assertThrows(UnsupportedOperationException.class, () ->{
+                    catalogue.asterismIndices(testAst).add(0);
+                });
             }
         }
     }

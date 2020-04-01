@@ -68,7 +68,7 @@ public final class StarCatalogue {
      * @return la liste des indices des étoiles de l'astérisme donné dans le catalogue
      */
     public List<Integer> asterismIndices(Asterism asterism){
-        Preconditions.checkArgument(asterisms().contains(asterism));
+        Preconditions.checkArgument(asterisms.contains(asterism));
         return map.get(asterism);
     }
 

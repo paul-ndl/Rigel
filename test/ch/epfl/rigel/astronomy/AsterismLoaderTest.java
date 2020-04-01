@@ -7,12 +7,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Queue;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AsterismLoaderTest {
 
@@ -57,12 +54,18 @@ public class AsterismLoaderTest {
                     }
                 }
             }
+            assertThrows(UnsupportedOperationException.class, () ->{
+                catalogue.stars().add(new Star(0, "Fake", EquatorialCoordinates.of(0,0), 0f, 0f));;
+            });
+            assertThrows(UnsupportedOperationException.class, () ->{
+                catalogue.asterisms().remove(falseAst);
+            });
             assertNotNull(beltegeuse);
             assertThrows(IllegalArgumentException.class, () -> {
                 catalogue.asterismIndices(falseAst);
             });
         }
-        //System.out.println((timeAvg / (1000000d))+" in milliseconds"); //PERFORMANCE BENCH
+        System.out.println((timeAvg / (1000000d))+" in milliseconds"); //PERFORMANCE BENCH
     }
 
 

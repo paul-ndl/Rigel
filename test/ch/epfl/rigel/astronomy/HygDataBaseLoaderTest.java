@@ -23,11 +23,16 @@ public class HygDataBaseLoaderTest {
 
     @Test
     void hygDatabaseContainsRigel() throws IOException {
+        long time0 = 0;
+        long timeAvg = 0;
+        long total = 0;
         try (InputStream hygStream = getClass()
                 .getResourceAsStream(HYG_CATALOGUE_NAME)) {
+            time0 = System.nanoTime();
             StarCatalogue catalogue = new StarCatalogue.Builder()
                     .loadFrom(hygStream, HygDatabaseLoader.INSTANCE)
                     .build();
+            timeAvg += System.nanoTime() - time0;
             Star rigel = null;
             for (Star s : catalogue.stars()) {
                 if (s.name().equalsIgnoreCase("rigel"))
@@ -35,6 +40,7 @@ public class HygDataBaseLoaderTest {
             }
             assertNotNull(rigel);
         }
+        System.out.println((timeAvg / (1000000d))+" in milliseconds"); //PERFORMANCE BENCH
     }
 
     @Test

@@ -11,7 +11,7 @@ import static ch.epfl.rigel.astronomy.Epoch.J2010;
 import static ch.epfl.rigel.astronomy.MoonModel.MOON;
 import static ch.epfl.rigel.astronomy.SunModel.SUN;
 
-public class ObservedSky {
+public final class ObservedSky {
 
     private final StarCatalogue catalogue;
 
