@@ -1,5 +1,7 @@
 package ch.epfl.rigel.gui;
 
+import ch.epfl.rigel.Preconditions;
+import ch.epfl.rigel.math.ClosedInterval;
 import javafx.scene.paint.Color;
 
 import java.io.*;
@@ -32,6 +34,7 @@ public class BlackBodyColor {
     }
 
     public static Color colorForTemperature(double temp) {
+        Preconditions.checkInInterval(ClosedInterval.of(1000, 40000), temp);
         return COLOR_MAP.get((int) Math.round(temp/100)*100);
     }
 }

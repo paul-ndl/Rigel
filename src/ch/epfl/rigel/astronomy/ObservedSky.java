@@ -2,9 +2,10 @@ package ch.epfl.rigel.astronomy;
 
 import ch.epfl.rigel.coordinates.*;
 
-import java.lang.reflect.Array;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import static ch.epfl.rigel.astronomy.Epoch.J2010;
 import static ch.epfl.rigel.astronomy.MoonModel.MOON;
@@ -18,7 +19,6 @@ public class ObservedSky {
     private final Moon moon;
     private final List<Planet> planets = new ArrayList<>();
     private final List<Star> stars;
-
     private final CartesianCoordinates sunPosition;
     private final CartesianCoordinates moonPosition;
     private final double[] planetPositions = new double[14];
@@ -98,18 +98,15 @@ public class ObservedSky {
         return catalogue.asterismIndices(asterism);
     }
 
-    public Optional<CelestialObject> objectClosestTo(CartesianCoordinates point, double max){
-        final Map<Double, CelestialObject> distMap = new HashMap<>();
-        for(CelestialObject c : coordMap.keySet()){
-            distMap.put(calculSquaredDistance(point, coordMap.get(c)), c);
-        }
-        final double distMin = Collections.min(distMap.keySet());
-        return (Math.sqrt(distMin)<=max) ? Optional.of(distMap.get(distMin)) : Optional.empty();
+    public Optional<CelestialObject> objectClosestTo(CartesianCoordinates point, double max) {
+        final CelestialObject closest = Collections.min(coordMap.keySet(), (a, b) -> compare(point, coordMap.get(a), coordMap.get(b)));
+        return (compare(point, coordMap.get(closest), point)<=max) ? Optional.of(closest) : Optional.empty();
     }
 
-    private double calculSquaredDistance(CartesianCoordinates point, CartesianCoordinates position){
-        final double deltaX = point.x()-position.x();
-        final double deltaY = point.y()-position.y();
-        return deltaX*deltaX + deltaY*deltaY;
+    private static Integer compare(CartesianCoordinates point, CartesianCoordinates a, CartesianCoordinates b){
+        return Double.compare(
+                (point.x()-a.x())*(point.x()-a.x()) + (point.y()-a.y())*(point.y()-a.y()),
+                (point.x()-b.x())*(point.x()-b.x()) + (point.y()-b.y())*(point.y()-b.y()));
     }
+
 }
