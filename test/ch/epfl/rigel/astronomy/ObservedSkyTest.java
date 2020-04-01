@@ -11,11 +11,7 @@ import ch.epfl.rigel.astronomy.PlanetModel;
 import ch.epfl.rigel.astronomy.Star;
 import ch.epfl.rigel.astronomy.StarCatalogue;
 import ch.epfl.rigel.astronomy.SunModel;
-import ch.epfl.rigel.coordinates.EclipticToEquatorialConversion;
-import ch.epfl.rigel.coordinates.EquatorialToHorizontalConversion;
-import ch.epfl.rigel.coordinates.GeographicCoordinates;
-import ch.epfl.rigel.coordinates.HorizontalCoordinates;
-import ch.epfl.rigel.coordinates.StereographicProjection;
+import ch.epfl.rigel.coordinates.*;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -103,6 +99,13 @@ public class ObservedSkyTest {
 
                 assertEquals(Optional.empty(), sky.objectClosestTo(stereo.apply(convEquToHor.apply(star.equatorialPos())),
                         -1));
+
+                assertEquals("Tau Phe",
+                        sky.objectClosestTo(stereo.apply(new EquatorialToHorizontalConversion(observationTime,geoCoords)
+                                .apply(EquatorialCoordinates.of(0.004696959812148989,-0.8618930353430763))),0.1).get().name());
+                assertEquals(Optional.empty(),
+                        sky.objectClosestTo(stereo.apply(new EquatorialToHorizontalConversion(observationTime,geoCoords)
+                                .apply(EquatorialCoordinates.of(0.004696959812148989,-0.8618930353430763))),0.001));
             }
         }
         System.out.println((timeAvg / (total * 1000000d))+" in milliseconds"); //PERFORMANCE BENCH

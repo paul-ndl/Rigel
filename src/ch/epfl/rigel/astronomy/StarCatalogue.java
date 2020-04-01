@@ -26,13 +26,29 @@ public final class StarCatalogue {
      * @throws IllegalArgumentException
      *          si un astérisme contient une étoile qui ne fait pas partie de la liste d'étoiles
      */
-    public StarCatalogue(List<Star> stars, List<Asterism> asterisms){
+    /*public StarCatalogue(List<Star> stars, List<Asterism> asterisms){
         this.stars = List.copyOf(stars);
         List<Integer> list = new ArrayList<>();
         for(Asterism a : asterisms){
-            Preconditions.checkArgument(stars.containsAll(a.stars()));
+            Preconditions.checkArgument(stars.containsAll());
             for(Star s : a.stars()){
                 list.add(stars.indexOf(s));
+            }
+            map.put(a, List.copyOf(list));
+            list.clear();
+        }
+    }*/
+    public StarCatalogue(List<Star> stars, List<Asterism> asterisms){
+        this.stars = List.copyOf(stars);
+        final Map<Star, Integer> starsIndex= new HashMap();
+        for(int i=0; i<stars.size(); ++i){
+            starsIndex.put(stars.get(i), i);
+        }
+        List<Integer> list = new ArrayList<>();
+        for(Asterism a : asterisms){
+            Preconditions.checkArgument(starsIndex.keySet().containsAll(a.stars()));
+            for(Star s : a.stars()){
+                list.add(starsIndex.get(s));
             }
             map.put(a, List.copyOf(list));
             list.clear();

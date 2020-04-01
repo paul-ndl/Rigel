@@ -99,14 +99,12 @@ public class ObservedSky {
     }
 
     public Optional<CelestialObject> objectClosestTo(CartesianCoordinates point, double max) {
-        final CelestialObject closest = Collections.min(coordMap.keySet(), (a, b) -> compare(point, coordMap.get(a), coordMap.get(b)));
-        return (compare(point, coordMap.get(closest), point)<=max) ? Optional.of(closest) : Optional.empty();
+        final CelestialObject closest = Collections.min(coordMap.keySet(), Comparator.comparingDouble(a -> squaredDistance(point, coordMap.get(a))));
+        return (Math.sqrt(squaredDistance(point, coordMap.get(closest)))<=max) ? Optional.of(closest) : Optional.empty();
     }
 
-    private static Integer compare(CartesianCoordinates point, CartesianCoordinates a, CartesianCoordinates b){
-        return Double.compare(
-                (point.x()-a.x())*(point.x()-a.x()) + (point.y()-a.y())*(point.y()-a.y()),
-                (point.x()-b.x())*(point.x()-b.x()) + (point.y()-b.y())*(point.y()-b.y()));
+    private Double squaredDistance(CartesianCoordinates point, CartesianCoordinates c){
+        return (point.x()-c.x())*(point.x()-c.x()) + (point.y()-c.y())*(point.y()-c.y());
     }
 
 }
