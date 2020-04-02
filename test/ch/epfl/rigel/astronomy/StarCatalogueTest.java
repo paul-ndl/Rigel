@@ -46,7 +46,7 @@ public class StarCatalogueTest {
                 Star currentStar = catalogue.stars().get(catalogue.asterismIndices(testAst).get(testAst.stars().indexOf(testStar)));
                 assertEquals(currentStar,testStar);
                 assertThrows(UnsupportedOperationException.class, () ->{
-                    catalogue.asterismIndices(testAst).add(0);
+                    catalogue.asterismIndices(testAst).clear();
                 });
             }
         }

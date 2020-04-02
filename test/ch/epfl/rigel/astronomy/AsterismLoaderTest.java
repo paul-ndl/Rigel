@@ -55,10 +55,10 @@ public class AsterismLoaderTest {
                 }
             }
             assertThrows(UnsupportedOperationException.class, () ->{
-                catalogue.stars().add(new Star(0, "Fake", EquatorialCoordinates.of(0,0), 0f, 0f));;
+                catalogue.stars().clear();
             });
             assertThrows(UnsupportedOperationException.class, () ->{
-                catalogue.asterisms().remove(falseAst);
+                catalogue.asterisms().clear();
             });
             assertNotNull(beltegeuse);
             assertThrows(IllegalArgumentException.class, () -> {
