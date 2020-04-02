@@ -2,73 +2,129 @@ package ch.epfl.rigel.astronomy;
 
 import ch.epfl.rigel.coordinates.EclipticCoordinates;
 import ch.epfl.rigel.coordinates.EquatorialCoordinates;
+import ch.epfl.test.TestRandomizer;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class SunTest {
+class SunTest {
+    @Test
+    void sunConstructorFailsWhenOnePositionIsNull() {
+        assertThrows(NullPointerException.class, () -> {
+            var equ = EquatorialCoordinates.of(0, 0);
+            new Sun(null, equ, 0, 0);
+        });
+        assertThrows(NullPointerException.class, () -> {
+            var ecl = EclipticCoordinates.of(0, 0);
+            new Sun(ecl, null, 0, 0);
+        });
+    }
 
     @Test
-    void fails(){
-        assertThrows(NullPointerException.class, () -> {
-            new Sun(null, EquatorialCoordinates.of(0,0), 1f, -17f);
-        });
-        assertThrows(NullPointerException.class, () -> {
-            new Sun(EclipticCoordinates.of(0,0), null, 1f, -17f);
-        });
+    void sunConstructorFailsWhenAngularSizeIsNegative() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new Sun(EclipticCoordinates.of(0,0), EquatorialCoordinates.of(0,0), 0f, -17f);
+            var ecl = EclipticCoordinates.of(0, 0);
+            var equ = EquatorialCoordinates.of(0, 0);
+            new Sun(ecl, equ, -0.1f, 0);
         });
     }
 
     @Test
-    void nameTesT(){
-        Sun p = new Sun(EclipticCoordinates.of(0,0), EquatorialCoordinates.of(0,0),1,-22f);
-        assertEquals("Soleil", p.name());
+    void sunNameIsCorrect() {
+        var ecl = EclipticCoordinates.of(0, 0);
+        var equ = EquatorialCoordinates.of(0, 0);
+        var s = new Sun(ecl, equ, 0, 0);
+        assertEquals("Soleil", s.name());
     }
 
     @Test
-    void angularSizeTest(){
-        Sun p = new Sun(EclipticCoordinates.of(0,0), EquatorialCoordinates.of(0,0),1,-22f);
-        assertEquals(1, p.angularSize());
+    void sunAngularSizeIsCorrect() {
+        var rng = TestRandomizer.newRandom();
+        for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
+            var ecl = EclipticCoordinates.of(0, 0);
+            var equ = EquatorialCoordinates.of(0, 0);
+            var angularSize = (float) rng.nextDouble(0, Math.PI);
+            var s = new Sun(ecl, equ, angularSize, 0);
+            assertEquals(angularSize, s.angularSize());
+        }
     }
 
     @Test
-    void magnitudeTest(){
-        Sun p = new Sun(EclipticCoordinates.of(0,0), EquatorialCoordinates.of(0,0),1,-22f);
-        assertEquals(-26.7, p.magnitude(), 1e-6);
+    void sunMagnitudeIsCorrect() {
+        var ecl = EclipticCoordinates.of(0, 0);
+        var equ = EquatorialCoordinates.of(0, 0);
+        var s = new Sun(ecl, equ, 0, 0);
+        assertEquals(-26.7f, s.magnitude(), 1e-8);
     }
 
     @Test
-    void equatorialPosTest(){
-        Sun p = new Sun(EclipticCoordinates.of(0,0), EquatorialCoordinates.of(0,0),1,-22f);
-        assertEquals(EquatorialCoordinates.of(0,0).toString(), p.equatorialPos().toString());
+    void sunEquatorialPosIsCorrect() {
+        var rng = TestRandomizer.newRandom();
+        for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
+            var ra = rng.nextDouble(0, 2d * Math.PI);
+            var dec = rng.nextDouble(-Math.PI / 2d, Math.PI / 2d);
+            var equ = EquatorialCoordinates.of(ra, dec);
+            var ecl = EclipticCoordinates.of(0, 0);
+            var s = new Sun(ecl, equ, 0f, 0);
+            assertEquals(ra, s.equatorialPos().ra());
+            assertEquals(dec, s.equatorialPos().dec());
+        }
     }
 
     @Test
-    void eclipticPosTest(){
-        Sun p = new Sun(EclipticCoordinates.of(0,0), EquatorialCoordinates.of(0,0),1,-22f);
-        assertEquals(EclipticCoordinates.of(0,0).toString(), p.eclipticPos().toString());
+    void sunInfoIsCorrect() {
+        var ecl = EclipticCoordinates.of(0, 0);
+        var equ = EquatorialCoordinates.of(0, 0);
+        var s = new Sun(ecl, equ, 0, 0);
+        assertEquals("Soleil", s.info());
     }
 
     @Test
-    void infoTest(){
-        Sun p = new Sun(EclipticCoordinates.of(0,0), EquatorialCoordinates.of(0,0),1,-22f);
-        assertEquals("Soleil", p.info());
+    void sunEclipticPosIsCorrect() {
+        var rng = TestRandomizer.newRandom();
+        for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
+            var eclLon = rng.nextDouble(0, 2d * Math.PI);
+            var eclLat = rng.nextDouble(-Math.PI / 2d, Math.PI / 2d);
+            var ecl = EclipticCoordinates.of(eclLon, eclLat);
+            var equ = EquatorialCoordinates.of(0, 0);
+            var s = new Sun(ecl, equ, 0f, 0);
+            assertEquals(eclLon, s.eclipticPos().lon());
+            assertEquals(eclLat, s.eclipticPos().lat());
+        }
     }
-
 
     @Test
-    void meanAnomalyTest(){
-        Sun p = new Sun(EclipticCoordinates.of(0,0), EquatorialCoordinates.of(0,0),1,-22f);
-        assertEquals(-22, p.meanAnomaly());
+    void sunMeanAnomalyIsCorrect() {
+        var rng = TestRandomizer.newRandom();
+        for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
+            var meanAnomaly = (float) rng.nextDouble(0, 2d * Math.PI);
+            var ecl = EclipticCoordinates.of(0, 0);
+            var equ = EquatorialCoordinates.of(0, 0);
+            var s = new Sun(ecl, equ, 0f, meanAnomaly);
+            assertEquals(meanAnomaly, s.meanAnomaly());
+        }
     }
 
     @Test
-    void toStringTest(){
-        Sun p = new Sun(EclipticCoordinates.of(0,0), EquatorialCoordinates.of(0,0),1,-22f);
-        assertEquals("Soleil", p.toString());
+    void sunHashCodeIsInheritedFromObject() {
+        for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
+            var ecl = EclipticCoordinates.of(0, 0);
+            var equ = EquatorialCoordinates.of(0, 0);
+            var s = new Sun(ecl, equ, 0, 0);
+            assertEquals(System.identityHashCode(s), s.hashCode());
+        }
     }
 
+    @Test
+    void sunEqualsIsBasedOnIdentity() {
+        var prevSun = (Sun)null;
+        for (int i = 0; i < TestRandomizer.RANDOM_ITERATIONS; i++) {
+            var ecl = EclipticCoordinates.of(0, 0);
+            var equ = EquatorialCoordinates.of(0, 0);
+            var s = new Sun(ecl, equ, 0, 0);
+            assertEquals(s, s);
+            assertNotEquals(s, prevSun);
+            prevSun = s;
+        }
+    }
 }

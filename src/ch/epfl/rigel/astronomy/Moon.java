@@ -6,18 +6,42 @@ import ch.epfl.rigel.math.ClosedInterval;
 
 import java.util.Locale;
 
+/**
+ * La Lune
+ *
+ * @author Paul Nadal (300843)
+ * @author Alexandre Brun (302477)
+ */
 public final class Moon extends CelestialObject {
 
-    private float phase;
+    private final float phase;
 
+    /**
+     * Construit la Lune
+     * @param equatorialPos
+     *          la position équatoriale
+     * @param angularSize
+     *          la taille angulaire
+     * @param magnitude
+     *          la magnitude
+     * @param phase
+     *          la phase
+     * @throws IllegalArgumentException
+     *          si la phase n'est pas comprise entre 0 et 1
+     * @see CelestialObject#CelestialObject(String, EquatorialCoordinates, float, float)
+     */
     public Moon(EquatorialCoordinates equatorialPos, float angularSize, float magnitude, float phase){
         super("Lune", equatorialPos, angularSize, magnitude);
-        this.phase = phase;
         Preconditions.checkInInterval(ClosedInterval.of(0,1), phase);
+        this.phase = phase;
     }
 
+    /**
+     * Retourne un texte informatif sur la Lune
+     * @return son nom et sa phase en pourcentage
+     */
     @Override
     public String info(){
-        return String.format(Locale.ROOT,"%s (%.1f%s)", super.name(), phase*100, "%");
+        return String.format(Locale.ROOT,"%s (%.1f%%)", super.name(), phase*100);
     }
 }

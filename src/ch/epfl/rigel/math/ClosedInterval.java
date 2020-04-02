@@ -4,10 +4,20 @@ import ch.epfl.rigel.Preconditions;
 
 import java.util.Locale;
 
+/**
+ * Un intervalle fermé
+ *
+ * @author Paul Nadal (300843)
+ * @author Alexandre Brun (302477)
+ */
 public final class ClosedInterval extends Interval {
 
     /**
-     * constructs an interval with the given bounds
+     * Construit un intervalle fermé
+     * @param low
+     *          la borne inférieure
+     * @param high
+     *          la borne supérieure
      */
     private ClosedInterval (double low, double high){
         super(low, high);
@@ -15,8 +25,14 @@ public final class ClosedInterval extends Interval {
 
 
     /**
-     * constructs an interval with the given bounds if the bounds are correct
-     * throws exception otherwise
+     * Construit un intervalle fermé allant de la borne inférieure à la borne supérieure
+     * @param low
+     *          la borne inférieure
+     * @param high
+     *          la borne supérieure
+     * @throws IllegalArgumentException
+     *          si la borne inférieure n'est pas strictement inférieure à la borne supérieure
+     * @return un intervalle fermé allant de la borne inférieure à la borne supérieure
      */
     public static ClosedInterval of(double low, double high){
         Preconditions.checkArgument(high>low);
@@ -24,17 +40,23 @@ public final class ClosedInterval extends Interval {
     }
 
     /**
-     * constructs a symmetric interval with the given size if positive
-     * throws exception otherwise
+     * Construit un intervalle fermé centré en 0 et de taille donnée
+     * @param size
+     *          la taille
+     * @throws IllegalArgumentException
+     *          si la taille n'est pas strictement positive
+     * @return un intervalle fermé centré en 0 et de taille donnée
      */
     public static ClosedInterval symmetric(double size){
-        double symmetricBound = size/2;
         Preconditions.checkArgument(size>0);
-        return new ClosedInterval(-symmetricBound,symmetricBound);
+        return new ClosedInterval(-size/2,size/2);
     }
 
     /**
-     * checks if the interval contains v
+     * Vérifie que la valeur appartient à l'intervalle
+     * @param v
+     *          la valeur
+     * @return vrai si la valeur appartient à l'intervalle
      */
     @Override
     public boolean contains(double v) {
@@ -42,20 +64,18 @@ public final class ClosedInterval extends Interval {
     }
 
     /**
-     * clips v in the interval
+     * Ecrête la valeur à l'intervalle
+     * @param v
+     *          la valeur
+     * @return la valeur écrêtée
      */
     public double clip (double v){
-        if (v<super.low()){
-            return super.low();
-        } else if (v>super.high()){
-            return super.high();
-        } else {
-            return v;
-        }
+        return Math.max(Math.min(v,super.high()), super.low());
     }
 
     /**
-     * returns a string form of the interval
+     * Retourne une représentation textuelle de l'intervalle (bornes)
+     * @return une représentation textuelle de l'intervalle (bornes)
      */
     @Override
     public String toString(){

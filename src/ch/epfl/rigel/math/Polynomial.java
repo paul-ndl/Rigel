@@ -2,16 +2,27 @@ package ch.epfl.rigel.math;
 
 import ch.epfl.rigel.Preconditions;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 import static java.lang.System.arraycopy;
 
+/**
+ * Un Polynôme
+ *
+ * @author Paul Nadal (300843)
+ * @author Alexandre Brun (302477)
+ */
 public final class Polynomial {
 
-    private double[] coefficients;
+    private final double[] coefficients;
 
     /**
-     * constructs a polynomial with the given coefficients
+     * Construit un polynôme
+     * @param coefficientN
+     *          le coefficient de plus grand degré
+     * @param coefficients
+     *          la liste des autres coefficients
      */
     private Polynomial (double coefficientN, double... coefficients){
         this.coefficients = new double[coefficients.length+1];
@@ -20,8 +31,13 @@ public final class Polynomial {
     }
 
     /**
-     * contructs a polynomial if the biggest coefficient is not null
-     * throws exception otherwise
+     * Construit un polynôme
+     * @param coefficientN
+     *          le coefficient de plus grand degré
+     * @param coefficients
+     *          la liste des autres coefficients
+     * @throws IllegalArgumentException
+     *          si le coefficient de plus grand degré est nul
      */
     public static Polynomial of(double coefficientN, double... coefficients){
         Preconditions.checkArgument(coefficientN != 0);
@@ -29,22 +45,26 @@ public final class Polynomial {
     }
 
     /**
-     * calculates the polynomial with the given value
+     * Retourne la valeur du polynôme pour l'argument donné (forme de Horner)
+     * @param x
+     *          l'argument
+     * @return la valeur du polynôme pour l'argument donné
      */
     public double at(double x){
         double result = 0;
-        for(int i=0; i<coefficients.length; ++i){
-            result = result * x + coefficients[i];
+        for(double coeff : coefficients){
+            result = result * x + coeff;
         }
         return result;
     }
 
     /**
-     * returns a string representation of the polynomial
+     * Retourne une représentation textuelle du polynôme
+     * @return une représentation textuelle du polynôme
      */
     public String toString(){
         int power = coefficients.length-1;
-        StringBuilder polynomial = new StringBuilder();
+        final StringBuilder polynomial = new StringBuilder();
         for (int i=0; i<coefficients.length; ++i){
             if (coefficients[i]!=0) {
                 if (coefficients[i] > 0 && i!=0) {
@@ -69,7 +89,10 @@ public final class Polynomial {
     }
 
     /**
-     * prevents to use this method
+     * Empêche d'utiliser cette méthode
+     * @param o
+     *          un objet
+     * @throws UnsupportedOperationException
      */
     @Override
     public final boolean equals(Object o){
@@ -77,7 +100,8 @@ public final class Polynomial {
     }
 
     /**
-     * prevents to use this method
+     * Empêche d'utiliser cette méthode
+     * @throws UnsupportedOperationException
      */
     @Override
     public final int hashCode(){

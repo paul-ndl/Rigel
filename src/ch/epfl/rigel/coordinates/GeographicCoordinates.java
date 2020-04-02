@@ -7,18 +7,33 @@ import ch.epfl.rigel.math.RightOpenInterval;
 
 import java.util.Locale;
 
+/**
+ * Des coordonnées géographiques
+ *
+ * @author Paul Nadal (300843)
+ * @author Alexandre Brun (302477)
+ */
 public final class GeographicCoordinates extends SphericalCoordinates{
 
     /**
-     * constructs geographic coordinates with the given longitude and latitude
+     * Construit des coordonnées géographiques
+     * @param longitude
+     *          la longitude
+     * @param latitude
+     *          la latitude
      */
     private GeographicCoordinates(double longitude, double latitude){
         super(longitude, latitude);
     }
 
     /**
-     * constructs geographic coordinates with the given longitude and latitude (in degrees) if they are correct
-     * throws exception otherwise
+     * Construit des coordonnées géographiques avec des arguments en degrés
+     * @param lonDeg
+     *          la longitude en degrés
+     * @param latDeg
+     *          la latitude en degrés
+     * @throws IllegalArgumentException
+     *          si longitude ou la latitude n'est pas valide
      */
     public static GeographicCoordinates ofDeg(double lonDeg, double latDeg){
         Preconditions.checkArgument(isValidLonDeg(lonDeg) && isValidLatDeg(latDeg));
@@ -26,24 +41,27 @@ public final class GeographicCoordinates extends SphericalCoordinates{
     }
 
     /**
-     * checks if the longitude is in the good interval
+     * Vérifie que la longitude est valide (appartient à l'intervalle [-180°, 180°[)
+     * @param lonDeg
+     * @return vrai si la longitude est valide
      */
     public static boolean isValidLonDeg(double lonDeg){
-        RightOpenInterval longitudeIn = RightOpenInterval.symmetric(360);
+        final RightOpenInterval longitudeIn = RightOpenInterval.symmetric(360);
         return longitudeIn.contains(lonDeg);
     }
 
     /**
-     * checks if the latitude is in the good interval
+     * Vérifie que la latitude est valide (appartient à l'intervalle [-90°, 90°])
+     * @param latDeg
+     * @return vrai si la latitude est valide
      */
     public static boolean isValidLatDeg(double latDeg){
-        ClosedInterval latitudeIn = ClosedInterval.symmetric(180);
+        final ClosedInterval latitudeIn = ClosedInterval.symmetric(180);
         return latitudeIn.contains(latDeg);
     }
 
     /**
-     * redefine the method from the super class
-     * returns the longitude in radians
+     * @see SphericalCoordinates#lon()
      */
     @Override
     public double lon(){
@@ -51,8 +69,7 @@ public final class GeographicCoordinates extends SphericalCoordinates{
     }
 
     /**
-     * redefine the method from the super class
-     * returns the longitude in degrees
+     * @see SphericalCoordinates#lonDeg()
      */
     @Override
     public double lonDeg(){
@@ -60,8 +77,7 @@ public final class GeographicCoordinates extends SphericalCoordinates{
     }
 
     /**
-     * redefine the method from the super class
-     * returns the latitude in radians
+     * @see SphericalCoordinates#lat()
      */
     @Override
     public double lat(){
@@ -69,8 +85,7 @@ public final class GeographicCoordinates extends SphericalCoordinates{
     }
 
     /**
-     * redefine the method from the super class
-     * returns the latitude in degrees
+     * @see SphericalCoordinates#latDeg()
      */
     @Override
     public double latDeg(){
@@ -78,7 +93,8 @@ public final class GeographicCoordinates extends SphericalCoordinates{
     }
 
     /**
-     * returns a string representation of the coordinates
+     * Retourne une représentation textuelle des coordonnées (précision à 4 décimales)
+     * @return une représentation textuelle des coordonnées (précision à 4 décimales)
      */
     @Override
     public String toString(){
