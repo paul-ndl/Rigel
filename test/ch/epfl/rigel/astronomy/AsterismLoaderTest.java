@@ -53,7 +53,12 @@ public class AsterismLoaderTest {
                         beltegeuse = s;
                     }
                 }
+                int nbIndices = catalogue.asterismIndices(ast).size();
+                int nbStars = ast.stars().size();
+                assertEquals(nbIndices, nbStars);
             }
+            assertEquals(5067,catalogue.stars().size());
+            assertEquals(153,catalogue.asterisms().size());
             assertThrows(UnsupportedOperationException.class, () ->{
                 catalogue.stars().clear();
             });
