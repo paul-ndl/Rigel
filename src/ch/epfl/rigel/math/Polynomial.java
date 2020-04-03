@@ -69,7 +69,8 @@ public final class Polynomial {
             if (coefficients[i]!=0) {
                 if (coefficients[i] > 0 && i!=0) {
                     polynomial.append("+");
-                } else {
+                }
+                if (coefficients[i] < 0) {
                     polynomial.append("-");
                 }
                 if (coefficients[i] != 1 && coefficients[i] != -1) {
