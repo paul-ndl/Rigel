@@ -8,7 +8,7 @@ package ch.epfl.rigel.math;
  */
 public abstract class Interval {
 
-    private final double lowerBound, upperBound;
+    private final double lowerBound, upperBound, size;
 
     /**
      * Construit un intervalle
@@ -20,6 +20,7 @@ public abstract class Interval {
     protected Interval (double lowerBound,double upperBound){
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
+        this.size = upperBound-lowerBound;
     }
 
     /**
@@ -43,7 +44,7 @@ public abstract class Interval {
      * @return la taille de l'intervalle
      */
     public double size(){
-        return (upperBound-lowerBound);
+        return size;
     }
 
     /**

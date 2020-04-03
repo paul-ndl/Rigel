@@ -27,9 +27,7 @@ public final class Angle {
      * @return l'angle normalisé
      */
     public static double normalizePositive(double rad){
-       double result = rad%TAU;
-       result += TAU;
-       return result%TAU;
+       return ((rad % TAU) + TAU) % TAU;
     }
 
     /**
