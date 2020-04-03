@@ -29,7 +29,7 @@ public final class StarCatalogue {
      */
     public StarCatalogue(List<Star> stars, List<Asterism> asterisms){
         this.stars = List.copyOf(stars);
-        final Map<Star, Integer> starsIndex= new HashMap();
+        final Map<Star, Integer> starsIndex= new HashMap<>();
         for(int i=0; i<stars.size(); ++i){
             starsIndex.put(stars.get(i), i);
         }
@@ -80,7 +80,7 @@ public final class StarCatalogue {
      */
     public final static class Builder{
 
-        private final List<Star> stars = new ArrayList();
+        private final List<Star> stars = new ArrayList<>();
         private final List<Asterism> asterisms = new ArrayList<>();
 
         /**
