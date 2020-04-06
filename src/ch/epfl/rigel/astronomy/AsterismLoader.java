@@ -40,11 +40,11 @@ public enum AsterismLoader implements StarCatalogue.Loader {
         for (Star s : builder.stars()){
             map.put(s.hipparcosId(), s);
         }
-        String s;
         try(BufferedReader r = new BufferedReader(new InputStreamReader(inputStream, US_ASCII))){
             final List<Star> stars = new ArrayList<>();
-            while((s = r.readLine())!=null){
-                final String[] hip = s.split(",");
+            String line;
+            while((line = r.readLine())!=null){
+                final String[] hip = line.split(",");
                 for (String h : hip) {
                     stars.add(map.get(Integer.parseInt(h)));
                 }

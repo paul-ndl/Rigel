@@ -39,8 +39,9 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader{
     public void load(InputStream inputStream, StarCatalogue.Builder builder) throws IOException {
         try(BufferedReader r = new BufferedReader(new InputStreamReader(inputStream, US_ASCII))){
             r.readLine();
-            while(r.ready()){
-                final String[] columns = r.readLine().split(",");
+            String line;
+            while((line = r.readLine())!=null){
+                final String[] columns = line.split(",");
                 final int hip = (!columns[HIP].isEmpty() ? Integer.parseInt(columns[HIP]) : 0);
                 final String name = ((!columns[PROPER].isEmpty()) ? columns[PROPER] : ((!columns[BAYER].isEmpty() ? columns[BAYER] : "?") + " " + columns[CON]));
                 final EquatorialCoordinates eq = EquatorialCoordinates.of(Double.parseDouble(columns[RARAD]), Double.parseDouble(columns[DECRAD]));

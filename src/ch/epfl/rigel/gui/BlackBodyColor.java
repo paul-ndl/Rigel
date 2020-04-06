@@ -18,9 +18,9 @@ public class BlackBodyColor {
 
     private static Map<Integer, Color> loader(){
         final Map<Integer, Color> tempColor = new HashMap();
+        String line;
         try(BufferedReader r = new BufferedReader(new InputStreamReader(BlackBodyColor.class.getResourceAsStream(BBR_COLOR), US_ASCII))){
-            while(r.ready()) {
-                final String line = r.readLine();
+            while((line = r.readLine())!=null) {
                 if(line.substring(0,1).equals(" ") && line.substring(10, 15).equals("10deg")) {
                     Color color = Color.web(line.substring(80,87));
                     tempColor.put((int) Double.parseDouble(line.substring(1, 6)), color);
