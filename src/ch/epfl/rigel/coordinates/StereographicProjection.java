@@ -80,7 +80,7 @@ public final class StereographicProjection implements Function<HorizontalCoordin
         final double deltaSin = Math.sin(azAlt.az() - lambdaCenter);
         final double d = 1d / (1 + altSin*phySin + altCos*phyCos*deltaCos);
         final double x = d * altCos * deltaSin;
-        final double y = d*altSin*phyCos - altCos*phySin*deltaCos;
+        final double y = d * (altSin*phyCos - altCos*phySin*deltaCos);
         return CartesianCoordinates.of(x, y);
     }
 
