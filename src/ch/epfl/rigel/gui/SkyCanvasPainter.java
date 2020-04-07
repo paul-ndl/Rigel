@@ -102,17 +102,16 @@ public final class SkyCanvasPainter {
     }
 
     public void drawHorizon(StereographicProjection projection, Transform planeToCanvas, HorizontalCoordinates hor){
-        /*ctx.setStroke(red);
+        ctx.setStroke(red);
         ctx.setLineWidth(2);
         CartesianCoordinates coordinates = projection.circleCenterForParallel(HorizontalCoordinates.of(0,0));
         double[] transformedCoordinates = {coordinates.x(), coordinates.y()};
+        System.out.println(transformedCoordinates[0]);
+        System.out.println(transformedCoordinates[1]);
         planeToCanvas.transform2DPoints(transformedCoordinates, 0, transformedCoordinates, 0, 1);
-        //double radius = projection.circleRadiusForParallel(HorizontalCoordinates.of(0,0));*/
-
-        double radius = 3100;
-        ctx.setStroke(Color.RED);
-        ctx.setLineWidth(2);
-        ctx.strokeOval(400-radius/2, -1000-radius/2, radius, radius);
+        //double r = projection.circleRadiusForParallel(HorizontalCoordinates.of(0,0));
+        double radius = 4250;
+        ctx.strokeOval(transformedCoordinates[0]-radius/2, transformedCoordinates[1]-radius/2, radius, radius);
     }
 
 

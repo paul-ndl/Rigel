@@ -42,9 +42,9 @@ public final class SkyCanvasPainterTest extends Application {
 
 
             ZonedDateTime when =
-                    ZonedDateTime.parse("2020-02-17T10:30:00+01:00");
+                    ZonedDateTime.parse("2020-02-17T20:17:08+01:00");
             GeographicCoordinates where =
-                    GeographicCoordinates.ofDeg(6.63, 46.52);
+                    GeographicCoordinates.ofDeg(6.57, 46.52);
             HorizontalCoordinates projCenter =
                     HorizontalCoordinates.ofDeg(186, 35);
             StereographicProjection projection =
@@ -65,7 +65,7 @@ public final class SkyCanvasPainterTest extends Application {
             painter.drawPlanets(sky, projection, planeToCanvas);
             painter.drawSun(sky, projection, planeToCanvas);
             painter.drawMoon(sky, projection, planeToCanvas);
-            //painter.drawHorizon(projection, planeToCanvas, projCenter);
+            painter.drawHorizon(projection, planeToCanvas, projCenter);
 
             WritableImage fxImage =
                     canvas.snapshot(null, null);
