@@ -41,12 +41,13 @@ public final class EclipticToEquatorialConversion implements Function<EclipticCo
      */
     @Override
     public EquatorialCoordinates apply(EclipticCoordinates ecl) {
+        final double lonCos = Math.cos(ecl.lon());
         final double lonSin = Math.sin(ecl.lon());
         final double latCos = Math.cos(ecl.lat());
         final double latSin = Math.sin(ecl.lat());
         final double latTan = Math.tan(ecl.lat());
-        final double ra = Angle.normalizePositive(Math.atan2(lonSin*obliquityCos - latTan*obliquitySin, latCos));
-        final double dec = Math.asin(latSin*obliquityCos + latCos*obliquitySin*latSin);
+        final double ra = Angle.normalizePositive(Math.atan2(lonSin*obliquityCos - latTan*obliquitySin, lonCos));
+        final double dec = Math.asin(latSin*obliquityCos + latCos*obliquitySin*lonSin);
         return EquatorialCoordinates.of(ra, dec);
     }
 
