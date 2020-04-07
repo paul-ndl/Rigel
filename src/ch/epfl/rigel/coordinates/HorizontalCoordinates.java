@@ -3,6 +3,7 @@ package ch.epfl.rigel.coordinates;
 import ch.epfl.rigel.Preconditions;
 import ch.epfl.rigel.math.Angle;
 import ch.epfl.rigel.math.ClosedInterval;
+import ch.epfl.rigel.math.Interval;
 import ch.epfl.rigel.math.RightOpenInterval;
 
 import java.util.Locale;
@@ -15,105 +16,108 @@ import java.util.Locale;
  */
 public final class HorizontalCoordinates extends SphericalCoordinates {
 
+    private final static Interval AZIMUT_INTERVAL = RightOpenInterval.of(0,360);
+    private final static Interval ALTITUDE_INTERVAL = ClosedInterval.symmetric(180);
+
+    private final static Interval NORTH_INTERVAL_RIGHT = RightOpenInterval.of(0, 67.5);
+    private final static Interval NORTH_INTERVAL_LEFT = RightOpenInterval.of(292.5, 360);
+    private final static Interval SOUTH_INTERVAL = RightOpenInterval.of(112.5, 247.5);
+    private final static Interval EAST_INTERVAL = RightOpenInterval.of(22.5, 157.5);
+    private final static Interval WEST_INTERVAL = RightOpenInterval.of(202.5, 337.5);
+
     /**
      * Construit des coordonnées horizontales
-     * @param azimut
-     *          l'azimut
-     * @param altitude
-     *          l'altitude
+     *
+     * @param azimut   l'azimut
+     * @param altitude l'altitude
      */
-    private HorizontalCoordinates(double azimut, double altitude){
+    private HorizontalCoordinates(double azimut, double altitude) {
         super(azimut, altitude);
     }
 
     /**
      * Construit des coordonnées horizontales avec des arguments en radians
-     * @param az
-     *          l'azimut en radians
-     * @param alt
-     *          l'altitude en radians
-     * @throws IllegalArgumentException
-     *          si l'azimut ou l'altitude n'est pas valide
+     *
+     * @param az  l'azimut en radians
+     * @param alt l'altitude en radians
+     * @throws IllegalArgumentException si l'azimut ou l'altitude n'est pas valide
      */
-    public static HorizontalCoordinates of(double az, double alt){
+    public static HorizontalCoordinates of(double az, double alt) {
         Preconditions.checkArgument(isValidAzDeg(Angle.toDeg(az)) && isValidAltDeg(Angle.toDeg(alt)));
         return new HorizontalCoordinates(az, alt);
     }
 
     /**
      * Construit des coordonnées horizontales avec des arguments en degrés
-     * @param azDeg
-     *          l'azimut en degrés
-     * @param altDeg
-     *          l'altitude en degrés
-     * @throws IllegalArgumentException
-     *          si l'azimut ou l'altitude n'est pas valide
+     *
+     * @param azDeg  l'azimut en degrés
+     * @param altDeg l'altitude en degrés
+     * @throws IllegalArgumentException si l'azimut ou l'altitude n'est pas valide
      */
-    public static HorizontalCoordinates ofDeg(double azDeg, double altDeg){
+    public static HorizontalCoordinates ofDeg(double azDeg, double altDeg) {
         Preconditions.checkArgument(isValidAzDeg(azDeg) && isValidAltDeg(altDeg));
         return new HorizontalCoordinates(Angle.ofDeg(azDeg), Angle.ofDeg(altDeg));
     }
 
     /**
      * Vérifie que l'azimut est valide (appartient à l'intervalle [0°, 360°[)
+     *
      * @param azDeg
      * @return vrai si l'azimut est valide
      */
-    public static boolean isValidAzDeg(double azDeg){
-        final RightOpenInterval azimutIn = RightOpenInterval.of(0, 360);
-        return azimutIn.contains(azDeg);
+    public static boolean isValidAzDeg(double azDeg) {
+        return AZIMUT_INTERVAL.contains(azDeg);
     }
 
     /**
      * Vérifie que l'altitude est valide (appartient à l'intervalle [-90°, 90°])
+     *
      * @param altDeg
      * @return vrai si l'altitude est valide
      */
-    public static boolean isValidAltDeg(double altDeg){
-        final ClosedInterval altitudeIn = ClosedInterval.symmetric(180);
-        return altitudeIn.contains(altDeg);
+    public static boolean isValidAltDeg(double altDeg) {
+        return ALTITUDE_INTERVAL.contains(altDeg);
     }
 
     /**
      * Retourne l'azimut en radians
+     *
      * @see SphericalCoordinates#lon()
      */
-    public double az(){
+    public double az() {
         return super.lon();
     }
 
     /**
      * Retourne l'azimut en degrés
+     *
      * @see SphericalCoordinates#lonDeg()
      */
-    public double azDeg(){
-        return  super.lonDeg();
+    public double azDeg() {
+        return super.lonDeg();
     }
 
     /**
      * Retourne une représentation textuelle de l'octant dans lequel se trouve l'azimut
-     * @param n
-     *          le caractère "nord"
-     * @param e
-     *          le caractère "est"
-     * @param s
-     *          le caractère "sud"
-     * @param w
-     *          le caractère "ouest"
+     *
+     * @param n le caractère "nord"
+     * @param e le caractère "est"
+     * @param s le caractère "sud"
+     * @param w le caractère "ouest"
      * @return une représentation textuelle de l'octant dans lequel se trouve l'azimut
      */
     public String azOctantName(String n, String e, String s, String w) {
         final StringBuilder azOctant = new StringBuilder();
-        if (RightOpenInterval.of(0, 67.5).contains(azDeg()) || RightOpenInterval.of(292.5, 360).contains(azDeg())) {
+        if (NORTH_INTERVAL_RIGHT.contains(azDeg()) || NORTH_INTERVAL_LEFT.contains(azDeg())) {
             azOctant.append(n);
         }
-        if (RightOpenInterval.of(112.5, 247.5).contains(azDeg())) {
+        if (SOUTH_INTERVAL.contains(azDeg())) {
             azOctant.append(s);
         }
-        if (RightOpenInterval.of(22.5, 157.5).contains(azDeg())) {
+        if (EAST_INTERVAL.contains(azDeg())) {
             azOctant.append(e);
         }
-        if (RightOpenInterval.of(202.5, 337.5).contains(azDeg())) {
+        if (WEST_INTERVAL.contains(azDeg())) {
             azOctant.append(w);
         }
         return azOctant.toString();
@@ -121,38 +125,49 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
 
     /**
      * Retourne l'altitude en radians
+     *
      * @see SphericalCoordinates#lat()
      */
-    public double alt(){
+    public double alt() {
         return super.lat();
     }
 
     /**
      * Retourne l'altitude en degrés
+     *
      * @see SphericalCoordinates#latDeg()
      */
-    public double altDeg(){
+    public double altDeg() {
         return super.latDeg();
     }
 
     /**
      * Retourne la distance angulaire entre le récepteur et le point donné en argument
-     * @param that
-     *          le point
+     *
+     * @param that le point
      * @return la distance angulaire entre le récepteur et le point donné en argument
      */
-    public double angularDistanceTo(HorizontalCoordinates that){
-        final double angularDistance = Math.acos(Math.sin(this.alt()) * Math.sin(that.alt()) + Math.cos(this.alt()) * Math.cos(that.alt()) * (Math.cos(this.az() - that.az())));
+    public double angularDistanceTo(HorizontalCoordinates that) {
+        final double sinPhyThis = Math.sin(alt());
+        final double sinPhyThat = Math.sin(that.alt());
+        final double cosPhyThis = Math.cos(alt());
+        final double cosPhyThat = Math.cos(that.alt());
+        final double cosDelta = Math.cos(az() - that.az());
+        final double angularDistance = Math.acos(sinPhyThis*sinPhyThat  + cosPhyThis*cosPhyThat*cosDelta);
         return angularDistance;
     }
 
     /**
      * Retourne une représentation textuelle des coordonnées (précision à 4 décimales)
+     *
      * @return une représentation textuelle des coordonnées (précision à 4 décimales)
      */
     @Override
-    public String toString(){
-        return String.format(Locale.ROOT,"(az=%.4f°, alt=%.4f°)", lonDeg(), latDeg());
+    public String toString() {
+        return String.format(Locale.ROOT,
+                      "(az=%.4f°, alt=%.4f°)",
+                             lonDeg(),
+                             latDeg());
     }
 
 }
