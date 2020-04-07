@@ -8,70 +8,74 @@ package ch.epfl.rigel.math;
  */
 public abstract class Interval {
 
-    private final double lowerBound, upperBound, size;
+    private final double lowerBound, upperBound;
+    private final double size;
 
     /**
      * Construit un intervalle
-     * @param lowerBound
-     *          la borne inférieure
-     * @param upperBound
-     *          la borne supérieure
+     *
+     * @param lowerBound la borne inférieure
+     * @param upperBound la borne supérieure
      */
-    protected Interval (double lowerBound,double upperBound){
+    protected Interval(double lowerBound, double upperBound) {
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
-        this.size = upperBound-lowerBound;
+        size = upperBound - lowerBound;
     }
 
     /**
      * Retourne la borne inférieure
+     *
      * @return la borne inférieure
      */
-    public double low(){
+    public double low() {
         return lowerBound;
     }
 
     /**
      * Retourne la borne supérieure
+     *
      * @return la borne supérieure
      */
-    public double high(){
+    public double high() {
         return upperBound;
     }
 
     /**
      * Retourne la taille de l'intervalle
+     *
      * @return la taille de l'intervalle
      */
-    public double size(){
+    public double size() {
         return size;
     }
 
     /**
      * Vérifie que la valeur appartient à l'intervalle
-     * @param v
-     *          la valeur
+     *
+     * @param v la valeur
      * @return vrai si la valeur appartient à l'intervalle
      */
     public abstract boolean contains(double v);
 
     /**
      * Empêche d'utiliser cette méthode
-     * @param o
-     *          un objet
+     *
+     * @param o un objet
      * @throws UnsupportedOperationException
      */
     @Override
-    public final boolean equals(Object o){
+    public final boolean equals(Object o) {
         throw new UnsupportedOperationException();
     }
 
     /**
      * Empêche d'utiliser cette méthode
+     *
      * @throws UnsupportedOperationException
      */
     @Override
-    public final int hashCode(){
+    public final int hashCode() {
         throw new UnsupportedOperationException();
     }
 
