@@ -44,7 +44,7 @@ public final class RightOpenInterval extends Interval {
      */
     public static RightOpenInterval symmetric(double size) {
         Preconditions.checkArgument(size > 0);
-        final double bound = size / 2;
+        double bound = size / 2;
         return new RightOpenInterval(-bound, bound);
     }
 
@@ -56,7 +56,7 @@ public final class RightOpenInterval extends Interval {
      */
     @Override
     public boolean contains(double v) {
-        return (v >= super.low() && v < super.high());
+        return (v>=super.low() && v<super.high());
     }
 
     /**
@@ -67,7 +67,7 @@ public final class RightOpenInterval extends Interval {
      * @return le reste de la partie entière par défaut de x/y
      */
     private double floorMod(double x, double y) {
-        return x - y * Math.floor(x / y);
+        return x - y*Math.floor(x/y);
     }
 
     /**
@@ -77,7 +77,7 @@ public final class RightOpenInterval extends Interval {
      * @return la valeur réduite
      */
     public double reduce(double v) {
-        return super.low() + floorMod(v - super.low(), super.size());
+        return super.low() + floorMod(v-super.low(), super.size());
     }
 
     /**

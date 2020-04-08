@@ -59,21 +59,21 @@ public final class Polynomial {
      */
     public String toString() {
         int power = coefficients.length - 1;
-        final StringBuilder polynomial = new StringBuilder();
-        for (int i = 0; i < coefficients.length; ++i) {
-            if (coefficients[i] != 0) {
-                if (coefficients[i] > 0 && i != 0) {
+        StringBuilder polynomial = new StringBuilder();
+        for (int i=0; i<coefficients.length; ++i) {
+            if (coefficients[i]!=0) {
+                if (coefficients[i]>0 && i!=0) {
                     polynomial.append("+");
                 }
-                if (coefficients[i] < 0) {
+                if (coefficients[i]<0) {
                     polynomial.append("-");
                 }
-                if (coefficients[i] != 1 && coefficients[i] != -1) {
+                if (coefficients[i]!=1 && coefficients[i]!=-1) {
                     polynomial.append(Math.abs(coefficients[i]));
                 }
-                if (power != 0) {
+                if (power!=0) {
                     polynomial.append("x");
-                    if (power != 1) {
+                    if (power!=1) {
                         polynomial.append("^" + power);
                     }
                 }
