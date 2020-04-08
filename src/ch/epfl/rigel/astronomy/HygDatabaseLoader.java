@@ -42,12 +42,12 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
             reader.readLine();
             String line;
             while ((line = reader.readLine()) != null) {
-                final String[] columns = line.split(",");
-                final int hip = (!columns[HIP].isEmpty() ? Integer.parseInt(columns[HIP]) : 0);
-                final String name = ((!columns[PROPER].isEmpty()) ? columns[PROPER] : ((!columns[BAYER].isEmpty() ? columns[BAYER] : "?") + " " + columns[CON]));
-                final EquatorialCoordinates eq = EquatorialCoordinates.of(Double.parseDouble(columns[RARAD]), Double.parseDouble(columns[DECRAD]));
-                final float magnitude = (!columns[MAG].isEmpty() ? Float.parseFloat(columns[MAG]) : 0);
-                final float colorIndex = (!columns[CI].isEmpty() ? Float.parseFloat(columns[CI]) : 0);
+                String[] columns = line.split(",");
+                int hip = (!columns[HIP].isEmpty() ? Integer.parseInt(columns[HIP]) : 0);
+                String name = ((!columns[PROPER].isEmpty()) ? columns[PROPER] : ((!columns[BAYER].isEmpty() ? columns[BAYER] : "?") + " " + columns[CON]));
+                EquatorialCoordinates eq = EquatorialCoordinates.of(Double.parseDouble(columns[RARAD]), Double.parseDouble(columns[DECRAD]));
+                float magnitude = (!columns[MAG].isEmpty() ? Float.parseFloat(columns[MAG]) : 0);
+                float colorIndex = (!columns[CI].isEmpty() ? Float.parseFloat(columns[CI]) : 0);
                 builder.addStar(new Star(hip, name, eq, magnitude, colorIndex));
             }
         }

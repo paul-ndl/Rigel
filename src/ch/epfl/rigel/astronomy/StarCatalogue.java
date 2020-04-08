@@ -27,7 +27,7 @@ public final class StarCatalogue {
      */
     public StarCatalogue(List<Star> stars, List<Asterism> asterisms) {
         this.stars = List.copyOf(stars);
-        final Map<Star, Integer> starsIndex = new HashMap<>();
+        Map<Star, Integer> starsIndex = new HashMap<>();
         for (int i=0; i<stars.size(); ++i) {
             starsIndex.put(stars.get(i), i);
         }

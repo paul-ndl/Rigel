@@ -43,31 +43,31 @@ public enum MoonModel implements CelestialObjectModel<Moon> {
     @Override
     public Moon at(double daysSinceJ2010, EclipticToEquatorialConversion eclipticToEquatorialConversion) {
         //Données du Soleil
-        final double lambdaSun = SunModel.SUN.at(daysSinceJ2010, eclipticToEquatorialConversion).eclipticPos().lon();
-        final double meanAnomalySun = SunModel.SUN.at(daysSinceJ2010, eclipticToEquatorialConversion).meanAnomaly();
+        double lambdaSun = SunModel.SUN.at(daysSinceJ2010, eclipticToEquatorialConversion).eclipticPos().lon();
+        double meanAnomalySun = SunModel.SUN.at(daysSinceJ2010, eclipticToEquatorialConversion).meanAnomaly();
         //Calcul de la longitude orbitale
-        final double orbitalLon = CONSTANT_ORBITAL_LONGITUDE*daysSinceJ2010 + averageLon;
-        final double meanAnomaly = orbitalLon - CONSTANT_MEAN_ANOMALY*daysSinceJ2010 - lonPer;
-        final double evection = CONSTANT_EVECTION * Math.sin(2*(orbitalLon-lambdaSun) - meanAnomaly);
-        final double annualEquation = CONSTANT_ANNUAL_EQUATION * Math.sin(meanAnomalySun);
-        final double a3 = CONSTANT_A3 * Math.sin(meanAnomalySun);
-        final double correctedAnomaly = meanAnomaly + evection - annualEquation - a3;
-        final double centerEquation = CONSTANT_CENTER_EQUATION * Math.sin(correctedAnomaly);
-        final double a4 = CONSTANT_A4 * Math.sin(2*correctedAnomaly);
-        final double correctedLon = orbitalLon + evection + centerEquation - annualEquation + a4;
-        final double variation = CONSTANT_VARIATION * Math.sin(2*(correctedLon-lambdaSun));
-        final double trueLon = correctedLon + variation;
+        double orbitalLon = CONSTANT_ORBITAL_LONGITUDE*daysSinceJ2010 + averageLon;
+        double meanAnomaly = orbitalLon - CONSTANT_MEAN_ANOMALY*daysSinceJ2010 - lonPer;
+        double evection = CONSTANT_EVECTION * Math.sin(2*(orbitalLon-lambdaSun) - meanAnomaly);
+        double annualEquation = CONSTANT_ANNUAL_EQUATION * Math.sin(meanAnomalySun);
+        double a3 = CONSTANT_A3 * Math.sin(meanAnomalySun);
+        double correctedAnomaly = meanAnomaly + evection - annualEquation - a3;
+        double centerEquation = CONSTANT_CENTER_EQUATION * Math.sin(correctedAnomaly);
+        double a4 = CONSTANT_A4 * Math.sin(2*correctedAnomaly);
+        double correctedLon = orbitalLon + evection + centerEquation - annualEquation + a4;
+        double variation = CONSTANT_VARIATION * Math.sin(2*(correctedLon-lambdaSun));
+        double trueLon = correctedLon + variation;
         //Calcul de la longitude du noeud ascendant
-        final double averageLonNode = lonNode - CONSTANT_AVERAGE_NODE*daysSinceJ2010;
-        final double correctedLonNode = averageLonNode - CONSTANT_CORRECTED_NODE*Math.sin(meanAnomalySun);
+        double averageLonNode = lonNode - CONSTANT_AVERAGE_NODE*daysSinceJ2010;
+        double correctedLonNode = averageLonNode - CONSTANT_CORRECTED_NODE*Math.sin(meanAnomalySun);
         //Calcul des coordonnées écliptiques
-        final double lambda = Angle.normalizePositive(Math.atan2(Math.sin(trueLon-correctedLonNode) * Math.cos(i), Math.cos(trueLon-correctedLonNode)) + correctedLonNode);
-        final double beta = Math.asin(Math.sin(trueLon - correctedLonNode) * Math.sin(i));
-        final EclipticCoordinates ecl = EclipticCoordinates.of(lambda, beta);
+        double lambda = Angle.normalizePositive(Math.atan2(Math.sin(trueLon-correctedLonNode) * Math.cos(i), Math.cos(trueLon-correctedLonNode)) + correctedLonNode);
+        double beta = Math.asin(Math.sin(trueLon - correctedLonNode) * Math.sin(i));
+        EclipticCoordinates ecl = EclipticCoordinates.of(lambda, beta);
         //Calcul de la phase et de la taille angulaire
-        final double phase = (1 - Math.cos(trueLon-lambdaSun)) / 2;
-        final double p = (1 - e*e) / (1 + e*Math.cos(correctedAnomaly+centerEquation));
-        final double angularSize = angularSizeUA / p;
+        double phase = (1 - Math.cos(trueLon-lambdaSun)) / 2;
+        double p = (1 - e*e) / (1 + e*Math.cos(correctedAnomaly+centerEquation));
+        double angularSize = angularSizeUA / p;
         return new Moon(eclipticToEquatorialConversion.apply(ecl), (float) angularSize, 0f, (float) phase);
     }
 
