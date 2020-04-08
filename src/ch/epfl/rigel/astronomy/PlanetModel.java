@@ -81,17 +81,20 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
      */
     @Override
     public Planet at(double daysSinceJ2010, EclipticToEquatorialConversion eclipticToEquatorialConversion) {
+        //Calcul des coordonnées orbitales
         final double[] orbitalCoordinates = orbitalCoordinates(daysSinceJ2010);
         final double radius = orbitalCoordinates[0];
         final double lon = orbitalCoordinates[1];
+        //Calcul des coordonnées orbitales terrestres
         final double[] earthOrbitalCoordinates = EARTH.orbitalCoordinates(daysSinceJ2010);
         final double earthRadius = earthOrbitalCoordinates[0];
         final double earthLon = earthOrbitalCoordinates[1];
+        //Calcul des coordonnées écliptiques héliocentriques
         final double[] eclipticCoordinates = eclipticCoordinates(radius, lon);
         final double projRadius = eclipticCoordinates[0];
         final double eclLon = eclipticCoordinates[1];
         final double eclLat = eclipticCoordinates[2];
-
+        //Calcul des coordonnées écliptiques géocentriques
         final double lambda, beta;
         if (a < 1) {
             lambda = Angle.normalizePositive(Math.PI + earthLon + Math.atan2(projRadius * Math.sin(earthLon-eclLon), earthRadius - projRadius*Math.cos(earthLon-eclLon)));
@@ -99,7 +102,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
             lambda = Angle.normalizePositive(eclLon + Math.atan2(earthRadius * Math.sin(eclLon-earthLon), projRadius - earthRadius*Math.cos(eclLon-earthLon)));
         }
         beta = Math.atan((projRadius * Math.tan(eclLat) * Math.sin(lambda-eclLon)) / (earthRadius * Math.sin(eclLon-earthLon)));
-
+        //Calcul de la taille angulaire et magnitude
         final double p = Math.sqrt(earthRadius*earthRadius + radius*radius - 2*earthRadius*radius*Math.cos(lon-earthLon)*Math.cos(eclLat));
         final double angularSize = angularSizeUA / p;
         final double f = (1 + Math.cos(lambda-lon)) / 2;
