@@ -4,12 +4,10 @@ import ch.epfl.rigel.coordinates.EquatorialCoordinates;
 import ch.epfl.test.TestRandomizer;
 import org.junit.jupiter.api.Test;
 
-import javax.swing.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
