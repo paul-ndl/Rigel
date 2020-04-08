@@ -17,21 +17,21 @@ public final class Asterism {
 
     /**
      * Construit un astérisme
-     * @param stars
-     *          la liste d'étoiles constituant l'astérisme
-     * @throws IllegalArgumentException
-     *          si la liste d'étoiles est vide
+     *
+     * @param stars la liste d'étoiles constituant l'astérisme
+     * @throws IllegalArgumentException si la liste d'étoiles est vide
      */
-    public Asterism(List<Star> stars){
+    public Asterism(List<Star> stars) {
         Preconditions.checkArgument(!stars.isEmpty());
         this.stars = List.copyOf(stars);
     }
 
     /**
      * Retourne la liste d'étoiles
+     *
      * @return la liste d'étoiles
      */
-    public List<Star> stars(){
+    public List<Star> stars() {
         return stars;
     }
 }

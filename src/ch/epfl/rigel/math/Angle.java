@@ -18,6 +18,7 @@ public final class Angle {
     private final static double RAD_PER_SEC = TAU / 1296000;
     private final static double RAD_PER_HR = TAU / 24;
     private final static double HR_PER_RAD = 24 / TAU;
+    private final static Interval MIN_SEC_INTERVAL = RightOpenInterval.of(0,60);
 
 
     /**
@@ -52,8 +53,8 @@ public final class Angle {
      * @throws IllegalArgumentException si les minutes ou secondes ne sont pas comprises entre 0 et 60
      */
     public static double ofDMS(int deg, int min, double sec) {
-        Preconditions.checkInInterval(RightOpenInterval.of(0, 60), min);
-        Preconditions.checkInInterval(RightOpenInterval.of(0, 60), sec);
+        Preconditions.checkInInterval(MIN_SEC_INTERVAL, min);
+        Preconditions.checkInInterval(MIN_SEC_INTERVAL, sec);
         return Math.toRadians(deg + (double) min / 60 + sec / 3600);
     }
 
