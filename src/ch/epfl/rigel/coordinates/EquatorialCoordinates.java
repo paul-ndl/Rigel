@@ -16,8 +16,8 @@ import java.util.Locale;
  */
 public final class EquatorialCoordinates extends SphericalCoordinates {
 
-    private final static Interval RIGHT_ASCENSION_INTERVAL = RightOpenInterval.of(0,360);
-    private final static Interval DECLINATION_INTERVAL = ClosedInterval.symmetric(180);
+    private final static Interval RIGHT_ASCENSION_INTERVAL = RightOpenInterval.of(0, Angle.TAU);
+    private final static Interval DECLINATION_INTERVAL = ClosedInterval.symmetric(Angle.TAU/4);
 
     /**
      * Construit des coordonnées équatoriales
@@ -36,28 +36,9 @@ public final class EquatorialCoordinates extends SphericalCoordinates {
      * @param dec la déclinaison en radians
      */
     public static EquatorialCoordinates of(double ra, double dec) {
-        Preconditions.checkArgument(isValidRaDeg(Angle.toDeg(ra)) && isValidDecDeg(Angle.toDeg(dec)));
+        Preconditions.checkInInterval(RIGHT_ASCENSION_INTERVAL, ra);
+        Preconditions.checkInInterval(DECLINATION_INTERVAL, dec);
         return new EquatorialCoordinates(ra, dec);
-    }
-
-    /**
-     * Vérifie que l'ascension droite est valide (appartient à l'intervalle [0°, 360°[)
-     *
-     * @param raDeg
-     * @return vrai si l'ascension droite est valide
-     */
-    public static boolean isValidRaDeg(double raDeg) {
-        return RIGHT_ASCENSION_INTERVAL.contains(raDeg);
-    }
-
-    /**
-     * Vérifie que la déclinaison est valide (appartient à l'intervalle [-90°, 90°])
-     *
-     * @param decDeg
-     * @return vrai si la déclinaison est valide
-     */
-    public static boolean isValidDecDeg(double decDeg) {
-        return DECLINATION_INTERVAL.contains(decDeg);
     }
 
     /**

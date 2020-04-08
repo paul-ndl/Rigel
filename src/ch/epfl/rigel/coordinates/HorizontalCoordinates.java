@@ -43,7 +43,8 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      * @throws IllegalArgumentException si l'azimut ou l'altitude n'est pas valide
      */
     public static HorizontalCoordinates of(double az, double alt) {
-        Preconditions.checkArgument(isValidAzDeg(Angle.toDeg(az)) && isValidAltDeg(Angle.toDeg(alt)));
+        Preconditions.checkInInterval(AZIMUT_INTERVAL, Angle.toDeg(az));
+        Preconditions.checkInInterval(ALTITUDE_INTERVAL, Angle.toDeg(alt));
         return new HorizontalCoordinates(az, alt);
     }
 
@@ -55,28 +56,9 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      * @throws IllegalArgumentException si l'azimut ou l'altitude n'est pas valide
      */
     public static HorizontalCoordinates ofDeg(double azDeg, double altDeg) {
-        Preconditions.checkArgument(isValidAzDeg(azDeg) && isValidAltDeg(altDeg));
+        Preconditions.checkInInterval(AZIMUT_INTERVAL, azDeg);
+        Preconditions.checkInInterval(ALTITUDE_INTERVAL, altDeg);
         return new HorizontalCoordinates(Angle.ofDeg(azDeg), Angle.ofDeg(altDeg));
-    }
-
-    /**
-     * Vérifie que l'azimut est valide (appartient à l'intervalle [0°, 360°[)
-     *
-     * @param azDeg
-     * @return vrai si l'azimut est valide
-     */
-    public static boolean isValidAzDeg(double azDeg) {
-        return AZIMUT_INTERVAL.contains(azDeg);
-    }
-
-    /**
-     * Vérifie que l'altitude est valide (appartient à l'intervalle [-90°, 90°])
-     *
-     * @param altDeg
-     * @return vrai si l'altitude est valide
-     */
-    public static boolean isValidAltDeg(double altDeg) {
-        return ALTITUDE_INTERVAL.contains(altDeg);
     }
 
     /**
@@ -107,7 +89,7 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      * @return une représentation textuelle de l'octant dans lequel se trouve l'azimut
      */
     public String azOctantName(String n, String e, String s, String w) {
-        final StringBuilder azOctant = new StringBuilder();
+        StringBuilder azOctant = new StringBuilder();
         if (NORTH_INTERVAL_RIGHT.contains(azDeg()) || NORTH_INTERVAL_LEFT.contains(azDeg())) {
             azOctant.append(n);
         }
@@ -148,12 +130,12 @@ public final class HorizontalCoordinates extends SphericalCoordinates {
      * @return la distance angulaire entre le récepteur et le point donné en argument
      */
     public double angularDistanceTo(HorizontalCoordinates that) {
-        final double sinPhyThis = Math.sin(alt());
-        final double sinPhyThat = Math.sin(that.alt());
-        final double cosPhyThis = Math.cos(alt());
-        final double cosPhyThat = Math.cos(that.alt());
-        final double cosDelta = Math.cos(az() - that.az());
-        final double angularDistance = Math.acos(sinPhyThis*sinPhyThat  + cosPhyThis*cosPhyThat*cosDelta);
+        double sinPhyThis = Math.sin(alt());
+        double sinPhyThat = Math.sin(that.alt());
+        double cosPhyThis = Math.cos(alt());
+        double cosPhyThat = Math.cos(that.alt());
+        double cosDelta = Math.cos(az() - that.az());
+        double angularDistance = Math.acos(sinPhyThis*sinPhyThat  + cosPhyThis*cosPhyThat*cosDelta);
         return angularDistance;
     }
 

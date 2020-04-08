@@ -39,12 +39,12 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
      */
     @Override
     public HorizontalCoordinates apply(EquatorialCoordinates equ){
-        final double decCos = Math.cos(equ.dec());
-        final double decSin = Math.sin(equ.dec());
-        final double hCos = Math.cos(sideralTime - equ.ra());
-        final double hSin = Math.sin(sideralTime - equ.ra());
-        final double altitude = Math.asin(decSin*latSin + decCos*latCos*hCos);
-        final double azimut = Angle.normalizePositive(Math.atan2(-decCos*latCos*hSin, decSin - latSin*Math.sin(altitude)));
+        double decCos = Math.cos(equ.dec());
+        double decSin = Math.sin(equ.dec());
+        double hCos = Math.cos(sideralTime - equ.ra());
+        double hSin = Math.sin(sideralTime - equ.ra());
+        double altitude = Math.asin(decSin*latSin + decCos*latCos*hCos);
+        double azimut = Angle.normalizePositive(Math.atan2(-decCos*latCos*hSin, decSin - latSin*Math.sin(altitude)));
         return HorizontalCoordinates.of(azimut, altitude);
     }
 

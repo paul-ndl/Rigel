@@ -37,8 +37,8 @@ public final class StereographicProjection implements Function<HorizontalCoordin
      * du parallèle passant par le point donné
      */
     public CartesianCoordinates circleCenterForParallel(HorizontalCoordinates hor) {
-        final double x = 0;
-        final double y = phyCos / (Math.sin(hor.alt())+phySin);
+        double x = 0;
+        double y = phyCos / (Math.sin(hor.alt())+phySin);
         return CartesianCoordinates.of(x, y);
     }
 
@@ -51,7 +51,7 @@ public final class StereographicProjection implements Function<HorizontalCoordin
      * du parallèle passant par le point donné
      */
     public double circleRadiusForParallel(HorizontalCoordinates parallel) {
-        final double lat = parallel.alt();
+        double lat = parallel.alt();
         return Math.cos(lat) / (Math.sin(lat)+phySin);
     }
 
@@ -74,13 +74,13 @@ public final class StereographicProjection implements Function<HorizontalCoordin
      * des coordonnées horizontales données
      */
     public CartesianCoordinates apply(HorizontalCoordinates azAlt) {
-        final double altCos = Math.cos(azAlt.alt());
-        final double altSin = Math.sin(azAlt.alt());
-        final double deltaCos = Math.cos(azAlt.az() - lambdaCenter);
-        final double deltaSin = Math.sin(azAlt.az() - lambdaCenter);
-        final double d = 1d / (1 + altSin*phySin + altCos*phyCos*deltaCos);
-        final double x = d * altCos * deltaSin;
-        final double y = d * (altSin*phyCos - altCos*phySin*deltaCos);
+        double altCos = Math.cos(azAlt.alt());
+        double altSin = Math.sin(azAlt.alt());
+        double deltaCos = Math.cos(azAlt.az() - lambdaCenter);
+        double deltaSin = Math.sin(azAlt.az() - lambdaCenter);
+        double d = 1d / (1 + altSin*phySin + altCos*phyCos*deltaCos);
+        double x = d * altCos * deltaSin;
+        double y = d * (altSin*phyCos - altCos*phySin*deltaCos);
         return CartesianCoordinates.of(x, y);
     }
 
@@ -93,13 +93,13 @@ public final class StereographicProjection implements Function<HorizontalCoordin
      * est le point de coordonnées cartésiennes données
      */
     public HorizontalCoordinates inverseApply(CartesianCoordinates xy) {
-        final double x = xy.x();
-        final double y = xy.y();
-        final double p = Math.sqrt(x*x + y*y);
-        final double sinC = (2*p) / (p*p + 1);
-        final double cosC = (1 - p*p) / (p*p + 1);
-        final double lambda = Angle.normalizePositive(Math.atan2(x*sinC, p*phyCos*cosC - y*phySin*sinC) + lambdaCenter);
-        final double phy = Math.asin(cosC*phySin + (y*sinC*phyCos / p));
+        double x = xy.x();
+        double y = xy.y();
+        double p = Math.sqrt(x*x + y*y);
+        double sinC = (2*p) / (p*p + 1);
+        double cosC = (1 - p*p) / (p*p + 1);
+        double lambda = Angle.normalizePositive(Math.atan2(x*sinC, p*phyCos*cosC - y*phySin*sinC) + lambdaCenter);
+        double phy = Math.asin(cosC*phySin + (y*sinC*phyCos / p));
         return HorizontalCoordinates.of(lambda, phy);
     }
 

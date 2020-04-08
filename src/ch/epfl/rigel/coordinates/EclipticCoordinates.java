@@ -16,8 +16,8 @@ import java.util.Locale;
  */
 public final class EclipticCoordinates extends SphericalCoordinates {
 
-    private final static Interval LONGITUDE_INTERVAL = RightOpenInterval.of(0,360);
-    private final static Interval LATITUDE_INTERVAL = ClosedInterval.symmetric(180);
+    private final static Interval LONGITUDE_INTERVAL = RightOpenInterval.of(0,Angle.TAU);
+    private final static Interval LATITUDE_INTERVAL = ClosedInterval.symmetric(Angle.TAU/4);
 
     /**
      * Construit des coordonnées écliptiques
@@ -37,28 +37,9 @@ public final class EclipticCoordinates extends SphericalCoordinates {
      * @throws IllegalArgumentException si longitude ou la latitude n'est pas valide
      */
     public static EclipticCoordinates of(double lon, double lat) {
-        Preconditions.checkArgument(isValidLonDeg(Angle.toDeg(lon)) && isValidLatDeg(Angle.toDeg(lat)));
+        Preconditions.checkInInterval(LONGITUDE_INTERVAL, lon);
+        Preconditions.checkInInterval(LATITUDE_INTERVAL, lat);
         return new EclipticCoordinates(lon, lat);
-    }
-
-    /**
-     * Vérifie que la longitude est valide (appartient à l'intervalle [0°, 360°[)
-     *
-     * @param lonDeg
-     * @return vrai si la longitude est valide
-     */
-    public static boolean isValidLonDeg(double lonDeg) {
-        return LONGITUDE_INTERVAL.contains(lonDeg);
-    }
-
-    /**
-     * Vérifie que la latitude est valide (appartient à l'intervalle [-90°, 90°])
-     *
-     * @param latDeg
-     * @return vrai si la latitude est valide
-     */
-    public static boolean isValidLatDeg(double latDeg) {
-        return LATITUDE_INTERVAL.contains(latDeg);
     }
 
     /**
