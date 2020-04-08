@@ -17,7 +17,7 @@ import java.util.Locale;
 public final class EquatorialCoordinates extends SphericalCoordinates {
 
     private final static Interval RIGHT_ASCENSION_INTERVAL = RightOpenInterval.of(0, Angle.TAU);
-    private final static Interval DECLINATION_INTERVAL = ClosedInterval.symmetric(Angle.TAU/4);
+    private final static Interval DECLINATION_INTERVAL = ClosedInterval.symmetric(Angle.TAU/2);
 
     /**
      * Construit des coordonnées équatoriales

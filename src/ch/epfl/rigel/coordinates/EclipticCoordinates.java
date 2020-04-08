@@ -17,7 +17,7 @@ import java.util.Locale;
 public final class EclipticCoordinates extends SphericalCoordinates {
 
     private final static Interval LONGITUDE_INTERVAL = RightOpenInterval.of(0,Angle.TAU);
-    private final static Interval LATITUDE_INTERVAL = ClosedInterval.symmetric(Angle.TAU/4);
+    private final static Interval LATITUDE_INTERVAL = ClosedInterval.symmetric(Angle.TAU/2);
 
     /**
      * Construit des coordonnées écliptiques
