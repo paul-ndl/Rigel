@@ -19,21 +19,16 @@ public abstract class CelestialObject {
 
     /**
      * Construit un objet céleste
-     * @param name
-     *          le nom
-     * @param equatorialPos
-     *          la position équatoriale
-     * @param angularSize
-     *          la taille angulaire
-     * @param magnitude
-     *          la magnitude
-     * @throws IllegalArgumentException
-     *          si la taille angulaire est négative
-     * @throws NullPointerException
-     *          si le nom ou la position équatoriale sont nuls
+     *
+     * @param name          le nom
+     * @param equatorialPos la position équatoriale
+     * @param angularSize   la taille angulaire
+     * @param magnitude     la magnitude
+     * @throws IllegalArgumentException si la taille angulaire est négative
+     * @throws NullPointerException     si le nom ou la position équatoriale sont nuls
      */
-    CelestialObject(String name, EquatorialCoordinates equatorialPos, float angularSize, float magnitude){
-        Preconditions.checkArgument(angularSize>=0);
+    CelestialObject(String name, EquatorialCoordinates equatorialPos, float angularSize, float magnitude) {
+        Preconditions.checkArgument(angularSize >= 0);
         this.name = Objects.requireNonNull(name);
         this.equatorialPos = Objects.requireNonNull(equatorialPos);
         this.angularSize = angularSize;
@@ -42,49 +37,54 @@ public abstract class CelestialObject {
 
     /**
      * Retourne le nom
+     *
      * @return le nom
      */
-    public String name(){
+    public String name() {
         return name;
     }
 
     /**
      * Retourne la taille angulaire
+     *
      * @return la taille angulaire
      */
-    public double angularSize(){
+    public double angularSize() {
         return angularSize;
     }
 
     /**
      * Retourne la magnitude
+     *
      * @return la magnitude
      */
-    public double magnitude(){
+    public double magnitude() {
         return magnitude;
     }
 
     /**
      * Retourne la position équatoriale
+     *
      * @return la position équatoriale
      */
-    public EquatorialCoordinates equatorialPos(){
+    public EquatorialCoordinates equatorialPos() {
         return equatorialPos;
     }
 
     /**
      * Retourne un texte informatif sur l'objet
+     *
      * @return le nom de l'objet
      */
-    public String info(){
-        return name();
+    public String info() {
+        return name;
     }
 
     /**
      * @see #info()
      */
     @Override
-    public String toString(){
+    public String toString() {
         return info();
     }
 
