@@ -20,18 +20,6 @@ public enum MoonModel implements CelestialObjectModel<Moon> {
     private static final double e = 0.0549;
     private static final double angularSizeUA = Angle.ofDeg(0.5181);
 
-    private static final double CONSTANT_ORBITAL_LONGITUDE = Angle.ofDeg(13.1763966);
-    private static final double CONSTANT_MEAN_ANOMALY = Angle.ofDeg(0.1114041);
-    private static final double CONSTANT_EVECTION = Angle.ofDeg(1.2739);
-    private static final double CONSTANT_ANNUAL_EQUATION = Angle.ofDeg(0.1858);
-    private static final double CONSTANT_A3 = Angle.ofDeg(0.37);
-    private static final double CONSTANT_CENTER_EQUATION = Angle.ofDeg(6.2886);
-    private static final double CONSTANT_A4 = Angle.ofDeg(0.214);
-    private static final double CONSTANT_VARIATION = Angle.ofDeg(0.6583);
-    private static final double CONSTANT_AVERAGE_NODE = Angle.ofDeg(0.0529539);
-    private static final double CONSTANT_CORRECTED_NODE = Angle.ofDeg(0.16);
-
-
     /**
      * Retourne la Lune modélisée pour les arguments donnés
      *
@@ -46,20 +34,20 @@ public enum MoonModel implements CelestialObjectModel<Moon> {
         double lambdaSun = SunModel.SUN.at(daysSinceJ2010, eclipticToEquatorialConversion).eclipticPos().lon();
         double meanAnomalySun = SunModel.SUN.at(daysSinceJ2010, eclipticToEquatorialConversion).meanAnomaly();
         //Calcul de la longitude orbitale
-        double orbitalLon = CONSTANT_ORBITAL_LONGITUDE*daysSinceJ2010 + averageLon;
-        double meanAnomaly = orbitalLon - CONSTANT_MEAN_ANOMALY*daysSinceJ2010 - lonPer;
-        double evection = CONSTANT_EVECTION * Math.sin(2*(orbitalLon-lambdaSun) - meanAnomaly);
-        double annualEquation = CONSTANT_ANNUAL_EQUATION * Math.sin(meanAnomalySun);
-        double a3 = CONSTANT_A3 * Math.sin(meanAnomalySun);
+        double orbitalLon = Angle.ofDeg(13.1763966)*daysSinceJ2010 + averageLon;
+        double meanAnomaly = orbitalLon - Angle.ofDeg(0.1114041)*daysSinceJ2010 - lonPer;
+        double evection = Angle.ofDeg(1.2739) * Math.sin(2*(orbitalLon-lambdaSun) - meanAnomaly);
+        double annualEquation = Angle.ofDeg(0.1858) * Math.sin(meanAnomalySun);
+        double a3 = Angle.ofDeg(0.37) * Math.sin(meanAnomalySun);
         double correctedAnomaly = meanAnomaly + evection - annualEquation - a3;
-        double centerEquation = CONSTANT_CENTER_EQUATION * Math.sin(correctedAnomaly);
-        double a4 = CONSTANT_A4 * Math.sin(2*correctedAnomaly);
+        double centerEquation = Angle.ofDeg(6.2886) * Math.sin(correctedAnomaly);
+        double a4 = Angle.ofDeg(0.214) * Math.sin(2*correctedAnomaly);
         double correctedLon = orbitalLon + evection + centerEquation - annualEquation + a4;
-        double variation = CONSTANT_VARIATION * Math.sin(2*(correctedLon-lambdaSun));
+        double variation = Angle.ofDeg(0.6583) * Math.sin(2*(correctedLon-lambdaSun));
         double trueLon = correctedLon + variation;
         //Calcul de la longitude du noeud ascendant
-        double averageLonNode = lonNode - CONSTANT_AVERAGE_NODE*daysSinceJ2010;
-        double correctedLonNode = averageLonNode - CONSTANT_CORRECTED_NODE*Math.sin(meanAnomalySun);
+        double averageLonNode = lonNode - Angle.ofDeg(0.0529539)*daysSinceJ2010;
+        double correctedLonNode = averageLonNode - Angle.ofDeg(0.16)*Math.sin(meanAnomalySun);
         //Calcul des coordonnées écliptiques
         double lambda = Angle.normalizePositive(Math.atan2(Math.sin(trueLon-correctedLonNode) * Math.cos(i), Math.cos(trueLon-correctedLonNode)) + correctedLonNode);
         double beta = Math.asin(Math.sin(trueLon - correctedLonNode) * Math.sin(i));
