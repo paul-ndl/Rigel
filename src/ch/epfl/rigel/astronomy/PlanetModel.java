@@ -39,35 +39,26 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
      */
     public final static List<PlanetModel> ALL = List.of(values());
 
-    private final static double TAU_PER_YEAR = Angle.TAU/365.242191;
+    private final static double TAU_PER_YEAR = Angle.TAU / 365.242191;
 
     private final String name;
     private final double orbitalRev, lonJ2010, lonPer, e, a, i, omega, angularSizeUA, magnitude;
 
     /**
      * Construit un modèle d'une planète
-     * @param name
-     *          le nom
-     * @param orbitalRev
-     *          la période de révolution en années tropiques
-     * @param lonJ2010
-     *          la longitude à J2010 en degrés
-     * @param lonPer
-     *          la longitude au périgée en degrés
-     * @param e
-     *          l'excentricité
-     * @param a
-     *          le demi grand-axe de l'orbite
-     * @param i
-     *          l'inclinaison de l'orbite à l'écliptique en degrés
-     * @param omega
-     *          la longitude du noeud ascendant en degrés
-     * @param teta0
-     *          la taille angulaire en secondes d'arc
-     * @param magnitude
-     *          la magnitude
+     *
+     * @param name       le nom
+     * @param orbitalRev la période de révolution en années tropiques
+     * @param lonJ2010   la longitude à J2010 en degrés
+     * @param lonPer     la longitude au périgée en degrés
+     * @param e          l'excentricité
+     * @param a          le demi grand-axe de l'orbite
+     * @param i          l'inclinaison de l'orbite à l'écliptique en degrés
+     * @param omega      la longitude du noeud ascendant en degrés
+     * @param teta0      la taille angulaire en secondes d'arc
+     * @param magnitude  la magnitude
      */
-    PlanetModel(String name, double orbitalRev, double lonJ2010, double lonPer, double e, double a, double i, double omega, double teta0, double magnitude){
+    PlanetModel(String name, double orbitalRev, double lonJ2010, double lonPer, double e, double a, double i, double omega, double teta0, double magnitude) {
         this.name = name;
         this.orbitalRev = orbitalRev;
         this.lonJ2010 = Angle.ofDeg(lonJ2010);
@@ -82,58 +73,72 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
 
     /**
      * Retourne la planète modélisée pour les arguments donnés
-     * @see CelestialObjectModel#at(double, EclipticToEquatorialConversion)
-     * @param daysSinceJ2010
-     *             le nombre de jours depuis l'époque J2010
-     * @param eclipticToEquatorialConversion
-     *             la conversion
+     *
+     * @param daysSinceJ2010                 le nombre de jours depuis l'époque J2010
+     * @param eclipticToEquatorialConversion la conversion
      * @return la planète modélisée pour les arguments donnés
+     * @see CelestialObjectModel#at(double, EclipticToEquatorialConversion)
      */
     @Override
-    public Planet at(double daysSinceJ2010, EclipticToEquatorialConversion eclipticToEquatorialConversion){
-        final double radius = orbitalCoordinates(daysSinceJ2010)[0];
-        final double lon = orbitalCoordinates(daysSinceJ2010)[1];
-        final double lat = Math.asin(Math.sin(lon-omega)*Math.sin(i));
-        final double rFinal = radius * Math.cos(lat);
-        final double lFinal = Math.atan2(Math.sin(lon-omega)*Math.cos(i), Math.cos(lon-omega)) + omega;
-        final double rEarth = EARTH.orbitalCoordinates(daysSinceJ2010)[0];
-        final double lEarth = EARTH.orbitalCoordinates(daysSinceJ2010)[1];
+    public Planet at(double daysSinceJ2010, EclipticToEquatorialConversion eclipticToEquatorialConversion) {
+        final double[] orbitalCoordinates = orbitalCoordinates(daysSinceJ2010);
+        final double radius = orbitalCoordinates[0];
+        final double lon = orbitalCoordinates[1];
+        final double[] earthOrbitalCoordinates = EARTH.orbitalCoordinates(daysSinceJ2010);
+        final double earthRadius = earthOrbitalCoordinates[0];
+        final double earthLon = earthOrbitalCoordinates[1];
+        final double[] eclipticCoordinates = eclipticCoordinates(radius, lon);
+        final double projRadius = eclipticCoordinates[0];
+        final double eclLon = eclipticCoordinates[1];
+        final double eclLat = eclipticCoordinates[2];
+
         final double lambda, beta;
-        if(a<1){
-            lambda = Angle.normalizePositive(Math.PI + lEarth + Math.atan2(rFinal*Math.sin(lEarth-lFinal), rEarth-rFinal*Math.cos(lEarth-lFinal)));
+        if (a < 1) {
+            lambda = Angle.normalizePositive(Math.PI + earthLon + Math.atan2(projRadius * Math.sin(earthLon-eclLon), earthRadius - projRadius*Math.cos(earthLon-eclLon)));
         } else {
-            lambda = Angle.normalizePositive(lFinal + Math.atan2(rEarth*Math.sin(lFinal-lEarth), rFinal-rEarth*Math.cos(lFinal-lEarth)));
+            lambda = Angle.normalizePositive(eclLon + Math.atan2(earthRadius * Math.sin(eclLon-earthLon), projRadius - earthRadius*Math.cos(eclLon-earthLon)));
         }
-        beta = Math.atan((rFinal*Math.tan(lat)*Math.sin(lambda-lFinal))/(rEarth*Math.sin(lFinal-lEarth)));
-        final double p = Math.sqrt(rEarth*rEarth + radius*radius - 2*rEarth*radius*Math.cos(lon-lEarth)*Math.cos(lat));
-        final double angularSize = angularSizeUA/p;
-        final double f = (1+Math.cos(lambda-lon))/2;
-        final double magnitudeF = magnitude + 5*Math.log10(radius*p/Math.sqrt(f));
+        beta = Math.atan((projRadius * Math.tan(eclLat) * Math.sin(lambda-eclLon)) / (earthRadius * Math.sin(eclLon-earthLon)));
+
+        final double p = Math.sqrt(earthRadius*earthRadius + radius*radius - 2*earthRadius*radius*Math.cos(lon-earthLon)*Math.cos(eclLat));
+        final double angularSize = angularSizeUA / p;
+        final double f = (1 + Math.cos(lambda-lon)) / 2;
+        final double magnitudeF = magnitude + 5 * Math.log10(radius*p / Math.sqrt(f));
+
         return new Planet(name, eclipticToEquatorialConversion.apply(EclipticCoordinates.of(lambda, beta)), (float) angularSize, (float) magnitudeF);
     }
 
     /**
-     * Retourne le rayon et la longitude orbitales pour
+     * Retourne le rayon et la longitude orbitale pour
      * le nombre de jours depuis l'époque J2010 donné
-     * @param daysSinceJ2010
-     *          le nombre de jours depuis l'époque J2010
-     * @return le rayon et la longitude orbitales pour
+     *
+     * @param daysSinceJ2010 le nombre de jours depuis l'époque J2010
+     * @return le rayon et la longitude orbitale pour
      * le nombre de jours depuis l'époque J2010 donné
      */
-    private double[] orbitalCoordinates(double daysSinceJ2010){
-        final double meanAnomaly = TAU_PER_YEAR*(daysSinceJ2010/orbitalRev) + lonJ2010 - lonPer;
-        final double trueAnomaly = meanAnomaly + 2*e*Math.sin(meanAnomaly);
-        final double radius = (a*(1 - e*e) / (1 + e*Math.cos(trueAnomaly)));
+    private double[] orbitalCoordinates(double daysSinceJ2010) {
+        final double meanAnomaly = TAU_PER_YEAR * (daysSinceJ2010 / orbitalRev) + lonJ2010 - lonPer;
+        final double trueAnomaly = meanAnomaly + 2 * e * Math.sin(meanAnomaly);
+        final double radius = (a * (1 - e * e)) / (1 + e * Math.cos(trueAnomaly));
         final double lon = trueAnomaly + lonPer;
         final double[] orbitalCoordinates = {radius, lon};
         return orbitalCoordinates;
     }
 
-    private double[] eclipticCoordinates(double radius, double lon){
-        final double eclLat = Math.asin(Math.sin(lon-omega) * Math.sin(i));
-        final double eclRadius = radius * Math.cos(eclLat);
-        final double eclLon = Math.atan2(Math.sin(lon-omega) * Math.cos(i), Math.cos(lon-omega)) + omega;
-        final double[] eclipticCoordinates = {eclRadius, eclLon, eclLat};
+    /**
+     * Retourne la projection du rayon, la longitude et la latitude écliptiques pour
+     * les coordonnées orbitales données
+     *
+     * @param radius le rayon
+     * @param lon    la longitude orbitale
+     * @return la projection du rayon, la longitude et la latitude écliptiques pour
+     * les coordonnées orbitales données
+     */
+    private double[] eclipticCoordinates(double radius, double lon) {
+        final double eclLat = Math.asin(Math.sin(lon - omega) * Math.sin(i));
+        final double projRadius = radius * Math.cos(eclLat);
+        final double eclLon = Math.atan2(Math.sin(lon - omega) * Math.cos(i), Math.cos(lon - omega)) + omega;
+        final double[] eclipticCoordinates = {projRadius, eclLon, eclLat};
         return eclipticCoordinates;
     }
 
