@@ -4,8 +4,6 @@ import ch.epfl.rigel.coordinates.*;
 
 import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import static ch.epfl.rigel.astronomy.Epoch.J2010;
 import static ch.epfl.rigel.astronomy.MoonModel.MOON;

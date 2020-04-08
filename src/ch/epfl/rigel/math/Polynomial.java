@@ -2,9 +2,6 @@ package ch.epfl.rigel.math;
 
 import ch.epfl.rigel.Preconditions;
 
-import java.util.Arrays;
-import java.util.Locale;
-
 import static java.lang.System.arraycopy;
 
 /**
