@@ -14,9 +14,9 @@ import java.util.function.Function;
  */
 public final class EquatorialToHorizontalConversion implements Function<EquatorialCoordinates, HorizontalCoordinates> {
 
+
+    private final double latCos, latSin;
     private final double sideralTime;
-    private final double latCos;
-    private final double latSin;
 
     /**
      * Construit une conversion entre les coordonnées équatoriales et horizontales
@@ -26,9 +26,8 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
      *          le lieu de la conversion
      */
     public EquatorialToHorizontalConversion(ZonedDateTime when, GeographicCoordinates where){
-        final double latitude = where.lat();
-        latCos = Math.cos(latitude);
-        latSin = Math.sin(latitude);
+        latCos = Math.cos(where.lat());
+        latSin = Math.sin(where.lat());
         sideralTime = SiderealTime.local(when, where);
     }
 
@@ -40,11 +39,12 @@ public final class EquatorialToHorizontalConversion implements Function<Equatori
      */
     @Override
     public HorizontalCoordinates apply(EquatorialCoordinates equ){
-        final double ra = equ.ra();
-        final double dec = equ.dec();
-        final double horairAngle = sideralTime - ra;
-        final double altitude = Math.asin(Math.sin(dec) * latSin + Math.cos(dec) * latCos * Math.cos(horairAngle));
-        final double azimut = Angle.normalizePositive(Math.atan2(-Math.cos(dec) * latCos * Math.sin(horairAngle), Math.sin(dec) - latSin * Math.sin(altitude)));
+        final double decCos = Math.cos(equ.dec());
+        final double decSin = Math.sin(equ.dec());
+        final double hCos = Math.cos(sideralTime - equ.ra());
+        final double hSin = Math.sin(sideralTime - equ.ra());
+        final double altitude = Math.asin(decSin*latSin + decCos*latCos*hCos);
+        final double azimut = Angle.normalizePositive(Math.atan2(-decCos*latCos*hSin, decSin - latSin*Math.sin(altitude)));
         return HorizontalCoordinates.of(azimut, altitude);
     }
 

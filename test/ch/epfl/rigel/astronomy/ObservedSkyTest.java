@@ -1,16 +1,5 @@
 package ch.epfl.rigel.astronomy;
 
-import ch.epfl.rigel.astronomy.Asterism;
-import ch.epfl.rigel.astronomy.AsterismLoader;
-import ch.epfl.rigel.astronomy.Epoch;
-import ch.epfl.rigel.astronomy.HygDatabaseLoader;
-import ch.epfl.rigel.astronomy.MoonModel;
-import ch.epfl.rigel.astronomy.ObservedSky;
-import ch.epfl.rigel.astronomy.Planet;
-import ch.epfl.rigel.astronomy.PlanetModel;
-import ch.epfl.rigel.astronomy.Star;
-import ch.epfl.rigel.astronomy.StarCatalogue;
-import ch.epfl.rigel.astronomy.SunModel;
 import ch.epfl.rigel.coordinates.*;
 import org.junit.jupiter.api.Test;
 

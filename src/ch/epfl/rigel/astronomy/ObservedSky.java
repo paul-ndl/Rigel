@@ -16,12 +16,15 @@ public final class ObservedSky {
     private final StarCatalogue catalogue;
 
     private final Sun sun;
-    private final Moon moon;
-    private final List<Planet> planets = new ArrayList<>();
-    private final List<Star> stars;
     private final CartesianCoordinates sunPosition;
+
+    private final Moon moon;
     private final CartesianCoordinates moonPosition;
+
+    private final List<Planet> planets = new ArrayList<>();
     private final double[] planetPositions = new double[14];
+
+    private final List<Star> stars;
     private final double[] starPositions;
 
     private final Map<CelestialObject, CartesianCoordinates> coordMap = new HashMap<>();
@@ -33,22 +36,21 @@ public final class ObservedSky {
         this.catalogue = catalogue;
 
         sun = SUN.at(daysSinceJ2010, eclipticToEquatorialConversion);
-        moon = MOON.at(daysSinceJ2010, eclipticToEquatorialConversion);
-        PlanetModel.ALL.stream().filter(p -> p!=PlanetModel.EARTH).forEach(p -> planets.add(p.at(daysSinceJ2010, eclipticToEquatorialConversion)));
-        stars = List.copyOf(catalogue.stars());
-
         sunPosition = stereographicProjection.apply(equatorialToHorizontalConversion.apply(sun.equatorialPos()));
         coordMap.put(sun, sunPosition);
 
+        moon = MOON.at(daysSinceJ2010, eclipticToEquatorialConversion);
         moonPosition = stereographicProjection.apply(equatorialToHorizontalConversion.apply(moon.equatorialPos()));
         coordMap.put(moon, moonPosition);
 
+        PlanetModel.ALL.stream().filter(p -> p!=PlanetModel.EARTH).forEach(p -> planets.add(p.at(daysSinceJ2010, eclipticToEquatorialConversion)));
         for (int i = 0; i < 7; i++) {
-            planetPositions[2*i] = stereographicProjection.apply(equatorialToHorizontalConversion.apply(planets.get(i).equatorialPos())).x();
-            planetPositions[2*i+1] = stereographicProjection.apply(equatorialToHorizontalConversion.apply(planets.get(i).equatorialPos())).y();
-            coordMap.put(planets.get(i), CartesianCoordinates.of(planetPositions[2*i], planetPositions[2*i+1]));
+                planetPositions[2*i] = stereographicProjection.apply(equatorialToHorizontalConversion.apply(planets.get(i).equatorialPos())).x();
+                planetPositions[2*i+1] = stereographicProjection.apply(equatorialToHorizontalConversion.apply(planets.get(i).equatorialPos())).y();
+                coordMap.put(planets.get(i), CartesianCoordinates.of(planetPositions[2*i], planetPositions[2*i+1]));
         }
 
+        this.stars = List.copyOf(catalogue.stars());
         starPositions = new double[stars.size()*2];
         for (int i = 0; i < stars().size(); i++) {
             starPositions[2*i] = stereographicProjection.apply(equatorialToHorizontalConversion.apply(stars.get(i).equatorialPos())).x();
