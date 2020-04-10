@@ -83,7 +83,7 @@ public final class SkyCanvasPainter {
         Point2D point = planeToCanvas.deltaTransform(radius, radius);
         double trueRadius = Math.abs(point.getX()) + Math.abs(point.getY());
         ctx.setFill(white);
-        ctx.fillOval(transformedCoordinates[0]-trueRadius/2, transformedCoordinates[1]-trueRadius/2, radius, radius);
+        ctx.fillOval(transformedCoordinates[0]-trueRadius/2, transformedCoordinates[1]-trueRadius/2, trueRadius, trueRadius);
     }
 
     public void drawAsterism(ObservedSky sky, Transform planeToCanvas){
