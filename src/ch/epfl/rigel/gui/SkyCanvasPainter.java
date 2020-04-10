@@ -86,7 +86,7 @@ public final class SkyCanvasPainter {
         ctx.fillOval(transformedCoordinates[0]-trueRadius/2, transformedCoordinates[1]-trueRadius/2, radius, radius);
     }
 
-    public void drawAsterism(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas){
+    public void drawAsterism(ObservedSky sky, Transform planeToCanvas){
         ctx.setStroke(blue);
         ctx.setLineWidth(1);
         double[] previousCoordinates = new double[2];
@@ -110,7 +110,7 @@ public final class SkyCanvasPainter {
         }
     }
 
-    public void drawHorizon(StereographicProjection projection, Transform planeToCanvas, HorizontalCoordinates hor){
+    public void drawHorizon(StereographicProjection projection, Transform planeToCanvas){
         ctx.setStroke(red);
         ctx.setLineWidth(2);
         CartesianCoordinates coordinates = projection.circleCenterForParallel(HorizontalCoordinates.of(0,0));
