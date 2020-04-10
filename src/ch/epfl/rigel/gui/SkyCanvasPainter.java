@@ -8,6 +8,7 @@ import ch.epfl.rigel.coordinates.StereographicProjection;
 import ch.epfl.rigel.math.Angle;
 import ch.epfl.rigel.math.ClosedInterval;
 import javafx.geometry.Point2D;
+import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -65,7 +66,7 @@ public final class SkyCanvasPainter {
     public void drawSun(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas){
         double[] transformedCoordinates = {sky.sunPosition().x(), sky.sunPosition().y()};
         planeToCanvas.transform2DPoints(transformedCoordinates, 0, transformedCoordinates, 0, 1);
-        final double radius = projection.applyToAngle(Angle.ofDeg(0.5))/2;
+        final double radius = projection.applyToAngle(sky.sun().angularSize())/2;
         Point2D point = planeToCanvas.deltaTransform(radius, radius);
         double trueRadius = Math.abs(point.getX()) + Math.abs(point.getY());
         ctx.setFill(opaqueYellow);
@@ -79,7 +80,7 @@ public final class SkyCanvasPainter {
     public void drawMoon(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas){
         double[] transformedCoordinates = {sky.moonPosition().x(), sky.moonPosition().y()};
         planeToCanvas.transform2DPoints(transformedCoordinates, 0, transformedCoordinates, 0, 1);
-        final double radius = projection.applyToAngle(Angle.ofDeg(0.5))/2;
+        final double radius = projection.applyToAngle(sky.moon().angularSize())/2;
         Point2D point = planeToCanvas.deltaTransform(radius, radius);
         double trueRadius = Math.abs(point.getX()) + Math.abs(point.getY());
         ctx.setFill(white);
@@ -120,8 +121,21 @@ public final class SkyCanvasPainter {
         Point2D point = planeToCanvas.deltaTransform(radius, radius);
         double trueRadius = Math.abs(point.getX()) + Math.abs(point.getY());
         ctx.strokeOval(transformedCoordinates[0]-trueRadius/2, transformedCoordinates[1]-trueRadius/2, trueRadius, trueRadius);
+        drawCardinalPoints(projection, planeToCanvas);
     }
 
+    private void drawCardinalPoints(StereographicProjection projection, Transform planeToCanvas){
+        ctx.setFill(Color.RED);
+        ctx.setTextBaseline(VPos.TOP);
+        for (int i=0; i<8; ++i){
+            HorizontalCoordinates hor = HorizontalCoordinates.ofDeg(45*i, -0.5);
+            CartesianCoordinates coordinates = projection.apply(hor);
+            double[] transformedCoordinates = {coordinates.x(), coordinates.y()};
+            planeToCanvas.transform2DPoints(transformedCoordinates, 0, transformedCoordinates, 0, 1);
+            System.out.println(transformedCoordinates[0] + " " + transformedCoordinates[1]);
+            ctx.fillText(hor.azOctantName("N", "E", "S", "O"), transformedCoordinates[0], transformedCoordinates[1]);
+        }
+    }
 
     private double size(double magnitude, StereographicProjection projection){
         final double clipedMagnitude = interval.clip(magnitude);
