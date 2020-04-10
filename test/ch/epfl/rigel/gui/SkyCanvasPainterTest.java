@@ -62,9 +62,9 @@ public final class SkyCanvasPainterTest extends Application {
             painter.clear();
             painter.drawAsterism(sky, projection, planeToCanvas);
             painter.drawStars(sky, projection, planeToCanvas);
-            painter.drawPlanets(sky, projection, planeToCanvas);
-            painter.drawSun(sky, projection, planeToCanvas);
-            painter.drawMoon(sky, projection, planeToCanvas);
+            //painter.drawPlanets(sky, projection, planeToCanvas);
+            //painter.drawSun(sky, projection, planeToCanvas);
+            //painter.drawMoon(sky, projection, planeToCanvas);
             painter.drawHorizon(projection, planeToCanvas, projCenter);
 
             WritableImage fxImage =

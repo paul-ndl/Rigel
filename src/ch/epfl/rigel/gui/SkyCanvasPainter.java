@@ -7,6 +7,7 @@ import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import ch.epfl.rigel.coordinates.StereographicProjection;
 import ch.epfl.rigel.math.Angle;
 import ch.epfl.rigel.math.ClosedInterval;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -41,9 +42,11 @@ public final class SkyCanvasPainter {
         double[] transformedCoordinates = sky.starPositions();
         planeToCanvas.transform2DPoints(transformedCoordinates, 0, transformedCoordinates, 0, transformedCoordinates.length/2);
         for(int i=0; i<sky.stars().size(); ++i){
-            double radius = 3000*size(sky.stars().get(i).magnitude(), projection)/2; //*2600??????
+            double radius = size(sky.stars().get(i).magnitude(), projection)/2;
+            Point2D point = planeToCanvas.deltaTransform(radius, radius);
+            double trueRadius = Math.abs(point.getX()) + Math.abs(point.getY());
             ctx.setFill(BlackBodyColor.colorForTemperature(sky.stars().get(i).colorTemperature()));
-            ctx.fillOval(transformedCoordinates[2*i]-radius/2, transformedCoordinates[2*i+1]-radius/2, radius, radius);
+            ctx.fillOval(transformedCoordinates[2*i]-trueRadius/2, transformedCoordinates[2*i+1]-trueRadius/2, trueRadius, trueRadius);
         }
     }
 
@@ -52,29 +55,35 @@ public final class SkyCanvasPainter {
         double[] transformedCoordinates = sky.planetPositions();
         planeToCanvas.transform2DPoints(transformedCoordinates, 0, transformedCoordinates, 0, transformedCoordinates.length/2);
         for(int i=0; i<sky.planets().size(); ++i){
-            final double radius = 3000*size(sky.planets().get(i).magnitude(), projection)/2;
-            ctx.fillOval(transformedCoordinates[2*i]-radius/2, transformedCoordinates[2*i+1]-radius/2, radius, radius);
+            final double radius = size(sky.planets().get(i).magnitude(), projection)/2;
+            Point2D point = planeToCanvas.deltaTransform(radius, radius);
+            double trueRadius = Math.abs(point.getX()) + Math.abs(point.getY());
+            ctx.fillOval(transformedCoordinates[2*i]-trueRadius/2, transformedCoordinates[2*i+1]-trueRadius/2, trueRadius, trueRadius);
         }
     }
 
     public void drawSun(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas){
         double[] transformedCoordinates = {sky.sunPosition().x(), sky.sunPosition().y()};
         planeToCanvas.transform2DPoints(transformedCoordinates, 0, transformedCoordinates, 0, 1);
-        final double radius = 3000*projection.applyToAngle(Angle.ofDeg(0.5))/2;
+        final double radius = projection.applyToAngle(Angle.ofDeg(0.5))/2;
+        Point2D point = planeToCanvas.deltaTransform(radius, radius);
+        double trueRadius = Math.abs(point.getX()) + Math.abs(point.getY());
         ctx.setFill(opaqueYellow);
-        ctx.fillOval(transformedCoordinates[0]-radius/2, transformedCoordinates[1]-radius/2, 2.2*radius, 2.2*radius);
+        ctx.fillOval(transformedCoordinates[0]-2.2*trueRadius/2, transformedCoordinates[1]-2.2*trueRadius/2, 2.2*trueRadius, 2.2*trueRadius);
         ctx.setFill(yellow);
-        ctx.fillOval(transformedCoordinates[0]-radius/2, transformedCoordinates[1]-radius/2, 2*radius, 2*radius);
+        ctx.fillOval(transformedCoordinates[0]-2*trueRadius/2, transformedCoordinates[1]-2*trueRadius/2, 2*trueRadius, 2*trueRadius);
         ctx.setFill(white);
-        ctx.fillOval(transformedCoordinates[0]-radius/2, transformedCoordinates[1]-radius/2, radius, radius);
+        ctx.fillOval(transformedCoordinates[0]-radius/2, transformedCoordinates[1]-trueRadius/2, trueRadius, trueRadius);
     }
 
     public void drawMoon(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas){
         double[] transformedCoordinates = {sky.moonPosition().x(), sky.moonPosition().y()};
         planeToCanvas.transform2DPoints(transformedCoordinates, 0, transformedCoordinates, 0, 1);
-        final double radius = 3000*projection.applyToAngle(Angle.ofDeg(0.5))/2;
+        final double radius = projection.applyToAngle(Angle.ofDeg(0.5))/2;
+        Point2D point = planeToCanvas.deltaTransform(radius, radius);
+        double trueRadius = Math.abs(point.getX()) + Math.abs(point.getY());
         ctx.setFill(white);
-        ctx.fillOval(transformedCoordinates[0]-radius/2, transformedCoordinates[1]-radius/2, radius, radius);
+        ctx.fillOval(transformedCoordinates[0]-trueRadius/2, transformedCoordinates[1]-trueRadius/2, radius, radius);
     }
 
     public void drawAsterism(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas){
@@ -106,12 +115,11 @@ public final class SkyCanvasPainter {
         ctx.setLineWidth(2);
         CartesianCoordinates coordinates = projection.circleCenterForParallel(HorizontalCoordinates.of(0,0));
         double[] transformedCoordinates = {coordinates.x(), coordinates.y()};
-        System.out.println(transformedCoordinates[0]);
-        System.out.println(transformedCoordinates[1]);
         planeToCanvas.transform2DPoints(transformedCoordinates, 0, transformedCoordinates, 0, 1);
-        //double r = projection.circleRadiusForParallel(HorizontalCoordinates.of(0,0));
-        double radius = 4250;
-        ctx.strokeOval(transformedCoordinates[0]-radius/2, transformedCoordinates[1]-radius/2, radius, radius);
+        double radius = projection.circleRadiusForParallel(HorizontalCoordinates.of(0,0));
+        Point2D point = planeToCanvas.deltaTransform(radius, radius);
+        double trueRadius = Math.abs(point.getX()) + Math.abs(point.getY());
+        ctx.strokeOval(transformedCoordinates[0]-trueRadius/2, transformedCoordinates[1]-trueRadius/2, trueRadius, trueRadius);
     }
 
 
