@@ -71,9 +71,9 @@ public final class SkyCanvasPainter {
         ctx.setFill(opaqueYellow);
         ctx.fillOval(transformedCoordinates[0]-2.2*trueRadius/2, transformedCoordinates[1]-2.2*trueRadius/2, 2.2*trueRadius, 2.2*trueRadius);
         ctx.setFill(yellow);
-        ctx.fillOval(transformedCoordinates[0]-2*trueRadius/2, transformedCoordinates[1]-2*trueRadius/2, 2*trueRadius, 2*trueRadius);
+        ctx.fillOval(transformedCoordinates[0]-(trueRadius+2)/2, transformedCoordinates[1]-(trueRadius+2)/2, (trueRadius+2), (trueRadius+2));
         ctx.setFill(white);
-        ctx.fillOval(transformedCoordinates[0]-radius/2, transformedCoordinates[1]-trueRadius/2, trueRadius, trueRadius);
+        ctx.fillOval(transformedCoordinates[0]-trueRadius/2, transformedCoordinates[1]-trueRadius/2, trueRadius, trueRadius);
     }
 
     public void drawMoon(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas){
