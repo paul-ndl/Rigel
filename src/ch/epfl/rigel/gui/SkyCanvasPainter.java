@@ -29,7 +29,7 @@ public final class SkyCanvasPainter {
     private static final Color RED = Color.RED;
     private static final Color BLACK = Color.BLACK;
 
-    private final ClosedInterval interval = ClosedInterval.of(-2, 5);
+    private static final ClosedInterval interval = ClosedInterval.of(-2, 5);
 
     public SkyCanvasPainter(Canvas canvas) {
         this.canvas = canvas;
