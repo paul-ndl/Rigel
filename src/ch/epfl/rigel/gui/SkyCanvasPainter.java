@@ -43,11 +43,11 @@ public final class SkyCanvasPainter {
         double[] transformedCoordinates = sky.starPositions();
         planeToCanvas.transform2DPoints(transformedCoordinates, 0, transformedCoordinates, 0, transformedCoordinates.length/2);
         for(int i=0; i<sky.stars().size(); ++i){
-            double radius = size(sky.stars().get(i).magnitude(), projection)/2;
-            Point2D point = planeToCanvas.deltaTransform(radius, radius);
-            double trueRadius = Math.abs(point.getX()) + Math.abs(point.getY());
+            double diametre = size(sky.stars().get(i).magnitude(), projection);
+            Point2D point = planeToCanvas.deltaTransform(diametre, 0);
+            double trueDiametre = Math.abs(point.getX());
             ctx.setFill(BlackBodyColor.colorForTemperature(sky.stars().get(i).colorTemperature()));
-            ctx.fillOval(transformedCoordinates[2*i]-trueRadius/2, transformedCoordinates[2*i+1]-trueRadius/2, trueRadius, trueRadius);
+            ctx.fillOval(transformedCoordinates[2*i]-trueDiametre/2, transformedCoordinates[2*i+1]-trueDiametre/2, trueDiametre, trueDiametre);
         }
     }
 
@@ -56,10 +56,10 @@ public final class SkyCanvasPainter {
         double[] transformedCoordinates = sky.planetPositions();
         planeToCanvas.transform2DPoints(transformedCoordinates, 0, transformedCoordinates, 0, transformedCoordinates.length/2);
         for(int i=0; i<sky.planets().size(); ++i){
-            final double radius = size(sky.planets().get(i).magnitude(), projection)/2;
-            Point2D point = planeToCanvas.deltaTransform(radius, radius);
-            double trueRadius = Math.abs(point.getX()) + Math.abs(point.getY());
-            ctx.fillOval(transformedCoordinates[2*i]-trueRadius/2, transformedCoordinates[2*i+1]-trueRadius/2, trueRadius, trueRadius);
+            final double diametre = size(sky.planets().get(i).magnitude(), projection);
+            Point2D point = planeToCanvas.deltaTransform(diametre, 0);
+            double trueDiametre = Math.abs(point.getX());
+            ctx.fillOval(transformedCoordinates[2*i]-trueDiametre/2, transformedCoordinates[2*i+1]-trueDiametre/2, trueDiametre, trueDiametre);
         }
     }
 
@@ -132,7 +132,6 @@ public final class SkyCanvasPainter {
             CartesianCoordinates coordinates = projection.apply(hor);
             double[] transformedCoordinates = {coordinates.x(), coordinates.y()};
             planeToCanvas.transform2DPoints(transformedCoordinates, 0, transformedCoordinates, 0, 1);
-            System.out.println(transformedCoordinates[0] + " " + transformedCoordinates[1]);
             ctx.fillText(hor.azOctantName("N", "E", "S", "O"), transformedCoordinates[0], transformedCoordinates[1]);
         }
     }
