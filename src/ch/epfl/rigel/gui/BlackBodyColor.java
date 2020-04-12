@@ -16,12 +16,11 @@ import java.util.Map;
 
 public class BlackBodyColor {
 
-    private final static int HASHTAG_START = 0;
-    private final static int HASHTAG_END = 1;
+    private BlackBodyColor(){}
+
     private final static int TEMP_START = 1;
     private final static int TEMP_END = 6;
     private final static int DEG_START = 10;
-    private final static int DEG_END = 15;
     private final static int COLOR_START = 80;
     private final static int COLOR_END = 87;
 
@@ -36,7 +35,7 @@ public class BlackBodyColor {
         String line;
         try(BufferedReader r = new BufferedReader(new InputStreamReader(BlackBodyColor.class.getResourceAsStream(BBR_COLOR), US_ASCII))){
             while((line = r.readLine()) != null) {
-                if(line.substring(HASHTAG_START, HASHTAG_END).equals(" ") && line.substring(DEG_START, DEG_END).equals("10deg")) {
+                if(line.startsWith(" ") && line.startsWith("10deg", DEG_START)) {
                     Color color = Color.web(line.substring(COLOR_START, COLOR_END));
                     tempColor.put((int) Double.parseDouble(line.substring(TEMP_START, TEMP_END)), color);
                 }

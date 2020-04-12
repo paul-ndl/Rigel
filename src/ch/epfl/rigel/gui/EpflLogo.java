@@ -33,7 +33,7 @@ public class EpflLogo extends Application {
         ctx.setFill(Color.WHITE);
         ctx.fillRect(50, 126, 30, 26);
         ctx.fillRect(450, 126, 30, 26);*/
-        ctx.setStroke(Color.RED);
+        /*ctx.setStroke(Color.RED);
         double radius = 50;
         ctx.strokeOval(400-radius/2, 300-radius/2, radius, radius);
         ctx.setStroke(Color.BLUE);
@@ -41,8 +41,16 @@ public class EpflLogo extends Application {
         ctx.beginPath();
         ctx.lineTo(400-radius/2, 300-radius/2);
         ctx.lineTo(400-radius/2, radius);
-        ctx.stroke();
+        ctx.stroke();*/
 
+        ctx.setStroke(Color.RED);
+        ctx.beginPath();
+        //ctx.moveTo(0,0);
+        ctx.lineTo(200, 200);
+        ctx.setStroke(Color.GREEN);
+        ctx.lineTo(300,300);
+        ctx.closePath();
+        ctx.stroke();
 
 
         primaryStage.setScene(new Scene(new BorderPane(canvas)));
