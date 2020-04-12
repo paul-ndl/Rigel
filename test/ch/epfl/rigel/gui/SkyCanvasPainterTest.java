@@ -41,6 +41,9 @@ public final class SkyCanvasPainterTest extends Application {
                     .build();
 
 
+            long time0 = 0;
+            long timeAvg = 0;
+
             ZonedDateTime when =
                     ZonedDateTime.parse("2020-02-17T20:15:00+01:00");
             GeographicCoordinates where =
@@ -59,6 +62,8 @@ public final class SkyCanvasPainterTest extends Application {
             SkyCanvasPainter painter =
                     new SkyCanvasPainter(canvas);
 
+            time0 = System.nanoTime();
+
             painter.clear();
             painter.drawAsterism(sky, planeToCanvas);
             painter.drawStars(sky, projection, planeToCanvas);
@@ -66,6 +71,10 @@ public final class SkyCanvasPainterTest extends Application {
             painter.drawSun(sky, projection, planeToCanvas);
             painter.drawMoon(sky, projection, planeToCanvas);
             painter.drawHorizon(projection, planeToCanvas);
+
+            timeAvg = System.nanoTime() - time0;
+
+            System.out.println((timeAvg / 1000000d)+" in milliseconds"); //PERFORMANCE BENCH
 
             WritableImage fxImage =
                     canvas.snapshot(null, null);

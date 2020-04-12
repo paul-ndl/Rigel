@@ -144,7 +144,7 @@ public final class SkyCanvasPainter {
 
     private double size(double magnitude, StereographicProjection projection) {
         final double clipedMagnitude = interval.clip(magnitude);
-        final double function = (99 - 17 * clipedMagnitude) / 140;
+        final double function = (99 - 17*clipedMagnitude) / 140;
         return function * projection.applyToAngle(Angle.ofDeg(0.5));
     }
 
