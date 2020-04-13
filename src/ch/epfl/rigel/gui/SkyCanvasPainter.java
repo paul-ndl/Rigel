@@ -9,6 +9,7 @@ import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import ch.epfl.rigel.coordinates.StereographicProjection;
 import ch.epfl.rigel.math.Angle;
 import ch.epfl.rigel.math.ClosedInterval;
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
@@ -45,7 +46,8 @@ public final class SkyCanvasPainter {
         ctx.setStroke(BLUE);
         ctx.setLineWidth(1);
         double[] skyCoordinates = sky.starPositions();
-        double[] previousCoordinates = new double[2];
+        boolean isInBounds = false;
+        Bounds canvasBounds = canvas.getBoundsInLocal();
         for (Asterism a : sky.asterism()) {
             ctx.beginPath();
             int[] indices = sky.asterismIndices(a).stream()
@@ -56,10 +58,10 @@ public final class SkyCanvasPainter {
                 double[] coordinates = {skyCoordinates[2*index], skyCoordinates[2*index + 1]};
                 planeToCanvas.transform2DPoints(coordinates, 0, coordinates, 0, 1);
                 ctx.lineTo(coordinates[0], coordinates[1]);
-                if (canvas.getBoundsInLocal().contains(coordinates[0], coordinates[1]) || canvas.getBoundsInLocal().contains(previousCoordinates[0], previousCoordinates[1])) {
+                if (canvasBounds.contains(coordinates[0], coordinates[1]) || isInBounds) {
                     ctx.stroke();
                 }
-                previousCoordinates = coordinates;
+                isInBounds = (canvasBounds.contains(coordinates[0], coordinates[1])) ? true : false;
             }
         }
     }
