@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 import static org.junit.jupiter.api.Assertions.*;
-//hello
+
 public class HygDataBaseLoaderTest {
     private static final String HEADER_LINE = "id,hip,hd,hr,gl,bf,proper,ra,dec,dist,pmra,pmdec,rv,mag,absmag,spect,ci,x,y,z,vx,vy,vz,rarad,decrad,pmrarad,pmdecrad,bayer,flam,con,comp,comp_primary,base,lum,var,var_min,var_max";
     private static final String RIGEL_LINE = "24378,24436,34085,1713,,19Bet Ori,Rigel,5.242298,-8.201640,264.5503,1.87,-0.56,21.0,0.180,-6.933,B8Ia,-0.030,51.601106,256.709905,-37.740051,0.00000182,0.00002121,-0.00000377,1.3724303693276385,-0.143145630755865,0.00000000906601582638889,-0.000000002714956,Bet,19,Ori,1,24378,,51665.42425669497,,,";
