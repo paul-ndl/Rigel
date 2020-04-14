@@ -95,39 +95,38 @@ public final class SkyCanvasPainter {
     }
 
     public void drawSun(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas) {
-        double[] coordinates = {sky.sunPosition().x(), sky.sunPosition().y()};
-        planeToCanvas.transform2DPoints(coordinates, 0, coordinates, 0, 1);
+        CartesianCoordinates position = sky.sunPosition();
+        Point2D coordinates = planeToCanvas.transform(position.x(), position.y());
         final double diameter = projection.applyToAngle(sky.sun().angularSize());
         Point2D transform = planeToCanvas.deltaTransform(diameter, 0);
         double trueDiameter = Math.abs(transform.getX());
         ctx.setFill(OPAQUE_YELLOW);
-        ctx.fillOval(coordinates[0]-2.2*trueDiameter/2, coordinates[1]-2.2*trueDiameter/2, 2.2*trueDiameter, 2.2*trueDiameter);
+        ctx.fillOval(coordinates.getX()-2.2*trueDiameter/2, coordinates.getY()-2.2*trueDiameter/2, 2.2*trueDiameter, 2.2*trueDiameter);
         ctx.setFill(YELLOW);
-        ctx.fillOval(coordinates[0]-(trueDiameter+2)/2, coordinates[1]-(trueDiameter+2)/2, (trueDiameter+2), (trueDiameter+2));
+        ctx.fillOval(coordinates.getX()-(trueDiameter+2)/2, coordinates.getY()-(trueDiameter+2)/2, (trueDiameter+2), (trueDiameter+2));
         ctx.setFill(WHITE);
-        ctx.fillOval(coordinates[0]-trueDiameter/2, coordinates[1]-trueDiameter/2, trueDiameter, trueDiameter);
+        ctx.fillOval(coordinates.getX()-trueDiameter/2, coordinates.getY()-trueDiameter/2, trueDiameter, trueDiameter);
     }
 
     public void drawMoon(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas) {
         ctx.setFill(WHITE);
-        double[] coordinates = {sky.moonPosition().x(), sky.moonPosition().y()};
-        planeToCanvas.transform2DPoints(coordinates, 0, coordinates, 0, 1);
+        CartesianCoordinates position = sky.moonPosition();
+        Point2D coordinates = planeToCanvas.transform(position.x(), position.y());
         final double diameter = projection.applyToAngle(sky.moon().angularSize());
         Point2D transform = planeToCanvas.deltaTransform(diameter, 0);
         double trueDiameter = Math.abs(transform.getX());
-        ctx.fillOval(coordinates[0]-trueDiameter/2, coordinates[1]-trueDiameter/2, trueDiameter, trueDiameter);
+        ctx.fillOval(coordinates.getX()-trueDiameter/2, coordinates.getY()-trueDiameter/2, trueDiameter, trueDiameter);
     }
 
     public void drawHorizon(StereographicProjection projection, Transform planeToCanvas) {
         ctx.setStroke(RED);
         ctx.setLineWidth(2);
         CartesianCoordinates center = projection.circleCenterForParallel(HorizontalCoordinates.of(0, 0));
-        double[] coordinates = {center.x(), center.y()};
-        planeToCanvas.transform2DPoints(coordinates, 0, coordinates, 0, 1);
+        Point2D coordinates = planeToCanvas.transform(center.x(), center.y());
         double diameter = 2 * projection.circleRadiusForParallel(HorizontalCoordinates.of(0, 0));
         Point2D point = planeToCanvas.deltaTransform(diameter, 0);
         double trueDiameter = Math.abs(point.getX());
-        ctx.strokeOval(coordinates[0]-trueDiameter/2, coordinates[1]-trueDiameter/2, trueDiameter, trueDiameter);
+        ctx.strokeOval(coordinates.getX()-trueDiameter/2, coordinates.getY()-trueDiameter/2, trueDiameter, trueDiameter);
         drawCardinalPoints(projection, planeToCanvas);
     }
 
@@ -137,10 +136,9 @@ public final class SkyCanvasPainter {
         for (int i=0; i<8; ++i) {
             HorizontalCoordinates horCoordinates = HorizontalCoordinates.ofDeg(45*i, -0.5);
             CartesianCoordinates projCoordinates = projection.apply(horCoordinates);
-            double[] coordinates = {projCoordinates.x(), projCoordinates.y()};
-            planeToCanvas.transform2DPoints(coordinates, 0, coordinates, 0, 1);
+            Point2D coordinates = planeToCanvas.transform(projCoordinates.x(), projCoordinates.y());
             String text = horCoordinates.azOctantName("N", "E", "S", "O");
-            ctx.fillText(text, coordinates[0], coordinates[1]);
+            ctx.fillText(text, coordinates.getX(), coordinates.getY());
         }
     }
 
