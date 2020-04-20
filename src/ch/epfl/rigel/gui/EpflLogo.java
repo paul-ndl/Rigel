@@ -51,6 +51,7 @@ public class EpflLogo extends Application {
         ctx.lineTo(300,300);
         ctx.closePath();
         ctx.stroke();
+        System.out.println(Math.floor(2.6));
 
 
         primaryStage.setScene(new Scene(new BorderPane(canvas)));

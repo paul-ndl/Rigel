@@ -53,6 +53,7 @@ public final class Angle {
      * @throws IllegalArgumentException si les minutes ou secondes ne sont pas comprises entre 0 et 60
      */
     public static double ofDMS(int deg, int min, double sec) {
+        Preconditions.checkArgument(deg >= 0);
         Preconditions.checkInInterval(MIN_SEC_INTERVAL, min);
         Preconditions.checkInInterval(MIN_SEC_INTERVAL, sec);
         return Math.toRadians(deg + (double) min / 60 + sec / 3600);
