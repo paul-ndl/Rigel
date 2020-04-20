@@ -53,15 +53,13 @@ public final class SkyCanvasPainter {
             int[] indices = sky.asterismIndices(a).stream()
                                                   .mapToInt(Integer :: intValue)
                                                   .toArray();
-            for (int i=0; i<indices.length; ++i) {
-                int index = indices[i];
-                double[] coordinates = {skyCoordinates[2*index], skyCoordinates[2*index + 1]};
-                planeToCanvas.transform2DPoints(coordinates, 0, coordinates, 0, 1);
-                ctx.lineTo(coordinates[0], coordinates[1]);
-                if (canvasBounds.contains(coordinates[0], coordinates[1]) || isInBounds) {
+            for (Integer index : indices) {
+                Point2D coordinates = planeToCanvas.transform(skyCoordinates[2*index], skyCoordinates[2*index + 1]);
+                ctx.lineTo(coordinates.getX(), coordinates.getY());
+                if (canvasBounds.contains(coordinates.getX(), coordinates.getY()) || isInBounds) {
                     ctx.stroke();
                 }
-                isInBounds = (canvasBounds.contains(coordinates[0], coordinates[1])) ? true : false;
+                isInBounds = (canvasBounds.contains(coordinates.getX(), coordinates.getY()));
             }
         }
     }
@@ -69,8 +67,7 @@ public final class SkyCanvasPainter {
     public void drawStars(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas) {
         double[] coordinates = sky.starPositions();
         planeToCanvas.transform2DPoints(coordinates, 0, coordinates, 0, coordinates.length/2);
-        Star[] stars = sky.stars().stream()
-                                  .toArray(Star[]::new);
+        Star[] stars = sky.stars().toArray(Star[]::new);
         for (int i=0; i<stars.length; ++i) {
             double diameter = size(stars[i].magnitude(), projection);
             Point2D transform = planeToCanvas.deltaTransform(diameter, 0);
@@ -84,8 +81,7 @@ public final class SkyCanvasPainter {
         ctx.setFill(GREY);
         double[] coordinates = sky.planetPositions();
         planeToCanvas.transform2DPoints(coordinates, 0, coordinates, 0, coordinates.length / 2);
-        Planet[] planets = sky.planets().stream()
-                                        .toArray(Planet[]::new);
+        Planet[] planets = sky.planets().toArray(Planet[]::new);
         for (int i=0; i<planets.length; ++i) {
             final double diameter = size(planets[i].magnitude(), projection);
             Point2D transform = planeToCanvas.deltaTransform(diameter, 0);
