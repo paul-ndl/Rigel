@@ -49,14 +49,14 @@ public final class DateTimeBean {
         this.zoneId.set(zoneId);
     }
 
-    public ZonedDateTime getZoneDateTime(){
+    public ZonedDateTime getZonedDateTime(){
         return ZonedDateTime.of(getDate(), getTime(), getZoneId());
     }
 
-    public void setZoneId(LocalDate date, LocalTime time, ZoneId zoneId){
-        setDate(date);
-        setTime(time);
-        setZoneId(zoneId);
+    public void setZonedDateTime(ZonedDateTime zonedDateTime){
+        setDate(zonedDateTime.toLocalDate());
+        setTime(zonedDateTime.toLocalTime());
+        setZoneId(zonedDateTime.getZone());
     }
 
 

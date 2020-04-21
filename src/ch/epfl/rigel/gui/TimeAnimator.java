@@ -15,33 +15,33 @@ public final class TimeAnimator extends AnimationTimer {
         this.dateTimeBean = dateTimeBean;
     }
 
-    private ObjectProperty<TimeAccelerator> acceleratorProperty(){
+    public ObjectProperty<TimeAccelerator> acceleratorProperty(){
         return accelerator;
     }
 
-    private TimeAccelerator getAccelerator(){
+    public TimeAccelerator getAccelerator(){
         return accelerator.get();
     }
 
-    private void setAccelerator(TimeAccelerator accelerator){
+    public void setAccelerator(TimeAccelerator accelerator){
         this.accelerator.set(accelerator);
     }
 
-    private ReadOnlyBooleanProperty runningProperty(){
+    public ReadOnlyBooleanProperty runningProperty(){
         return running;
     }
 
-    private Boolean getRunning(){
+    public Boolean getRunning(){
         return running.get();
     }
 
-    private void setRunning(Boolean running){
+    public void setRunning(Boolean running){
         this.running.set(running);
     }
 
     @Override
     public void handle(long now) {
-        getAccelerator().adjust(dateTimeBean.getZoneDateTime(), now);
+        getAccelerator().adjust(dateTimeBean.getZonedDateTime(), now);
     }
 
     @Override
