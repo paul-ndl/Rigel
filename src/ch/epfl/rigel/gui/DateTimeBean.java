@@ -5,6 +5,7 @@ import javafx.beans.property.ObjectProperty;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 public final class DateTimeBean {
 
@@ -46,6 +47,16 @@ public final class DateTimeBean {
 
     public void setZoneId(ZoneId zoneId){
         this.zoneId.set(zoneId);
+    }
+
+    public ZonedDateTime getZoneDateTime(){
+        return ZonedDateTime.of(getDate(), getTime(), getZoneId());
+    }
+
+    public void setZoneId(LocalDate date, LocalTime time, ZoneId zoneId){
+        setDate(date);
+        setTime(time);
+        setZoneId(zoneId);
     }
 
 
