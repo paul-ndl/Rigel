@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BlackBodyColor {
+public final class BlackBodyColor {
 
     private BlackBodyColor(){}
 
