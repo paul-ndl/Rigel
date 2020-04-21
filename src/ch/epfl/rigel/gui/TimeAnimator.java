@@ -4,12 +4,13 @@ import javafx.animation.AnimationTimer;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
 public final class TimeAnimator extends AnimationTimer {
 
     private DateTimeBean dateTimeBean;
-    private ObjectProperty<TimeAccelerator> accelerator = null;
-    private SimpleBooleanProperty running = null;
+    private SimpleObjectProperty<TimeAccelerator> accelerator = new SimpleObjectProperty<>(null);
+    private SimpleBooleanProperty running = new SimpleBooleanProperty(false);
 
     public TimeAnimator(DateTimeBean dateTimeBean){
         this.dateTimeBean = dateTimeBean;
