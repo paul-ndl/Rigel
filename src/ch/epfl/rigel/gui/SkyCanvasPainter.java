@@ -42,36 +42,33 @@ public final class SkyCanvasPainter {
         ctx.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
-    public void drawAsterism(ObservedSky sky, Transform planeToCanvas) {
+    public void drawStars(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas) {
         ctx.setStroke(BLUE);
         ctx.setLineWidth(1);
-        double[] skyCoordinates = sky.starPositions();
+        Star[] stars = sky.stars().toArray(Star[]::new);
+        double[] coordinates = sky.starPositions();
+        planeToCanvas.transform2DPoints(coordinates, 0, coordinates, 0, coordinates.length/2);
+        Asterism[] asterisms = sky.asterism().toArray(Asterism[]::new);
         boolean isInBounds = false;
         Bounds canvasBounds = canvas.getBoundsInLocal();
-        for (Asterism a : sky.asterism()) {
+        for (Asterism a : asterisms) {
             ctx.beginPath();
             int[] indices = sky.asterismIndices(a).stream()
                                                   .mapToInt(Integer :: intValue)
                                                   .toArray();
-            for (Integer index : indices) {
-                Point2D coordinates = planeToCanvas.transform(skyCoordinates[2*index], skyCoordinates[2*index + 1]);
-                ctx.lineTo(coordinates.getX(), coordinates.getY());
-                if (canvasBounds.contains(coordinates.getX(), coordinates.getY()) || isInBounds) {
+            for (Integer i : indices) {
+                double x = coordinates[2*i];
+                double y = coordinates[2*i + 1];
+                ctx.lineTo(x, y);
+                if (canvasBounds.contains(x, y) || isInBounds) {
                     ctx.stroke();
                 }
-                isInBounds = (canvasBounds.contains(coordinates.getX(), coordinates.getY()));
+                isInBounds = (canvasBounds.contains(x, y));
             }
         }
-    }
-
-    public void drawStars(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas) {
-        double[] coordinates = sky.starPositions();
-        planeToCanvas.transform2DPoints(coordinates, 0, coordinates, 0, coordinates.length/2);
-        Star[] stars = sky.stars().toArray(Star[]::new);
         for (int i=0; i<stars.length; ++i) {
             double diameter = size(stars[i].magnitude(), projection);
-            Point2D transform = planeToCanvas.deltaTransform(diameter, 0);
-            double trueDiameter = Math.abs(transform.getX());
+            double trueDiameter = planeToCanvas.deltaTransform(diameter, 0).magnitude();
             ctx.setFill(BlackBodyColor.colorForTemperature(stars[i].colorTemperature()));
             ctx.fillOval(coordinates[2*i]-trueDiameter/2, coordinates[2*i+1]-trueDiameter/2, trueDiameter, trueDiameter);
         }
@@ -83,9 +80,8 @@ public final class SkyCanvasPainter {
         planeToCanvas.transform2DPoints(coordinates, 0, coordinates, 0, coordinates.length / 2);
         Planet[] planets = sky.planets().toArray(Planet[]::new);
         for (int i=0; i<planets.length; ++i) {
-            final double diameter = size(planets[i].magnitude(), projection);
-            Point2D transform = planeToCanvas.deltaTransform(diameter, 0);
-            double trueDiameter = Math.abs(transform.getX());
+            double diameter = size(planets[i].magnitude(), projection);
+            double trueDiameter = planeToCanvas.deltaTransform(diameter, 0).magnitude();
             ctx.fillOval(coordinates[2*i]-trueDiameter/2, coordinates[2*i+1]-trueDiameter/2, trueDiameter, trueDiameter);
         }
     }
@@ -93,9 +89,8 @@ public final class SkyCanvasPainter {
     public void drawSun(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas) {
         CartesianCoordinates position = sky.sunPosition();
         Point2D coordinates = planeToCanvas.transform(position.x(), position.y());
-        final double diameter = projection.applyToAngle(sky.sun().angularSize());
-        Point2D transform = planeToCanvas.deltaTransform(diameter, 0);
-        double trueDiameter = Math.abs(transform.getX());
+        double diameter = projection.applyToAngle(sky.sun().angularSize());
+        double trueDiameter = planeToCanvas.deltaTransform(diameter, 0).magnitude();
         ctx.setFill(OPAQUE_YELLOW);
         ctx.fillOval(coordinates.getX()-2.2*trueDiameter/2, coordinates.getY()-2.2*trueDiameter/2, 2.2*trueDiameter, 2.2*trueDiameter);
         ctx.setFill(YELLOW);
@@ -108,9 +103,8 @@ public final class SkyCanvasPainter {
         ctx.setFill(WHITE);
         CartesianCoordinates position = sky.moonPosition();
         Point2D coordinates = planeToCanvas.transform(position.x(), position.y());
-        final double diameter = projection.applyToAngle(sky.moon().angularSize());
-        Point2D transform = planeToCanvas.deltaTransform(diameter, 0);
-        double trueDiameter = Math.abs(transform.getX());
+        double diameter = projection.applyToAngle(sky.moon().angularSize());
+        double trueDiameter = planeToCanvas.deltaTransform(diameter, 0).magnitude();
         ctx.fillOval(coordinates.getX()-trueDiameter/2, coordinates.getY()-trueDiameter/2, trueDiameter, trueDiameter);
     }
 
@@ -120,8 +114,7 @@ public final class SkyCanvasPainter {
         CartesianCoordinates center = projection.circleCenterForParallel(HorizontalCoordinates.of(0, 0));
         Point2D coordinates = planeToCanvas.transform(center.x(), center.y());
         double diameter = 2 * projection.circleRadiusForParallel(HorizontalCoordinates.of(0, 0));
-        Point2D point = planeToCanvas.deltaTransform(diameter, 0);
-        double trueDiameter = Math.abs(point.getX());
+        double trueDiameter = planeToCanvas.deltaTransform(diameter, 0).magnitude();
         ctx.strokeOval(coordinates.getX()-trueDiameter/2, coordinates.getY()-trueDiameter/2, trueDiameter, trueDiameter);
         drawCardinalPoints(projection, planeToCanvas);
     }
