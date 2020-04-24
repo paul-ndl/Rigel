@@ -11,11 +11,11 @@ import java.time.ZonedDateTime;
 
 public final class TimeAnimator extends AnimationTimer {
 
-    private DateTimeBean dateTimeBean;
-    private SimpleObjectProperty<TimeAccelerator> accelerator = new SimpleObjectProperty<>(null);
-    private SimpleBooleanProperty running = new SimpleBooleanProperty(false);
+    private final DateTimeBean dateTimeBean;
+    private final SimpleObjectProperty<TimeAccelerator> accelerator = new SimpleObjectProperty<>(null);
+    private final SimpleBooleanProperty running = new SimpleBooleanProperty(false);
+    private ZonedDateTime initTime;
     private long time0;
-    private long deltaTime = 0;
 
     public TimeAnimator(DateTimeBean dateTimeBean){
         this.dateTimeBean = dateTimeBean;
@@ -47,10 +47,9 @@ public final class TimeAnimator extends AnimationTimer {
 
     @Override
     public void handle(long now) {
-        long actualTime = now;
-        deltaTime = actualTime - time0 - deltaTime;
-        System.out.println(deltaTime);
-        dateTimeBean.setZonedDateTime(getAccelerator().adjust(dateTimeBean.getZonedDateTime(), deltaTime));
+        long deltaTime = now - time0;
+        //System.out.println(deltaTime);
+        dateTimeBean.setZonedDateTime(getAccelerator().adjust(initTime, deltaTime));
     }
 
     @Override
@@ -58,6 +57,7 @@ public final class TimeAnimator extends AnimationTimer {
         super.start();
         setRunning(true);
         time0 = System.nanoTime();
+        initTime = dateTimeBean.getZonedDateTime();
     }
 
     @Override

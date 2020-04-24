@@ -15,6 +15,7 @@ import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Transform;
 
 public final class SkyCanvasPainter {
@@ -49,7 +50,7 @@ public final class SkyCanvasPainter {
         double[] coordinates = sky.starPositions();
         planeToCanvas.transform2DPoints(coordinates, 0, coordinates, 0, coordinates.length/2);
         Asterism[] asterisms = sky.asterism().toArray(Asterism[]::new);
-        boolean isInBounds = false;
+        boolean previousInBounds = false;
         Bounds canvasBounds = canvas.getBoundsInLocal();
         for (Asterism a : asterisms) {
             ctx.beginPath();
@@ -60,10 +61,10 @@ public final class SkyCanvasPainter {
                 double x = coordinates[2*i];
                 double y = coordinates[2*i + 1];
                 ctx.lineTo(x, y);
-                if (canvasBounds.contains(x, y) || isInBounds) {
+                if (canvasBounds.contains(x, y) || previousInBounds) {
                     ctx.stroke();
                 }
-                isInBounds = (canvasBounds.contains(x, y));
+                previousInBounds = (canvasBounds.contains(x, y));
             }
         }
         for (int i=0; i<stars.length; ++i) {
@@ -122,6 +123,7 @@ public final class SkyCanvasPainter {
     private void drawCardinalPoints(StereographicProjection projection, Transform planeToCanvas) {
         ctx.setFill(Color.RED);
         ctx.setTextBaseline(VPos.TOP);
+        ctx.setTextAlign(TextAlignment.CENTER);
         for (int i=0; i<8; ++i) {
             HorizontalCoordinates horCoordinates = HorizontalCoordinates.ofDeg(45*i, -0.5);
             CartesianCoordinates projCoordinates = projection.apply(horCoordinates);
