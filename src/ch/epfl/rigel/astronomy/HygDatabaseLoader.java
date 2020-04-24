@@ -2,7 +2,10 @@ package ch.epfl.rigel.astronomy;
 
 import ch.epfl.rigel.coordinates.EquatorialCoordinates;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
@@ -12,7 +15,7 @@ import java.nio.charset.StandardCharsets;
  * @author Paul Nadal (300843)
  * @author Alexandre Brun (302477)
  */
-public enum HygDatabaseLoader implements StarCatalogue.Loader{
+public enum HygDatabaseLoader implements StarCatalogue.Loader {
     INSTANCE;
 
     private final static int HIP = 1;
@@ -27,26 +30,24 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader{
 
     /**
      * Charge les étoiles du flot d'entrée et les ajoute au bâtisseur
+     *
+     * @param inputStream le flot d'entrée
+     * @param builder     le bâtisseur
+     * @throws IOException en cas d'erreur entrée/sortie
      * @see ch.epfl.rigel.astronomy.StarCatalogue.Loader#load(InputStream, StarCatalogue.Builder)
-     * @param inputStream
-     *          le flot d'entrée
-     * @param builder
-     *          le bâtisseur
-     * @throws IOException
-     *          en cas d'erreur entrée/sortie
      */
     @Override
     public void load(InputStream inputStream, StarCatalogue.Builder builder) throws IOException {
-        try(BufferedReader r = new BufferedReader(new InputStreamReader(inputStream, US_ASCII))){
-            r.readLine();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, US_ASCII))) {
+            reader.readLine();
             String line;
-            while((line = r.readLine())!=null){
-                final String[] columns = line.split(",");
-                final int hip = (!columns[HIP].isEmpty() ? Integer.parseInt(columns[HIP]) : 0);
-                final String name = ((!columns[PROPER].isEmpty()) ? columns[PROPER] : ((!columns[BAYER].isEmpty() ? columns[BAYER] : "?") + " " + columns[CON]));
-                final EquatorialCoordinates eq = EquatorialCoordinates.of(Double.parseDouble(columns[RARAD]), Double.parseDouble(columns[DECRAD]));
-                final Float magnitude = (!columns[MAG].isEmpty() ? Float.parseFloat(columns[MAG]) : 0);
-                final Float colorIndex = (!columns[CI].isEmpty() ? Float.parseFloat(columns[CI]) : 0);
+            while ((line = reader.readLine()) != null) {
+                String[] columns = line.split(",");
+                int hip = (!columns[HIP].isEmpty() ? Integer.parseInt(columns[HIP]) : 0);
+                String name = ((!columns[PROPER].isEmpty()) ? columns[PROPER] : ((!columns[BAYER].isEmpty() ? columns[BAYER] : "?") + " " + columns[CON]));
+                EquatorialCoordinates eq = EquatorialCoordinates.of(Double.parseDouble(columns[RARAD]), Double.parseDouble(columns[DECRAD]));
+                float magnitude = (!columns[MAG].isEmpty() ? Float.parseFloat(columns[MAG]) : 0);
+                float colorIndex = (!columns[CI].isEmpty() ? Float.parseFloat(columns[CI]) : 0);
                 builder.addStar(new Star(hip, name, eq, magnitude, colorIndex));
             }
         }

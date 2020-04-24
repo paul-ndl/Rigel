@@ -11,7 +11,7 @@ import java.util.Comparator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class HygDatabaseLoaderTest {
+public class HygDataBaseLoaderTest {
     private static final String HEADER_LINE = "id,hip,hd,hr,gl,bf,proper,ra,dec,dist,pmra,pmdec,rv,mag,absmag,spect,ci,x,y,z,vx,vy,vz,rarad,decrad,pmrarad,pmdecrad,bayer,flam,con,comp,comp_primary,base,lum,var,var_min,var_max";
     private static final String RIGEL_LINE = "24378,24436,34085,1713,,19Bet Ori,Rigel,5.242298,-8.201640,264.5503,1.87,-0.56,21.0,0.180,-6.933,B8Ia,-0.030,51.601106,256.709905,-37.740051,0.00000182,0.00002121,-0.00000377,1.3724303693276385,-0.143145630755865,0.00000000906601582638889,-0.000000002714956,Bet,19,Ori,1,24378,,51665.42425669497,,,";
     private static final String CONSTELLATION_AND_BAYER_LINE = "122,122,224889,9084,,The Oct,,0.026616,-77.065724,66.5779,-56.52,-176.95,24.0,4.780,0.663,K2III,1.254,14.902031,0.103716,-64.888859,-0.00005004,-0.00001859,-0.00003671,0.0069680833539428125,-1.3450506304308112,-0.00000027401669224999995,-0.000000857877807,The,,Oct,1,122,,47.293341491865164,,,";

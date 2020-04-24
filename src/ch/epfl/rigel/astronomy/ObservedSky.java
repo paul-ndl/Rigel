@@ -4,16 +4,12 @@ import ch.epfl.rigel.coordinates.*;
 
 import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import static ch.epfl.rigel.astronomy.Epoch.J2010;
 import static ch.epfl.rigel.astronomy.MoonModel.MOON;
 import static ch.epfl.rigel.astronomy.SunModel.SUN;
 
 public final class ObservedSky {
-
-    private final StarCatalogue catalogue;
 
     private final Sun sun;
     private final CartesianCoordinates sunPosition;
@@ -27,6 +23,7 @@ public final class ObservedSky {
     private final List<Star> stars;
     private final double[] starPositions;
 
+    private final StarCatalogue catalogue;
     private final Map<CelestialObject, CartesianCoordinates> coordMap = new HashMap<>();
 
     public ObservedSky(ZonedDateTime when, GeographicCoordinates where, StereographicProjection stereographicProjection, StarCatalogue catalogue){
@@ -101,7 +98,8 @@ public final class ObservedSky {
     }
 
     public Optional<CelestialObject> objectClosestTo(CartesianCoordinates point, double max) {
-        final CelestialObject closest = Collections.min(coordMap.keySet(), Comparator.comparingDouble(a -> squaredDistance(point, coordMap.get(a))));
+        final CelestialObject closest = Collections.min(coordMap.keySet(),
+                                        Comparator.comparingDouble(a -> squaredDistance(point, coordMap.get(a))));
         return (Math.sqrt(squaredDistance(point, coordMap.get(closest)))<=max) ? Optional.of(closest) : Optional.empty();
     }
 

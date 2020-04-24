@@ -1,7 +1,5 @@
 package ch.epfl.rigel.astronomy;
 
-import ch.epfl.rigel.coordinates.EquatorialCoordinates;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,30 +24,27 @@ public enum AsterismLoader implements StarCatalogue.Loader {
 
     /**
      * Charge les astérismes du flot d'entrée et les ajoute au bâtisseur
+     *
+     * @param inputStream le flot d'entrée
+     * @param builder     le bâtisseur
+     * @throws IOException en cas d'erreur entrée/sortie
      * @see ch.epfl.rigel.astronomy.StarCatalogue.Loader#load(InputStream, StarCatalogue.Builder)
-     * @param inputStream
-     *          le flot d'entrée
-     * @param builder
-     *          le bâtisseur
-     * @throws IOException
-     *          en cas d'erreur entrée/sortie
      */
     @Override
     public void load(InputStream inputStream, StarCatalogue.Builder builder) throws IOException {
-        final Map<Integer, Star> map = new HashMap<>();
-        for (Star s : builder.stars()){
+        Map<Integer, Star> map = new HashMap<>();
+        for (Star s : builder.stars()) {
             map.put(s.hipparcosId(), s);
         }
-        try(BufferedReader r = new BufferedReader(new InputStreamReader(inputStream, US_ASCII))){
-            final List<Star> stars = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, US_ASCII))) {
             String line;
-            while((line = r.readLine())!=null){
-                final String[] hip = line.split(",");
+            while ((line = reader.readLine()) != null) {
+                List<Star> stars = new ArrayList<>();
+                String[] hip = line.split(",");
                 for (String h : hip) {
                     stars.add(map.get(Integer.parseInt(h)));
                 }
                 builder.addAsterism(new Asterism(stars));
-                stars.clear();
             }
         }
     }

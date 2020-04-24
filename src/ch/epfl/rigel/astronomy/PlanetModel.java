@@ -2,12 +2,8 @@ package ch.epfl.rigel.astronomy;
 
 import ch.epfl.rigel.coordinates.EclipticCoordinates;
 import ch.epfl.rigel.coordinates.EclipticToEquatorialConversion;
-import ch.epfl.rigel.coordinates.EquatorialCoordinates;
 import ch.epfl.rigel.math.Angle;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -29,7 +25,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
             5.20278, 1.3035, 100.595, 196.74, -9.40),
     SATURN("Saturne", 29.310579, 172.398316, 89.567, 0.053853,
             9.51134, 2.4873, 113.752, 165.60, -8.88),
-    URANUS("Uranus", 84.039492, 271.063148, 172.884833, 0.046321,
+    URANUS("Uranus", 84.039492, 356.135400, 172.884833, 0.046321,
             19.21814, 0.773059, 73.926961, 65.80, -7.19),
     NEPTUNE("Neptune", 165.84539, 326.895127, 23.07, 0.010483,
             30.1985, 1.7673, 131.879, 62.20, -6.87);
@@ -81,29 +77,32 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
      */
     @Override
     public Planet at(double daysSinceJ2010, EclipticToEquatorialConversion eclipticToEquatorialConversion) {
-        final double[] orbitalCoordinates = orbitalCoordinates(daysSinceJ2010);
-        final double radius = orbitalCoordinates[0];
-        final double lon = orbitalCoordinates[1];
-        final double[] earthOrbitalCoordinates = EARTH.orbitalCoordinates(daysSinceJ2010);
-        final double earthRadius = earthOrbitalCoordinates[0];
-        final double earthLon = earthOrbitalCoordinates[1];
-        final double[] eclipticCoordinates = eclipticCoordinates(radius, lon);
-        final double projRadius = eclipticCoordinates[0];
-        final double eclLon = eclipticCoordinates[1];
-        final double eclLat = eclipticCoordinates[2];
-
-        final double lambda, beta;
-        if (a < 1) {
+        //Calcul des coordonnées orbitales
+        double[] orbitalCoordinates = orbitalCoordinates(daysSinceJ2010);
+        double radius = orbitalCoordinates[0];
+        double lon = orbitalCoordinates[1];
+        //Calcul des coordonnées orbitales terrestres
+        double[] earthOrbitalCoordinates = EARTH.orbitalCoordinates(daysSinceJ2010);
+        double earthRadius = earthOrbitalCoordinates[0];
+        double earthLon = earthOrbitalCoordinates[1];
+        //Calcul des coordonnées écliptiques héliocentriques
+        double[] eclipticCoordinates = eclipticCoordinates(radius, lon);
+        double projRadius = eclipticCoordinates[0];
+        double eclLon = eclipticCoordinates[1];
+        double eclLat = eclipticCoordinates[2];
+        //Calcul des coordonnées écliptiques géocentriques
+        double lambda, beta;
+        if (a<1) {
             lambda = Angle.normalizePositive(Math.PI + earthLon + Math.atan2(projRadius * Math.sin(earthLon-eclLon), earthRadius - projRadius*Math.cos(earthLon-eclLon)));
         } else {
             lambda = Angle.normalizePositive(eclLon + Math.atan2(earthRadius * Math.sin(eclLon-earthLon), projRadius - earthRadius*Math.cos(eclLon-earthLon)));
         }
         beta = Math.atan((projRadius * Math.tan(eclLat) * Math.sin(lambda-eclLon)) / (earthRadius * Math.sin(eclLon-earthLon)));
-
-        final double p = Math.sqrt(earthRadius*earthRadius + radius*radius - 2*earthRadius*radius*Math.cos(lon-earthLon)*Math.cos(eclLat));
-        final double angularSize = angularSizeUA / p;
-        final double f = (1 + Math.cos(lambda-lon)) / 2;
-        final double magnitudeF = magnitude + 5 * Math.log10(radius*p / Math.sqrt(f));
+        //Calcul de la taille angulaire et magnitude
+        double p = Math.sqrt(earthRadius*earthRadius + radius*radius - 2*earthRadius*radius*Math.cos(lon-earthLon)*Math.cos(eclLat));
+        double angularSize = angularSizeUA / p;
+        double f = (1 + Math.cos(lambda-lon)) / 2;
+        double magnitudeF = magnitude + 5 * Math.log10(radius*p / Math.sqrt(f));
 
         return new Planet(name, eclipticToEquatorialConversion.apply(EclipticCoordinates.of(lambda, beta)), (float) angularSize, (float) magnitudeF);
     }
@@ -117,11 +116,11 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
      * le nombre de jours depuis l'époque J2010 donné
      */
     private double[] orbitalCoordinates(double daysSinceJ2010) {
-        final double meanAnomaly = TAU_PER_YEAR * (daysSinceJ2010 / orbitalRev) + lonJ2010 - lonPer;
-        final double trueAnomaly = meanAnomaly + 2 * e * Math.sin(meanAnomaly);
-        final double radius = (a * (1 - e * e)) / (1 + e * Math.cos(trueAnomaly));
-        final double lon = trueAnomaly + lonPer;
-        final double[] orbitalCoordinates = {radius, lon};
+        double meanAnomaly = TAU_PER_YEAR * (daysSinceJ2010 / orbitalRev) + lonJ2010 - lonPer;
+        double trueAnomaly = meanAnomaly + 2 * e * Math.sin(meanAnomaly);
+        double radius = (a * (1 - e * e)) / (1 + e * Math.cos(trueAnomaly));
+        double lon = trueAnomaly + lonPer;
+        double[] orbitalCoordinates = {radius, lon};
         return orbitalCoordinates;
     }
 
@@ -135,10 +134,10 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
      * les coordonnées orbitales données
      */
     private double[] eclipticCoordinates(double radius, double lon) {
-        final double eclLat = Math.asin(Math.sin(lon - omega) * Math.sin(i));
-        final double projRadius = radius * Math.cos(eclLat);
-        final double eclLon = Math.atan2(Math.sin(lon - omega) * Math.cos(i), Math.cos(lon - omega)) + omega;
-        final double[] eclipticCoordinates = {projRadius, eclLon, eclLat};
+        double eclLat = Math.asin(Math.sin(lon - omega) * Math.sin(i));
+        double projRadius = radius * Math.cos(eclLat);
+        double eclLon = Math.atan2(Math.sin(lon - omega) * Math.cos(i), Math.cos(lon - omega)) + omega;
+        double[] eclipticCoordinates = {projRadius, eclLon, eclLat};
         return eclipticCoordinates;
     }
 

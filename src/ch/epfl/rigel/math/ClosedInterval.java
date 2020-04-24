@@ -45,7 +45,7 @@ public final class ClosedInterval extends Interval {
      */
     public static ClosedInterval symmetric(double size) {
         Preconditions.checkArgument(size > 0);
-        final double bound = size / 2;
+        double bound = size / 2;
         return new ClosedInterval(-bound, bound);
     }
 
@@ -57,7 +57,7 @@ public final class ClosedInterval extends Interval {
      */
     @Override
     public boolean contains(double v) {
-        return (v >= super.low() && v <= super.high());
+        return (v>=super.low() && v<=super.high());
     }
 
     /**

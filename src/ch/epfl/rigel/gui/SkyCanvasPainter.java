@@ -2,14 +2,20 @@ package ch.epfl.rigel.gui;
 
 import ch.epfl.rigel.astronomy.Asterism;
 import ch.epfl.rigel.astronomy.ObservedSky;
+import ch.epfl.rigel.astronomy.Planet;
+import ch.epfl.rigel.astronomy.Star;
 import ch.epfl.rigel.coordinates.CartesianCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import ch.epfl.rigel.coordinates.StereographicProjection;
 import ch.epfl.rigel.math.Angle;
 import ch.epfl.rigel.math.ClosedInterval;
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
+import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Transform;
 
 public final class SkyCanvasPainter {
@@ -17,105 +23,117 @@ public final class SkyCanvasPainter {
     private Canvas canvas;
     private GraphicsContext ctx;
 
-    private final Color blue = Color.BLUE;
-    private final Color grey = Color.LIGHTGREY;
-    private final Color white = Color.WHITE;
-    private final Color yellow = Color.YELLOW;
-    private final Color opaqueYellow = yellow.deriveColor(1,1,1,0.25);
-    private final Color red = Color.RED;
-    private final Color black = Color.BLACK;
+    private static final Color BLUE = Color.BLUE;
+    private static final Color GREY = Color.LIGHTGREY;
+    private static final Color WHITE = Color.WHITE;
+    private static final Color YELLOW = Color.YELLOW;
+    private static final Color OPAQUE_YELLOW = YELLOW.deriveColor(1, 1, 1, 0.25);
+    private static final Color RED = Color.RED;
+    private static final Color BLACK = Color.BLACK;
 
-    private final ClosedInterval interval = ClosedInterval.of(-2, 5);
+    private static final ClosedInterval interval = ClosedInterval.of(-2, 5);
 
-    public SkyCanvasPainter(Canvas canvas){
+    public SkyCanvasPainter(Canvas canvas) {
         this.canvas = canvas;
         this.ctx = canvas.getGraphicsContext2D();
     }
 
-    public void clear(){
-        ctx.setFill(black);
+    public void clear() {
+        ctx.setFill(BLACK);
         ctx.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
-    public void drawStars(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas){
-        double[] transformedCoordinates = sky.starPositions();
-        planeToCanvas.transform2DPoints(transformedCoordinates, 0, transformedCoordinates, 0, transformedCoordinates.length/2);
-        for(int i=0; i<sky.stars().size(); ++i){
-            double radius = 3000*size(sky.stars().get(i).magnitude(), projection)/2; //*2600??????
-            ctx.setFill(BlackBodyColor.colorForTemperature(sky.stars().get(i).colorTemperature()));
-            ctx.fillOval(transformedCoordinates[2*i]-radius/2, transformedCoordinates[2*i+1]-radius/2, radius, radius);
-        }
-    }
-
-    public void drawPlanets(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas){
-        ctx.setFill(grey);
-        double[] transformedCoordinates = sky.planetPositions();
-        planeToCanvas.transform2DPoints(transformedCoordinates, 0, transformedCoordinates, 0, transformedCoordinates.length/2);
-        for(int i=0; i<sky.planets().size(); ++i){
-            final double radius = 3000*size(sky.planets().get(i).magnitude(), projection)/2;
-            ctx.fillOval(transformedCoordinates[2*i]-radius/2, transformedCoordinates[2*i+1]-radius/2, radius, radius);
-        }
-    }
-
-    public void drawSun(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas){
-        double[] transformedCoordinates = {sky.sunPosition().x(), sky.sunPosition().y()};
-        planeToCanvas.transform2DPoints(transformedCoordinates, 0, transformedCoordinates, 0, 1);
-        final double radius = 3000*projection.applyToAngle(Angle.ofDeg(0.5))/2;
-        ctx.setFill(opaqueYellow);
-        ctx.fillOval(transformedCoordinates[0]-radius/2, transformedCoordinates[1]-radius/2, 2.2*radius, 2.2*radius);
-        ctx.setFill(yellow);
-        ctx.fillOval(transformedCoordinates[0]-radius/2, transformedCoordinates[1]-radius/2, 2*radius, 2*radius);
-        ctx.setFill(white);
-        ctx.fillOval(transformedCoordinates[0]-radius/2, transformedCoordinates[1]-radius/2, radius, radius);
-    }
-
-    public void drawMoon(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas){
-        double[] transformedCoordinates = {sky.moonPosition().x(), sky.moonPosition().y()};
-        planeToCanvas.transform2DPoints(transformedCoordinates, 0, transformedCoordinates, 0, 1);
-        final double radius = 3000*projection.applyToAngle(Angle.ofDeg(0.5))/2;
-        ctx.setFill(white);
-        ctx.fillOval(transformedCoordinates[0]-radius/2, transformedCoordinates[1]-radius/2, radius, radius);
-    }
-
-    public void drawAsterism(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas){
-        ctx.setStroke(blue);
+    public void drawStars(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas) {
+        ctx.setStroke(BLUE);
         ctx.setLineWidth(1);
-        double[] previousCoordinates = new double[2];
-        double[] actualCoordinates = new double[2];
-        for(Asterism a : sky.asterism()){
-            for(int i=0; i<a.stars().size(); ++i){
-                final int index = sky.asterismIndices(a).get(i);
-                actualCoordinates[0] = sky.starPositions()[2*index];
-                actualCoordinates[1] = sky.starPositions()[2*index + 1];
-                planeToCanvas.transform2DPoints(actualCoordinates, 0, actualCoordinates, 0, 1);
-                if(i==0){
-                    ctx.moveTo(actualCoordinates[0], actualCoordinates[1]);
-                    previousCoordinates = actualCoordinates;
-                }
-                ctx.lineTo(actualCoordinates[0], actualCoordinates[1]);
-                if(canvas.getBoundsInLocal().contains(actualCoordinates[0], actualCoordinates[1]) || canvas.getBoundsInLocal().contains(previousCoordinates[0], previousCoordinates[1])){
+        Star[] stars = sky.stars().toArray(Star[]::new);
+        double[] coordinates = sky.starPositions();
+        planeToCanvas.transform2DPoints(coordinates, 0, coordinates, 0, coordinates.length/2);
+        Asterism[] asterisms = sky.asterism().toArray(Asterism[]::new);
+        boolean previousInBounds = false;
+        Bounds canvasBounds = canvas.getBoundsInLocal();
+        for (Asterism a : asterisms) {
+            ctx.beginPath();
+            int[] indices = sky.asterismIndices(a).stream()
+                                                  .mapToInt(Integer :: intValue)
+                                                  .toArray();
+            for (Integer i : indices) {
+                double x = coordinates[2*i];
+                double y = coordinates[2*i + 1];
+                ctx.lineTo(x, y);
+                if (canvasBounds.contains(x, y) || previousInBounds) {
                     ctx.stroke();
                 }
-                previousCoordinates = actualCoordinates;
+                previousInBounds = (canvasBounds.contains(x, y));
             }
+        }
+        for (int i=0; i<stars.length; ++i) {
+            double diameter = size(stars[i].magnitude(), projection);
+            double trueDiameter = planeToCanvas.deltaTransform(diameter, 0).magnitude();
+            ctx.setFill(BlackBodyColor.colorForTemperature(stars[i].colorTemperature()));
+            ctx.fillOval(coordinates[2*i]-trueDiameter/2, coordinates[2*i+1]-trueDiameter/2, trueDiameter, trueDiameter);
         }
     }
 
-    public void drawHorizon(StereographicProjection projection, Transform planeToCanvas, HorizontalCoordinates hor){
-        ctx.setStroke(red);
-        ctx.setLineWidth(2);
-        CartesianCoordinates coordinates = projection.circleCenterForParallel(HorizontalCoordinates.of(0,0));
-        double[] transformedCoordinates = {coordinates.x(), coordinates.y()};
-        System.out.println(transformedCoordinates[0]);
-        System.out.println(transformedCoordinates[1]);
-        planeToCanvas.transform2DPoints(transformedCoordinates, 0, transformedCoordinates, 0, 1);
-        //double r = projection.circleRadiusForParallel(HorizontalCoordinates.of(0,0));
-        double radius = 4250;
-        ctx.strokeOval(transformedCoordinates[0]-radius/2, transformedCoordinates[1]-radius/2, radius, radius);
+    public void drawPlanets(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas) {
+        ctx.setFill(GREY);
+        double[] coordinates = sky.planetPositions();
+        planeToCanvas.transform2DPoints(coordinates, 0, coordinates, 0, coordinates.length / 2);
+        Planet[] planets = sky.planets().toArray(Planet[]::new);
+        for (int i=0; i<planets.length; ++i) {
+            double diameter = size(planets[i].magnitude(), projection);
+            double trueDiameter = planeToCanvas.deltaTransform(diameter, 0).magnitude();
+            ctx.fillOval(coordinates[2*i]-trueDiameter/2, coordinates[2*i+1]-trueDiameter/2, trueDiameter, trueDiameter);
+        }
     }
 
+    public void drawSun(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas) {
+        CartesianCoordinates position = sky.sunPosition();
+        Point2D coordinates = planeToCanvas.transform(position.x(), position.y());
+        double diameter = projection.applyToAngle(sky.sun().angularSize());
+        double trueDiameter = planeToCanvas.deltaTransform(diameter, 0).magnitude();
+        ctx.setFill(OPAQUE_YELLOW);
+        ctx.fillOval(coordinates.getX()-2.2*trueDiameter/2, coordinates.getY()-2.2*trueDiameter/2, 2.2*trueDiameter, 2.2*trueDiameter);
+        ctx.setFill(YELLOW);
+        ctx.fillOval(coordinates.getX()-(trueDiameter+2)/2, coordinates.getY()-(trueDiameter+2)/2, (trueDiameter+2), (trueDiameter+2));
+        ctx.setFill(WHITE);
+        ctx.fillOval(coordinates.getX()-trueDiameter/2, coordinates.getY()-trueDiameter/2, trueDiameter, trueDiameter);
+    }
 
-    private double size(double magnitude, StereographicProjection projection){
+    public void drawMoon(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas) {
+        ctx.setFill(WHITE);
+        CartesianCoordinates position = sky.moonPosition();
+        Point2D coordinates = planeToCanvas.transform(position.x(), position.y());
+        double diameter = projection.applyToAngle(sky.moon().angularSize());
+        double trueDiameter = planeToCanvas.deltaTransform(diameter, 0).magnitude();
+        ctx.fillOval(coordinates.getX()-trueDiameter/2, coordinates.getY()-trueDiameter/2, trueDiameter, trueDiameter);
+    }
+
+    public void drawHorizon(StereographicProjection projection, Transform planeToCanvas) {
+        ctx.setStroke(RED);
+        ctx.setLineWidth(2);
+        CartesianCoordinates center = projection.circleCenterForParallel(HorizontalCoordinates.of(0, 0));
+        Point2D coordinates = planeToCanvas.transform(center.x(), center.y());
+        double diameter = 2 * projection.circleRadiusForParallel(HorizontalCoordinates.of(0, 0));
+        double trueDiameter = planeToCanvas.deltaTransform(diameter, 0).magnitude();
+        ctx.strokeOval(coordinates.getX()-trueDiameter/2, coordinates.getY()-trueDiameter/2, trueDiameter, trueDiameter);
+        drawCardinalPoints(projection, planeToCanvas);
+    }
+
+    private void drawCardinalPoints(StereographicProjection projection, Transform planeToCanvas) {
+        ctx.setFill(Color.RED);
+        ctx.setTextBaseline(VPos.TOP);
+        ctx.setTextAlign(TextAlignment.CENTER);
+        for (int i=0; i<8; ++i) {
+            HorizontalCoordinates horCoordinates = HorizontalCoordinates.ofDeg(45*i, -0.5);
+            CartesianCoordinates projCoordinates = projection.apply(horCoordinates);
+            Point2D coordinates = planeToCanvas.transform(projCoordinates.x(), projCoordinates.y());
+            String text = horCoordinates.azOctantName("N", "E", "S", "O");
+            ctx.fillText(text, coordinates.getX(), coordinates.getY());
+        }
+    }
+
+    private double size(double magnitude, StereographicProjection projection) {
         final double clipedMagnitude = interval.clip(magnitude);
         final double function = (99 - 17*clipedMagnitude) / 140;
         return function * projection.applyToAngle(Angle.ofDeg(0.5));
