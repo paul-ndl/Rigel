@@ -52,6 +52,8 @@ public final class SkyCanvasPainter {
         Asterism[] asterisms = sky.asterism().toArray(Asterism[]::new);
         boolean previousInBounds = false;
         Bounds canvasBounds = canvas.getBoundsInLocal();
+
+        //Construction des astérisms
         for (Asterism a : asterisms) {
             ctx.beginPath();
             int[] indices = sky.asterismIndices(a).stream()
@@ -60,13 +62,17 @@ public final class SkyCanvasPainter {
             for (Integer i : indices) {
                 double x = coordinates[2*i];
                 double y = coordinates[2*i + 1];
-                ctx.lineTo(x, y);
                 if (canvasBounds.contains(x, y) || previousInBounds) {
-                    ctx.stroke();
+                    ctx.lineTo(x,y);
+                } else {
+                    ctx.moveTo(x,y);
                 }
                 previousInBounds = (canvasBounds.contains(x, y));
             }
+            ctx.stroke();
         }
+
+        //Construction des étoiles
         for (int i=0; i<stars.length; ++i) {
             double diameter = size(stars[i].magnitude(), projection);
             double trueDiameter = planeToCanvas.deltaTransform(diameter, 0).magnitude();
