@@ -31,7 +31,7 @@ public final class SkyCanvasPainter {
     private static final Color RED = Color.RED;
     private static final Color BLACK = Color.BLACK;
 
-    private static final ClosedInterval interval = ClosedInterval.of(-2, 5);
+    private static final ClosedInterval CLIP_INTERVAL = ClosedInterval.of(-2, 5);
 
     public SkyCanvasPainter(Canvas canvas) {
         this.canvas = canvas;
@@ -134,7 +134,7 @@ public final class SkyCanvasPainter {
     }
 
     private double size(double magnitude, StereographicProjection projection) {
-        final double clipedMagnitude = interval.clip(magnitude);
+        final double clipedMagnitude = CLIP_INTERVAL.clip(magnitude);
         final double function = (99 - 17*clipedMagnitude) / 140;
         return function * projection.applyToAngle(Angle.ofDeg(0.5));
     }

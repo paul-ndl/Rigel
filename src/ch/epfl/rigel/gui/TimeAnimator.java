@@ -16,6 +16,7 @@ public final class TimeAnimator extends AnimationTimer {
     private final SimpleBooleanProperty running = new SimpleBooleanProperty(false);
     private ZonedDateTime initTime;
     private long time0;
+    private boolean initial;
 
     public TimeAnimator(DateTimeBean dateTimeBean){
         this.dateTimeBean = dateTimeBean;
@@ -47,17 +48,19 @@ public final class TimeAnimator extends AnimationTimer {
 
     @Override
     public void handle(long now) {
-        long deltaTime = now - time0;
-        //System.out.println(deltaTime);
-        dateTimeBean.setZonedDateTime(getAccelerator().adjust(initTime, deltaTime));
+        if(initial){
+            time0 = now;
+            initial = false;
+        }
+        dateTimeBean.setZonedDateTime(getAccelerator().adjust(initTime, now-time0));
     }
 
     @Override
     public void start(){
         super.start();
         setRunning(true);
-        time0 = System.nanoTime();
         initTime = dateTimeBean.getZonedDateTime();
+        initial = true;
     }
 
     @Override
