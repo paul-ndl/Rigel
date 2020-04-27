@@ -18,6 +18,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Transform;
 
+import java.util.List;
+import java.util.Set;
+
 public final class SkyCanvasPainter {
 
     private Canvas canvas;
@@ -46,19 +49,17 @@ public final class SkyCanvasPainter {
     public void drawStars(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas) {
         ctx.setStroke(BLUE);
         ctx.setLineWidth(1);
-        Star[] stars = sky.stars().toArray(Star[]::new);
+        List<Star> stars = sky.stars();
         double[] coordinates = sky.starPositions();
         planeToCanvas.transform2DPoints(coordinates, 0, coordinates, 0, coordinates.length/2);
-        Asterism[] asterisms = sky.asterism().toArray(Asterism[]::new);
+        Set<Asterism> asterisms = sky.asterism();
         boolean previousInBounds = false;
         Bounds canvasBounds = canvas.getBoundsInLocal();
 
         //Construction des astérisms
         for (Asterism a : asterisms) {
             ctx.beginPath();
-            int[] indices = sky.asterismIndices(a).stream()
-                                                  .mapToInt(Integer :: intValue)
-                                                  .toArray();
+            List<Integer> indices = sky.asterismIndices(a);
             for (Integer i : indices) {
                 double x = coordinates[2*i];
                 double y = coordinates[2*i + 1];
@@ -73,10 +74,10 @@ public final class SkyCanvasPainter {
         }
 
         //Construction des étoiles
-        for (int i=0; i<stars.length; ++i) {
-            double diameter = size(stars[i].magnitude(), projection);
+        for (int i=0; i<stars.size(); ++i) {
+            double diameter = size(stars.get(i).magnitude(), projection);
             double trueDiameter = planeToCanvas.deltaTransform(diameter, 0).magnitude();
-            ctx.setFill(BlackBodyColor.colorForTemperature(stars[i].colorTemperature()));
+            ctx.setFill(BlackBodyColor.colorForTemperature(stars.get(i).colorTemperature()));
             ctx.fillOval(coordinates[2*i]-trueDiameter/2, coordinates[2*i+1]-trueDiameter/2, trueDiameter, trueDiameter);
         }
     }
@@ -85,9 +86,9 @@ public final class SkyCanvasPainter {
         ctx.setFill(GREY);
         double[] coordinates = sky.planetPositions();
         planeToCanvas.transform2DPoints(coordinates, 0, coordinates, 0, coordinates.length / 2);
-        Planet[] planets = sky.planets().toArray(Planet[]::new);
-        for (int i=0; i<planets.length; ++i) {
-            double diameter = size(planets[i].magnitude(), projection);
+        List<Planet> planets = sky.planets();
+        for (int i=0; i<planets.size(); ++i) {
+            double diameter = size(planets.get(i).magnitude(), projection);
             double trueDiameter = planeToCanvas.deltaTransform(diameter, 0).magnitude();
             ctx.fillOval(coordinates[2*i]-trueDiameter/2, coordinates[2*i+1]-trueDiameter/2, trueDiameter, trueDiameter);
         }

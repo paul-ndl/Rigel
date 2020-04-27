@@ -13,8 +13,8 @@ public final class ObserverLocationBean {
     private final DoubleProperty lonDeg = new SimpleDoubleProperty();
     private final DoubleProperty latDeg = new SimpleDoubleProperty();
     private final ObservableValue<GeographicCoordinates> coordinates = Bindings.createObjectBinding(
-            () -> GeographicCoordinates.ofDeg(lonDeg.get(), latDeg.get())
-    );
+            () -> GeographicCoordinates.ofDeg(getLonDeg(), getLatDeg()),
+            lonDeg, latDeg);
 
     public DoubleProperty lonDegProperty(){
         return lonDeg;
