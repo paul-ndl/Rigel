@@ -1,5 +1,6 @@
 package ch.epfl.rigel.gui;
 
+import ch.epfl.rigel.astronomy.AsterismLoader;
 import ch.epfl.rigel.astronomy.HygDatabaseLoader;
 import ch.epfl.rigel.astronomy.StarCatalogue;
 import ch.epfl.rigel.coordinates.GeographicCoordinates;
@@ -20,12 +21,16 @@ public final class SkyCanvasManagerTest extends Application {
     private InputStream resourceStream(String resourceName) {
         return getClass().getResourceAsStream(resourceName);
     }
+    StarCatalogue.Builder builder = new StarCatalogue.Builder();
 
     @Override
     public void start(Stage primaryStage) throws IOException {
         try (InputStream hs = resourceStream("/hygdata_v3.csv")) {
-            StarCatalogue catalogue = new StarCatalogue.Builder()
-                    .loadFrom(hs, HygDatabaseLoader.INSTANCE)
+            builder = builder.loadFrom(hs, HygDatabaseLoader.INSTANCE);
+        }
+        try (InputStream as = resourceStream("/asterisms.txt")) {
+            StarCatalogue catalogue = builder
+                    .loadFrom(as, AsterismLoader.INSTANCE)
                     .build();
 
             ZonedDateTime when =
@@ -51,7 +56,9 @@ public final class SkyCanvasManagerTest extends Application {
                     viewingParametersBean);
 
             canvasManager.objectUnderMouseProperty().addListener(
-                    (p, o, n) -> {if (n != null) System.out.println(n);});
+                    (p, o, n) -> {
+                        if (n != null) System.out.println(n);
+                    });
 
             Canvas sky = canvasManager.canvas();
             BorderPane root = new BorderPane(sky);

@@ -98,7 +98,7 @@ public final class ObservedSky {
     }
 
     public Optional<CelestialObject> objectClosestTo(CartesianCoordinates point, double max) {
-        final CelestialObject closest = Collections.min(coordMap.keySet(),
+        CelestialObject closest = Collections.min(coordMap.keySet(),
                                         Comparator.comparingDouble(a -> squaredDistance(point, coordMap.get(a))));
         return (Math.sqrt(squaredDistance(point, coordMap.get(closest)))<=max) ? Optional.of(closest) : Optional.empty();
     }

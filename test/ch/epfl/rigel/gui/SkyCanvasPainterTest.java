@@ -49,7 +49,7 @@ public final class SkyCanvasPainterTest extends Application {
             GeographicCoordinates where =
                     GeographicCoordinates.ofDeg(6.57, 46.52);
             HorizontalCoordinates projCenter =
-                    HorizontalCoordinates.ofDeg(0, 90);
+                    HorizontalCoordinates.ofDeg(277, -23);
             StereographicProjection projection =
                     new StereographicProjection(projCenter);
             ObservedSky sky =
