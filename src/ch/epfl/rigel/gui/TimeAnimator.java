@@ -1,19 +1,15 @@
 package ch.epfl.rigel.gui;
 
 import javafx.animation.AnimationTimer;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.*;
 
-import java.sql.SQLOutput;
 import java.time.ZonedDateTime;
 
 public final class TimeAnimator extends AnimationTimer {
 
     private final DateTimeBean dateTimeBean;
-    private final SimpleObjectProperty<TimeAccelerator> accelerator = new SimpleObjectProperty<>(null);
-    private final SimpleBooleanProperty running = new SimpleBooleanProperty(false);
+    private final ObjectProperty<TimeAccelerator> accelerator = new SimpleObjectProperty<>(null);
+    private final BooleanProperty running = new SimpleBooleanProperty(false);
     private ZonedDateTime initTime;
     private long time0;
     private boolean initial;
