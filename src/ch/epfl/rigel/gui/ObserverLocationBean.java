@@ -40,6 +40,10 @@ public final class ObserverLocationBean {
         this.latDeg.set(latDeg);
     }
 
+    public ObservableValue<GeographicCoordinates> coordinatesProperty() {
+        return coordinates;
+    }
+
     public GeographicCoordinates getCoordinates(){
         return coordinates.getValue();
     }
