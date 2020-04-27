@@ -40,5 +40,15 @@ public final class ObserverLocationBean {
         this.latDeg.set(latDeg);
     }
 
+    public GeographicCoordinates getCoordinates(){
+        return coordinates.getValue();
+    }
+
+    public void setCoordinates(GeographicCoordinates coordinates){
+        setLonDeg(coordinates.lonDeg());
+        setLatDeg(coordinates.latDeg());
+    }
+
+
 
 }
