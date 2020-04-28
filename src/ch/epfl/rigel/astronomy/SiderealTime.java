@@ -16,7 +16,12 @@ import java.time.temporal.ChronoUnit;
  */
 public final class SiderealTime {
 
+    private SiderealTime(){}
+
     private final static double MILLIS_IN_HOUR = 3600000;
+    private final static Polynomial polynomial = Polynomial.of(0.000025862,
+                                                              2400.051336,
+                                                                          6.697374558);
 
     /**
      * Retourne le temps sidéral de Greenwich en radians pour le couple heure/date donné
@@ -28,9 +33,6 @@ public final class SiderealTime {
                                                   .truncatedTo(ChronoUnit.DAYS);
         double centuries = Epoch.J2000.julianCenturiesUntil(whenGreenwichStartDay);
         double hours = (double) whenGreenwichStartDay.until(when, ChronoUnit.MILLIS) / MILLIS_IN_HOUR;
-        Polynomial polynomial = Polynomial.of(0.000025862,
-                                             2400.051336,
-                                                          6.697374558);
         double sA = polynomial.at(centuries);
         double sB = 1.002737909 * hours;
         return Angle.normalizePositive(Angle.ofHr(sA + sB));

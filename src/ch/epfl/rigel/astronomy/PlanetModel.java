@@ -92,7 +92,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
         double eclLat = eclipticCoordinates[2];
         //Calcul des coordonnées écliptiques géocentriques
         double lambda, beta;
-        if (a<1) {
+        if (this==MERCURY || this==VENUS) {
             lambda = Angle.normalizePositive(Math.PI + earthLon + Math.atan2(projRadius * Math.sin(earthLon-eclLon), earthRadius - projRadius*Math.cos(earthLon-eclLon)));
         } else {
             lambda = Angle.normalizePositive(eclLon + Math.atan2(earthRadius * Math.sin(eclLon-earthLon), projRadius - earthRadius*Math.cos(eclLon-earthLon)));

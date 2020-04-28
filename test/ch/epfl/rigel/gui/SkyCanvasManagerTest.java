@@ -57,7 +57,7 @@ public final class SkyCanvasManagerTest extends Application {
 
             canvasManager.objectUnderMouseProperty().addListener(
                     (p, o, n) -> {
-                        if (n != null) System.out.println(n);
+                        if (n != null) primaryStage.setTitle(n.toString());
                     });
 
             Canvas sky = canvasManager.canvas();

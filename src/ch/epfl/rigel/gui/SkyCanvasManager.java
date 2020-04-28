@@ -15,8 +15,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.input.KeyCode;
 import javafx.scene.transform.Transform;
 
-import java.util.Optional;
-
 public final class SkyCanvasManager {
 
     private final StarCatalogue catalogue;
@@ -96,10 +94,10 @@ public final class SkyCanvasManager {
                     viewingParametersBean.setCenter(HorizontalCoordinates.ofDeg(viewingParametersBean.getCenter().azDeg(), viewingParametersBean.getCenter().altDeg()-5));
                 }
                 if(e.getCode() == KeyCode.RIGHT){
-                    viewingParametersBean.setCenter(HorizontalCoordinates.ofDeg(Angle.toDeg(Angle.normalizePositive(Angle.ofDeg(viewingParametersBean.getCenter().azDeg()+3))), viewingParametersBean.getCenter().altDeg()));
+                    viewingParametersBean.setCenter(HorizontalCoordinates.ofDeg(Angle.toDeg(Angle.normalizePositive(Angle.ofDeg(viewingParametersBean.getCenter().azDeg()+10))), viewingParametersBean.getCenter().altDeg()));
                 }
                 if(e.getCode() == KeyCode.LEFT){
-                    viewingParametersBean.setCenter(HorizontalCoordinates.ofDeg(Angle.toDeg(Angle.normalizePositive(Angle.ofDeg(viewingParametersBean.getCenter().azDeg()-3))), viewingParametersBean.getCenter().altDeg()));
+                    viewingParametersBean.setCenter(HorizontalCoordinates.ofDeg(Angle.toDeg(Angle.normalizePositive(Angle.ofDeg(viewingParametersBean.getCenter().azDeg()-10))), viewingParametersBean.getCenter().altDeg()));
                 }
             }
             paint();
@@ -125,8 +123,6 @@ public final class SkyCanvasManager {
             }
             paint();
         });
-
-
     }
 
     public Canvas canvas(){
@@ -206,7 +202,7 @@ public final class SkyCanvasManager {
         return objectUnderMouse;
     }
 
-    private CelestialObject getObjectUnderMouse(){
+    public CelestialObject getObjectUnderMouse(){
         return objectUnderMouse.getValue();
     }
 

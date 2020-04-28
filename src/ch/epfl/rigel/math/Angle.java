@@ -18,7 +18,10 @@ public final class Angle {
     private final static double RAD_PER_SEC = TAU / 1296000;
     private final static double RAD_PER_HR = TAU / 24;
     private final static double HR_PER_RAD = 24 / TAU;
-    private final static Interval MIN_SEC_INTERVAL = RightOpenInterval.of(0,60);
+    private final static double MINUTES_IN_HOUR = 60d;
+    private final static double SECONDS_IN_MINUTES = 60d;
+    private final static RightOpenInterval MIN_SEC_INTERVAL = RightOpenInterval.of(0,60);
+    private final static RightOpenInterval NORMALIZE_POSITIVE = RightOpenInterval.of(0,TAU);
 
 
     /**
@@ -28,9 +31,7 @@ public final class Angle {
      * @return l'angle normalisé
      */
     public static double normalizePositive(double rad) {
-        double normalizedRad = rad % TAU;
-        normalizedRad += TAU;
-        return normalizedRad % TAU;
+        return NORMALIZE_POSITIVE.reduce(rad);
     }
 
     /**
@@ -56,7 +57,7 @@ public final class Angle {
         Preconditions.checkArgument(deg >= 0);
         Preconditions.checkInInterval(MIN_SEC_INTERVAL, min);
         Preconditions.checkInInterval(MIN_SEC_INTERVAL, sec);
-        return Math.toRadians(deg + (double) min / 60 + sec / 3600);
+        return Math.toRadians(deg + (double) min/MINUTES_IN_HOUR + sec/(MINUTES_IN_HOUR*SECONDS_IN_MINUTES));
     }
 
     /**
