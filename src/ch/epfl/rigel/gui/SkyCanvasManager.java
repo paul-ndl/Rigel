@@ -80,25 +80,27 @@ public final class SkyCanvasManager {
 
         objectUnderMouse = Bindings.createObjectBinding(
                 () -> getObservedSky().objectClosestTo(
-                        CartesianCoordinates.of(getPlaneToCanvas().inverseTransform(getMousePosition().x(), getMousePosition().y()).getX(),
-                                                getPlaneToCanvas().inverseTransform(getMousePosition().x(), getMousePosition().y()).getY()), 10).get(),
-                planeToCanvas, observedSky, mousePosition);
+                        getProjection().apply(getMouseHorizontalPosition()), 10).get(),
+                planeToCanvas, observedSky, mouseHorizontalPosition);
 
         canvas.setOnKeyPressed(e -> {
             if(canvas.isFocused()){
-                if(e.getCode() == KeyCode.UP){
-                    if(ALT_INTERVAL.contains(viewingParametersBean.getCenter().altDeg()+5))
-                    viewingParametersBean.setCenter(HorizontalCoordinates.ofDeg(viewingParametersBean.getCenter().azDeg(), viewingParametersBean.getCenter().altDeg()+5));
+                HorizontalCoordinates newCoordinates;
+                if(e.getCode() == KeyCode.UP && ALT_INTERVAL.contains(viewingParametersBean.getCenter().altDeg()+5)){
+                    newCoordinates = HorizontalCoordinates.ofDeg(viewingParametersBean.getCenter().azDeg(), viewingParametersBean.getCenter().altDeg()+5);
+                    viewingParametersBean.setCenter(newCoordinates);
                 }
-                if(e.getCode() == KeyCode.DOWN){
-                    if(ALT_INTERVAL.contains(viewingParametersBean.getCenter().altDeg()-5))
-                    viewingParametersBean.setCenter(HorizontalCoordinates.ofDeg(viewingParametersBean.getCenter().azDeg(), viewingParametersBean.getCenter().altDeg()-5));
+                if(e.getCode() == KeyCode.DOWN && ALT_INTERVAL.contains(viewingParametersBean.getCenter().altDeg()-5)){
+                    newCoordinates = HorizontalCoordinates.ofDeg(viewingParametersBean.getCenter().azDeg(), viewingParametersBean.getCenter().altDeg()-5);
+                    viewingParametersBean.setCenter(newCoordinates);
                 }
                 if(e.getCode() == KeyCode.RIGHT){
-                    viewingParametersBean.setCenter(HorizontalCoordinates.ofDeg(AZIMUT_INTERVAL.reduce(viewingParametersBean.getCenter().azDeg()+10), viewingParametersBean.getCenter().altDeg()));
+                    newCoordinates = HorizontalCoordinates.ofDeg(AZIMUT_INTERVAL.reduce(viewingParametersBean.getCenter().azDeg()+10), viewingParametersBean.getCenter().altDeg());
+                    viewingParametersBean.setCenter(newCoordinates);
                 }
                 if(e.getCode() == KeyCode.LEFT){
-                    viewingParametersBean.setCenter(HorizontalCoordinates.ofDeg(AZIMUT_INTERVAL.reduce(viewingParametersBean.getCenter().azDeg()-10), viewingParametersBean.getCenter().altDeg()));
+                    newCoordinates = HorizontalCoordinates.ofDeg(AZIMUT_INTERVAL.reduce(viewingParametersBean.getCenter().azDeg()-10), viewingParametersBean.getCenter().altDeg());
+                    viewingParametersBean.setCenter(newCoordinates);
                 }
             }
             paint();
@@ -113,14 +115,14 @@ public final class SkyCanvasManager {
         canvas.setOnMouseMoved(e -> setMousePosition(CartesianCoordinates.of(e.getX(), e.getY())));
 
         canvas.setOnScroll(e -> {
+            double zoom;
             if(Math.abs(e.getDeltaX())>Math.abs(e.getDeltaY())){
-                double zoom = viewingParametersBean.getFieldOfViewDeg()+e.getDeltaX();
-                if(FOV.contains(zoom))
-                viewingParametersBean.setFieldOfViewDeg(zoom);
+                zoom = viewingParametersBean.getFieldOfViewDeg()+e.getDeltaX();
             } else {
-                double zoom = viewingParametersBean.getFieldOfViewDeg()+e.getDeltaY();
-                if(FOV.contains(zoom))
-                    viewingParametersBean.setFieldOfViewDeg(zoom);
+                zoom = viewingParametersBean.getFieldOfViewDeg()+e.getDeltaY();
+            }
+            if(FOV.contains(zoom)){
+                viewingParametersBean.setFieldOfViewDeg(zoom);
             }
             paint();
         });
