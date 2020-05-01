@@ -65,11 +65,16 @@ public final class SkyCanvasManager {
 
 
         mouseHorizontalPosition = Bindings.createObjectBinding(
-                () ->
-                getProjection().inverseApply(
-                        CartesianCoordinates.of(getPlaneToCanvas().inverseTransform(getMousePosition().x(), getMousePosition().y()).getX(),
-                                                getPlaneToCanvas().inverseTransform(getMousePosition().x(), getMousePosition().y()).getY())),
-                projection, planeToCanvas, mousePosition);
+                () ->{
+                    try {
+                        return (getProjection().inverseApply(
+                                CartesianCoordinates.of(getPlaneToCanvas().inverseTransform(getMousePosition().x(), getMousePosition().y()).getX(),
+                                        getPlaneToCanvas().inverseTransform(getMousePosition().x(), getMousePosition().y()).getY())));
+                    } catch (Exception e){
+                        return null;
+                    }
+                }, projection, planeToCanvas, mousePosition
+                );
 
 
         mouseAzDeg = Bindings.createDoubleBinding(
@@ -81,8 +86,14 @@ public final class SkyCanvasManager {
                 mouseHorizontalPosition);
 
         objectUnderMouse = Bindings.createObjectBinding(
-                () -> getObservedSky().objectClosestTo(
-                        getProjection().apply(getMouseHorizontalPosition()), MAX_DISTANCE).get(),
+                () -> {
+                    try{
+                        return getObservedSky().objectClosestTo(
+                                getProjection().apply(getMouseHorizontalPosition()), MAX_DISTANCE).get();
+                    } catch (Exception e){
+                        return null;
+                    }
+                },
                 planeToCanvas, observedSky, mouseHorizontalPosition);
 
         canvas.setOnKeyPressed(e -> {
