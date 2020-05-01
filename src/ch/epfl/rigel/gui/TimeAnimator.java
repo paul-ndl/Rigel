@@ -1,21 +1,18 @@
 package ch.epfl.rigel.gui;
 
 import javafx.animation.AnimationTimer;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.*;
 
-import java.sql.SQLOutput;
 import java.time.ZonedDateTime;
 
 public final class TimeAnimator extends AnimationTimer {
 
-    private DateTimeBean dateTimeBean;
-    private SimpleObjectProperty<TimeAccelerator> accelerator = new SimpleObjectProperty<>(null);
-    private SimpleBooleanProperty running = new SimpleBooleanProperty(false);
+    private final DateTimeBean dateTimeBean;
+    private final ObjectProperty<TimeAccelerator> accelerator = new SimpleObjectProperty<>(null);
+    private final BooleanProperty running = new SimpleBooleanProperty(false);
+    private ZonedDateTime initTime;
     private long time0;
-    private long deltaTime = 0;
+    private boolean initial;
 
     public TimeAnimator(DateTimeBean dateTimeBean){
         this.dateTimeBean = dateTimeBean;
@@ -47,17 +44,19 @@ public final class TimeAnimator extends AnimationTimer {
 
     @Override
     public void handle(long now) {
-        long actualTime = now;
-        deltaTime = actualTime - time0 - deltaTime;
-        System.out.println(deltaTime);
-        dateTimeBean.setZonedDateTime(getAccelerator().adjust(dateTimeBean.getZonedDateTime(), deltaTime));
+        if(initial){
+            time0 = now;
+            initial = false;
+        }
+        dateTimeBean.setZonedDateTime(getAccelerator().adjust(initTime, now-time0));
     }
 
     @Override
     public void start(){
         super.start();
         setRunning(true);
-        time0 = System.nanoTime();
+        initTime = dateTimeBean.getZonedDateTime();
+        initial = true;
     }
 
     @Override

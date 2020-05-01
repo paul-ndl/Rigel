@@ -65,7 +65,6 @@ public final class SkyCanvasPainterTest extends Application {
             time0 = System.nanoTime();
 
             painter.clear();
-            painter.drawAsterism(sky, planeToCanvas);
             painter.drawStars(sky, projection, planeToCanvas);
             painter.drawPlanets(sky, projection, planeToCanvas);
             painter.drawSun(sky, projection, planeToCanvas);

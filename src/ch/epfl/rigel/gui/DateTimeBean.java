@@ -10,9 +10,9 @@ import java.time.ZonedDateTime;
 
 public final class DateTimeBean {
 
-    private SimpleObjectProperty<LocalDate> date = new SimpleObjectProperty<>(null);
-    private SimpleObjectProperty<LocalTime> time = new SimpleObjectProperty<>(null);
-    private SimpleObjectProperty<ZoneId> zoneId = new SimpleObjectProperty<>(null);
+    private final ObjectProperty<LocalDate> date = new SimpleObjectProperty<>(null);
+    private final ObjectProperty<LocalTime> time = new SimpleObjectProperty<>(null);
+    private final ObjectProperty<ZoneId> zoneId = new SimpleObjectProperty<>(null);
 
     public ObjectProperty<LocalDate> dateProperty(){
         return date;

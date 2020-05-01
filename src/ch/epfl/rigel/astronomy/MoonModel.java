@@ -13,12 +13,12 @@ import ch.epfl.rigel.math.Angle;
 public enum MoonModel implements CelestialObjectModel<Moon> {
     MOON;
 
-    private static final double averageLon = Angle.ofDeg(91.929336);
-    private static final double lonPer = Angle.ofDeg(130.143076);
-    private static final double lonNode = Angle.ofDeg(291.682547);
-    private static final double i = Angle.ofDeg(5.145396);
-    private static final double e = 0.0549;
-    private static final double angularSizeUA = Angle.ofDeg(0.5181);
+    private static final double AVERAGE_LON = Angle.ofDeg(91.929336);
+    private static final double LON_PER = Angle.ofDeg(130.143076);
+    private static final double LON_NODE = Angle.ofDeg(291.682547);
+    private static final double I = Angle.ofDeg(5.145396);
+    private static final double E = 0.0549;
+    private static final double ANGULAR_SIZE_UA = Angle.ofDeg(0.5181);
 
     /**
      * Retourne la Lune modélisée pour les arguments donnés
@@ -31,11 +31,12 @@ public enum MoonModel implements CelestialObjectModel<Moon> {
     @Override
     public Moon at(double daysSinceJ2010, EclipticToEquatorialConversion eclipticToEquatorialConversion) {
         //Données du Soleil
-        double lambdaSun = SunModel.SUN.at(daysSinceJ2010, eclipticToEquatorialConversion).eclipticPos().lon();
-        double meanAnomalySun = SunModel.SUN.at(daysSinceJ2010, eclipticToEquatorialConversion).meanAnomaly();
+        Sun sun = SunModel.SUN.at(daysSinceJ2010, eclipticToEquatorialConversion);
+        double lambdaSun = sun.eclipticPos().lon();
+        double meanAnomalySun = sun.meanAnomaly();
         //Calcul de la longitude orbitale
-        double orbitalLon = Angle.ofDeg(13.1763966)*daysSinceJ2010 + averageLon;
-        double meanAnomaly = orbitalLon - Angle.ofDeg(0.1114041)*daysSinceJ2010 - lonPer;
+        double orbitalLon = Angle.ofDeg(13.1763966)*daysSinceJ2010 + AVERAGE_LON;
+        double meanAnomaly = orbitalLon - Angle.ofDeg(0.1114041)*daysSinceJ2010 - LON_PER;
         double evection = Angle.ofDeg(1.2739) * Math.sin(2*(orbitalLon-lambdaSun) - meanAnomaly);
         double annualEquation = Angle.ofDeg(0.1858) * Math.sin(meanAnomalySun);
         double a3 = Angle.ofDeg(0.37) * Math.sin(meanAnomalySun);
@@ -46,16 +47,16 @@ public enum MoonModel implements CelestialObjectModel<Moon> {
         double variation = Angle.ofDeg(0.6583) * Math.sin(2*(correctedLon-lambdaSun));
         double trueLon = correctedLon + variation;
         //Calcul de la longitude du noeud ascendant
-        double averageLonNode = lonNode - Angle.ofDeg(0.0529539)*daysSinceJ2010;
+        double averageLonNode = LON_NODE - Angle.ofDeg(0.0529539)*daysSinceJ2010;
         double correctedLonNode = averageLonNode - Angle.ofDeg(0.16)*Math.sin(meanAnomalySun);
         //Calcul des coordonnées écliptiques
-        double lambda = Angle.normalizePositive(Math.atan2(Math.sin(trueLon-correctedLonNode) * Math.cos(i), Math.cos(trueLon-correctedLonNode)) + correctedLonNode);
-        double beta = Math.asin(Math.sin(trueLon - correctedLonNode) * Math.sin(i));
+        double lambda = Angle.normalizePositive(Math.atan2(Math.sin(trueLon-correctedLonNode) * Math.cos(I), Math.cos(trueLon-correctedLonNode)) + correctedLonNode);
+        double beta = Math.asin(Math.sin(trueLon - correctedLonNode) * Math.sin(I));
         EclipticCoordinates ecl = EclipticCoordinates.of(lambda, beta);
         //Calcul de la phase et de la taille angulaire
         double phase = (1 - Math.cos(trueLon-lambdaSun)) / 2;
-        double p = (1 - e*e) / (1 + e*Math.cos(correctedAnomaly+centerEquation));
-        double angularSize = angularSizeUA / p;
+        double p = (1 - E * E) / (1 + E *Math.cos(correctedAnomaly+centerEquation));
+        double angularSize = ANGULAR_SIZE_UA / p;
         return new Moon(eclipticToEquatorialConversion.apply(ecl), (float) angularSize, 0f, (float) phase);
     }
 
