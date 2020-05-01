@@ -1,0 +1,70 @@
+Index: src/ch/epfl/rigel/gui/TimeAnimator.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package ch.epfl.rigel.gui;\r\n\r\nimport javafx.animation.AnimationTimer;\r\nimport javafx.beans.property.ObjectProperty;\r\nimport javafx.beans.property.ReadOnlyBooleanProperty;\r\nimport javafx.beans.property.SimpleBooleanProperty;\r\nimport javafx.beans.property.SimpleObjectProperty;\r\n\r\nimport java.sql.SQLOutput;\r\nimport java.time.ZonedDateTime;\r\n\r\npublic final class TimeAnimator extends AnimationTimer {\r\n\r\n    private DateTimeBean dateTimeBean;\r\n    private SimpleObjectProperty<TimeAccelerator> accelerator = new SimpleObjectProperty<>(null);\r\n    private SimpleBooleanProperty running = new SimpleBooleanProperty(false);\r\n    private long time0;\r\n    private long deltaTime = 0;\r\n\r\n    public TimeAnimator(DateTimeBean dateTimeBean){\r\n        this.dateTimeBean = dateTimeBean;\r\n    }\r\n\r\n    public ObjectProperty<TimeAccelerator> acceleratorProperty(){\r\n        return accelerator;\r\n    }\r\n\r\n    public TimeAccelerator getAccelerator(){\r\n        return accelerator.get();\r\n    }\r\n\r\n    public void setAccelerator(TimeAccelerator accelerator){\r\n        this.accelerator.set(accelerator);\r\n    }\r\n\r\n    public ReadOnlyBooleanProperty runningProperty(){\r\n        return running;\r\n    }\r\n\r\n    public Boolean getRunning(){\r\n        return running.get();\r\n    }\r\n\r\n    public void setRunning(Boolean running){\r\n        this.running.set(running);\r\n    }\r\n\r\n    @Override\r\n    public void handle(long now) {\r\n        long actualTime = now;\r\n        deltaTime = actualTime - time0 - deltaTime;\r\n        System.out.println(deltaTime);\r\n        dateTimeBean.setZonedDateTime(getAccelerator().adjust(dateTimeBean.getZonedDateTime(), deltaTime));\r\n    }\r\n\r\n    @Override\r\n    public void start(){\r\n        super.start();\r\n        setRunning(true);\r\n        time0 = System.nanoTime();\r\n    }\r\n\r\n    @Override\r\n    public void stop(){\r\n        super.stop();\r\n        setRunning(false);\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/ch/epfl/rigel/gui/TimeAnimator.java	(revision d277cbd34271720c8c11085dc04cdce690973f8b)
++++ src/ch/epfl/rigel/gui/TimeAnimator.java	(date 1587482330130)
+@@ -6,9 +6,6 @@
+ import javafx.beans.property.SimpleBooleanProperty;
+ import javafx.beans.property.SimpleObjectProperty;
+ 
+-import java.sql.SQLOutput;
+-import java.time.ZonedDateTime;
+-
+ public final class TimeAnimator extends AnimationTimer {
+ 
+     private DateTimeBean dateTimeBean;
+@@ -47,9 +44,8 @@
+ 
+     @Override
+     public void handle(long now) {
+-        long actualTime = now;
++        long actualTime = System.nanoTime();
+         deltaTime = actualTime - time0 - deltaTime;
+-        System.out.println(deltaTime);
+         dateTimeBean.setZonedDateTime(getAccelerator().adjust(dateTimeBean.getZonedDateTime(), deltaTime));
+     }
+ 
+Index: src/ch/epfl/rigel/gui/SkyCanvasPainter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package ch.epfl.rigel.gui;\r\n\r\nimport ch.epfl.rigel.astronomy.Asterism;\r\nimport ch.epfl.rigel.astronomy.ObservedSky;\r\nimport ch.epfl.rigel.astronomy.Planet;\r\nimport ch.epfl.rigel.astronomy.Star;\r\nimport ch.epfl.rigel.coordinates.CartesianCoordinates;\r\nimport ch.epfl.rigel.coordinates.HorizontalCoordinates;\r\nimport ch.epfl.rigel.coordinates.StereographicProjection;\r\nimport ch.epfl.rigel.math.Angle;\r\nimport ch.epfl.rigel.math.ClosedInterval;\r\nimport javafx.geometry.Bounds;\r\nimport javafx.geometry.Point2D;\r\nimport javafx.geometry.VPos;\r\nimport javafx.scene.canvas.Canvas;\r\nimport javafx.scene.canvas.GraphicsContext;\r\nimport javafx.scene.paint.Color;\r\nimport javafx.scene.transform.Transform;\r\n\r\npublic final class SkyCanvasPainter {\r\n\r\n    private Canvas canvas;\r\n    private GraphicsContext ctx;\r\n\r\n    private static final Color BLUE = Color.BLUE;\r\n    private static final Color GREY = Color.LIGHTGREY;\r\n    private static final Color WHITE = Color.WHITE;\r\n    private static final Color YELLOW = Color.YELLOW;\r\n    private static final Color OPAQUE_YELLOW = YELLOW.deriveColor(1, 1, 1, 0.25);\r\n    private static final Color RED = Color.RED;\r\n    private static final Color BLACK = Color.BLACK;\r\n\r\n    private static final ClosedInterval interval = ClosedInterval.of(-2, 5);\r\n\r\n    public SkyCanvasPainter(Canvas canvas) {\r\n        this.canvas = canvas;\r\n        this.ctx = canvas.getGraphicsContext2D();\r\n    }\r\n\r\n    public void clear() {\r\n        ctx.setFill(BLACK);\r\n        ctx.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());\r\n    }\r\n\r\n    public void drawAsterism(ObservedSky sky, Transform planeToCanvas) {\r\n        ctx.setStroke(BLUE);\r\n        ctx.setLineWidth(1);\r\n        double[] skyCoordinates = sky.starPositions();\r\n        boolean isInBounds = false;\r\n        Bounds canvasBounds = canvas.getBoundsInLocal();\r\n        for (Asterism a : sky.asterism()) {\r\n            ctx.beginPath();\r\n            int[] indices = sky.asterismIndices(a).stream()\r\n                                                  .mapToInt(Integer :: intValue)\r\n                                                  .toArray();\r\n            for (Integer index : indices) {\r\n                Point2D coordinates = planeToCanvas.transform(skyCoordinates[2*index], skyCoordinates[2*index + 1]);\r\n                ctx.lineTo(coordinates.getX(), coordinates.getY());\r\n                if (canvasBounds.contains(coordinates.getX(), coordinates.getY()) || isInBounds) {\r\n                    ctx.stroke();\r\n                }\r\n                isInBounds = (canvasBounds.contains(coordinates.getX(), coordinates.getY()));\r\n            }\r\n        }\r\n    }\r\n\r\n    public void drawStars(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas) {\r\n        double[] coordinates = sky.starPositions();\r\n        planeToCanvas.transform2DPoints(coordinates, 0, coordinates, 0, coordinates.length/2);\r\n        Star[] stars = sky.stars().toArray(Star[]::new);\r\n        for (int i=0; i<stars.length; ++i) {\r\n            double diameter = size(stars[i].magnitude(), projection);\r\n            Point2D transform = planeToCanvas.deltaTransform(diameter, 0);\r\n            double trueDiameter = Math.abs(transform.getX());\r\n            ctx.setFill(BlackBodyColor.colorForTemperature(stars[i].colorTemperature()));\r\n            ctx.fillOval(coordinates[2*i]-trueDiameter/2, coordinates[2*i+1]-trueDiameter/2, trueDiameter, trueDiameter);\r\n        }\r\n    }\r\n\r\n    public void drawPlanets(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas) {\r\n        ctx.setFill(GREY);\r\n        double[] coordinates = sky.planetPositions();\r\n        planeToCanvas.transform2DPoints(coordinates, 0, coordinates, 0, coordinates.length / 2);\r\n        Planet[] planets = sky.planets().toArray(Planet[]::new);\r\n        for (int i=0; i<planets.length; ++i) {\r\n            final double diameter = size(planets[i].magnitude(), projection);\r\n            Point2D transform = planeToCanvas.deltaTransform(diameter, 0);\r\n            double trueDiameter = Math.abs(transform.getX());\r\n            ctx.fillOval(coordinates[2*i]-trueDiameter/2, coordinates[2*i+1]-trueDiameter/2, trueDiameter, trueDiameter);\r\n        }\r\n    }\r\n\r\n    public void drawSun(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas) {\r\n        CartesianCoordinates position = sky.sunPosition();\r\n        Point2D coordinates = planeToCanvas.transform(position.x(), position.y());\r\n        final double diameter = projection.applyToAngle(sky.sun().angularSize());\r\n        Point2D transform = planeToCanvas.deltaTransform(diameter, 0);\r\n        double trueDiameter = Math.abs(transform.getX());\r\n        ctx.setFill(OPAQUE_YELLOW);\r\n        ctx.fillOval(coordinates.getX()-2.2*trueDiameter/2, coordinates.getY()-2.2*trueDiameter/2, 2.2*trueDiameter, 2.2*trueDiameter);\r\n        ctx.setFill(YELLOW);\r\n        ctx.fillOval(coordinates.getX()-(trueDiameter+2)/2, coordinates.getY()-(trueDiameter+2)/2, (trueDiameter+2), (trueDiameter+2));\r\n        ctx.setFill(WHITE);\r\n        ctx.fillOval(coordinates.getX()-trueDiameter/2, coordinates.getY()-trueDiameter/2, trueDiameter, trueDiameter);\r\n    }\r\n\r\n    public void drawMoon(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas) {\r\n        ctx.setFill(WHITE);\r\n        CartesianCoordinates position = sky.moonPosition();\r\n        Point2D coordinates = planeToCanvas.transform(position.x(), position.y());\r\n        final double diameter = projection.applyToAngle(sky.moon().angularSize());\r\n        Point2D transform = planeToCanvas.deltaTransform(diameter, 0);\r\n        double trueDiameter = Math.abs(transform.getX());\r\n        ctx.fillOval(coordinates.getX()-trueDiameter/2, coordinates.getY()-trueDiameter/2, trueDiameter, trueDiameter);\r\n    }\r\n\r\n    public void drawHorizon(StereographicProjection projection, Transform planeToCanvas) {\r\n        ctx.setStroke(RED);\r\n        ctx.setLineWidth(2);\r\n        CartesianCoordinates center = projection.circleCenterForParallel(HorizontalCoordinates.of(0, 0));\r\n        Point2D coordinates = planeToCanvas.transform(center.x(), center.y());\r\n        double diameter = 2 * projection.circleRadiusForParallel(HorizontalCoordinates.of(0, 0));\r\n        Point2D point = planeToCanvas.deltaTransform(diameter, 0);\r\n        double trueDiameter = Math.abs(point.getX());\r\n        ctx.strokeOval(coordinates.getX()-trueDiameter/2, coordinates.getY()-trueDiameter/2, trueDiameter, trueDiameter);\r\n        drawCardinalPoints(projection, planeToCanvas);\r\n    }\r\n\r\n    private void drawCardinalPoints(StereographicProjection projection, Transform planeToCanvas) {\r\n        ctx.setFill(Color.RED);\r\n        ctx.setTextBaseline(VPos.TOP);\r\n        for (int i=0; i<8; ++i) {\r\n            HorizontalCoordinates horCoordinates = HorizontalCoordinates.ofDeg(45*i, -0.5);\r\n            CartesianCoordinates projCoordinates = projection.apply(horCoordinates);\r\n            Point2D coordinates = planeToCanvas.transform(projCoordinates.x(), projCoordinates.y());\r\n            String text = horCoordinates.azOctantName(\"N\", \"E\", \"S\", \"O\");\r\n            ctx.fillText(text, coordinates.getX(), coordinates.getY());\r\n        }\r\n    }\r\n\r\n    private double size(double magnitude, StereographicProjection projection) {\r\n        final double clipedMagnitude = interval.clip(magnitude);\r\n        final double function = (99 - 17*clipedMagnitude) / 140;\r\n        return function * projection.applyToAngle(Angle.ofDeg(0.5));\r\n    }\r\n\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/ch/epfl/rigel/gui/SkyCanvasPainter.java	(revision d277cbd34271720c8c11085dc04cdce690973f8b)
++++ src/ch/epfl/rigel/gui/SkyCanvasPainter.java	(date 1587559560524)
+@@ -122,6 +122,8 @@
+         double diameter = 2 * projection.circleRadiusForParallel(HorizontalCoordinates.of(0, 0));
+         Point2D point = planeToCanvas.deltaTransform(diameter, 0);
+         double trueDiameter = Math.abs(point.getX());
++        System.out.println(trueDiameter);
++        System.out.println(coordinates);
+         ctx.strokeOval(coordinates.getX()-trueDiameter/2, coordinates.getY()-trueDiameter/2, trueDiameter, trueDiameter);
+         drawCardinalPoints(projection, planeToCanvas);
+     }
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_14_04_2020_23_59__Default_Changelist_.xml
+===================================================================
+--- .idea/shelf/Uncommitted_changes_before_Update_at_14_04_2020_23_59__Default_Changelist_.xml	(revision d277cbd34271720c8c11085dc04cdce690973f8b)
++++ .idea/shelf/Uncommitted_changes_before_Update_at_14_04_2020_23_59__Default_Changelist_.xml	(revision d277cbd34271720c8c11085dc04cdce690973f8b)
+@@ -1,14 +0,0 @@
+-<changelist name="Uncommitted_changes_before_Update_at_14_04_2020_23_59_[Default_Changelist]" date="1586901563972" recycled="true" deleted="true">
+-  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_14_04_2020_23_59_[Default_Changelist]/shelved.patch" />
+-  <option name="DESCRIPTION" value="Uncommitted changes before Update at 14/04/2020 23:59 [Default Changelist]" />
+-  <binary>
+-    <option name="BEFORE_PATH" value="out/test/Rigel/ch/epfl/rigel/astronomy/HygDatabaseLoaderTest$ThrowingInputStream.class" />
+-    <option name="AFTER_PATH" value="out/test/Rigel/ch/epfl/rigel/astronomy/HygDatabaseLoaderTest$ThrowingInputStream.class" />
+-    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_14_04_2020_23_59_[Default_Changelist]/HygDatabaseLoaderTest$ThrowingInputStream.class" />
+-  </binary>
+-  <binary>
+-    <option name="BEFORE_PATH" value="out/test/Rigel/ch/epfl/rigel/astronomy/HygDataBaseLoaderTest.class" />
+-    <option name="AFTER_PATH" value="out/test/Rigel/ch/epfl/rigel/astronomy/HygDataBaseLoaderTest.class" />
+-    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_14_04_2020_23_59_[Default_Changelist]/HygDataBaseLoaderTest.class" />
+-  </binary>
+-</changelist>
+\ No newline at end of file
+diff --git .idea/shelf/Uncommitted_changes_before_Update_at_14_04_2020_23_59_[Default_Changelist]/shelved.patch .idea/shelf/Uncommitted_changes_before_Update_at_14_04_2020_23_59_[Default_Changelist]/shelved.patch
+deleted file mode 100644
