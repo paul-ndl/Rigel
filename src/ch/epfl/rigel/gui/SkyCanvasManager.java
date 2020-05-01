@@ -56,18 +56,18 @@ public final class SkyCanvasManager {
                 () -> Transform.affine(dilatation(getProjection(), canvas.getWidth(), viewingParametersBean.getFieldOfViewDeg()),
                         0, 0, -dilatation(getProjection(), canvas.getWidth(), viewingParametersBean.getFieldOfViewDeg()),
                         canvas.getWidth()/2, canvas.getHeight()/2),
-                projectionProperty(), viewingParametersBean.fieldOfViewDegProperty());
+                projection, viewingParametersBean.fieldOfViewDegProperty());
 
         observedSky = Bindings.createObjectBinding(
                 () -> new ObservedSky(dateTimeBean.getZonedDateTime(), observerLocationBean.getCoordinates(), getProjection(), catalogue),
-                dateTimeBean.dateProperty(), dateTimeBean.timeProperty(), dateTimeBean.zoneIdProperty(), observerLocationBean.lonDegProperty(), observerLocationBean.latDegProperty(), projectionProperty());
+                dateTimeBean.dateProperty(), dateTimeBean.timeProperty(), dateTimeBean.zoneIdProperty(), observerLocationBean.lonDegProperty(), observerLocationBean.latDegProperty(), projection);
 
 
         mouseHorizontalPosition = Bindings.createObjectBinding(
                 () -> getProjection().inverseApply(
                         CartesianCoordinates.of(getPlaneToCanvas().inverseTransform(getMousePosition().x(), getMousePosition().y()).getX(),
                                                 getPlaneToCanvas().inverseTransform(getMousePosition().x(), getMousePosition().y()).getY())),
-                projectionProperty(), planeToCanvasProperty(), mousePositionProperty());
+                projection, planeToCanvas, mousePosition);
 
 
         mouseAzDeg = Bindings.createDoubleBinding(
