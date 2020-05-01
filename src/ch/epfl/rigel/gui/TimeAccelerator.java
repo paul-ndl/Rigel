@@ -16,7 +16,7 @@ public interface TimeAccelerator {
 
     static TimeAccelerator discrete(int f, Duration S){
         return (ZonedDateTime initTime, long elapsedRealTime) ->
-                initTime.plusNanos((long) Math.floor(f*elapsedRealTime)*S.toNanos());
+            initTime.plusNanos((long) Math.floor(f*elapsedRealTime*1e-9)*S.toNanos());
     }
 
 }

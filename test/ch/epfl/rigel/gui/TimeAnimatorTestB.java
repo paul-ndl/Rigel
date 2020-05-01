@@ -21,7 +21,7 @@ public class TimeAnimatorTestB {
     public void discreteWorks(){
         ZonedDateTime initialTime = ZonedDateTime.parse("2020-04-20T21:00:00+00:00");
         ZonedDateTime laterTime = TimeAccelerator.discrete(10, Duration.parse("PT23H56M4S"))
-                .adjust(initialTime, (long) (2.34));
+                .adjust(initialTime, (long) (2.34*1e9));
         assertEquals(ZonedDateTime.parse("2020-05-13T19:29:32+00:00"), laterTime);
     }
 
