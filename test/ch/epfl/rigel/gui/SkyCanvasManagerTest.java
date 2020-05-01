@@ -46,7 +46,7 @@ public final class SkyCanvasManagerTest extends Application {
             ViewingParametersBean viewingParametersBean =
                     new ViewingParametersBean();
             viewingParametersBean.setCenter(
-                    HorizontalCoordinates.ofDeg(180, 42));
+                    HorizontalCoordinates.ofDeg(180.000000000001, 42));
             viewingParametersBean.setFieldOfViewDeg((double) 70);
 
             SkyCanvasManager canvasManager = new SkyCanvasManager(

@@ -35,6 +35,7 @@ public final class SkyCanvasManager {
     public final ObservableDoubleValue mouseAltDeg;
     public final ObservableValue<CelestialObject> objectUnderMouse;
 
+    private static final int MAX_DISTANCE = 10;
     private static final ClosedInterval FOV = ClosedInterval.of(30,150);
     private static final RightOpenInterval AZIMUT_INTERVAL = RightOpenInterval.of(0, 360);
     private static final ClosedInterval ALT_INTERVAL = ClosedInterval.of(-90, 90);
@@ -56,7 +57,7 @@ public final class SkyCanvasManager {
                 () -> Transform.affine(dilatation(getProjection(), canvas.getWidth(), viewingParametersBean.getFieldOfViewDeg()),
                         0, 0, -dilatation(getProjection(), canvas.getWidth(), viewingParametersBean.getFieldOfViewDeg()),
                         canvas.getWidth()/2, canvas.getHeight()/2),
-                projection, viewingParametersBean.fieldOfViewDegProperty());
+                projection, canvas.widthProperty(), canvas.heightProperty(), viewingParametersBean.fieldOfViewDegProperty());
 
         observedSky = Bindings.createObjectBinding(
                 () -> new ObservedSky(dateTimeBean.getZonedDateTime(), observerLocationBean.getCoordinates(), getProjection(), catalogue),
@@ -64,7 +65,8 @@ public final class SkyCanvasManager {
 
 
         mouseHorizontalPosition = Bindings.createObjectBinding(
-                () -> getProjection().inverseApply(
+                () ->
+                getProjection().inverseApply(
                         CartesianCoordinates.of(getPlaneToCanvas().inverseTransform(getMousePosition().x(), getMousePosition().y()).getX(),
                                                 getPlaneToCanvas().inverseTransform(getMousePosition().x(), getMousePosition().y()).getY())),
                 projection, planeToCanvas, mousePosition);
@@ -80,30 +82,26 @@ public final class SkyCanvasManager {
 
         objectUnderMouse = Bindings.createObjectBinding(
                 () -> getObservedSky().objectClosestTo(
-                        getProjection().apply(getMouseHorizontalPosition()), 10).get(),
+                        getProjection().apply(getMouseHorizontalPosition()), MAX_DISTANCE).get(),
                 planeToCanvas, observedSky, mouseHorizontalPosition);
 
         canvas.setOnKeyPressed(e -> {
-            if(canvas.isFocused()){
-                HorizontalCoordinates newCoordinates;
-                if(e.getCode() == KeyCode.UP && ALT_INTERVAL.contains(viewingParametersBean.getCenter().altDeg()+5)){
-                    newCoordinates = HorizontalCoordinates.ofDeg(viewingParametersBean.getCenter().azDeg(), viewingParametersBean.getCenter().altDeg()+5);
-                    viewingParametersBean.setCenter(newCoordinates);
-                }
-                if(e.getCode() == KeyCode.DOWN && ALT_INTERVAL.contains(viewingParametersBean.getCenter().altDeg()-5)){
-                    newCoordinates = HorizontalCoordinates.ofDeg(viewingParametersBean.getCenter().azDeg(), viewingParametersBean.getCenter().altDeg()-5);
-                    viewingParametersBean.setCenter(newCoordinates);
-                }
-                if(e.getCode() == KeyCode.RIGHT){
-                    newCoordinates = HorizontalCoordinates.ofDeg(AZIMUT_INTERVAL.reduce(viewingParametersBean.getCenter().azDeg()+10), viewingParametersBean.getCenter().altDeg());
-                    viewingParametersBean.setCenter(newCoordinates);
-                }
-                if(e.getCode() == KeyCode.LEFT){
-                    newCoordinates = HorizontalCoordinates.ofDeg(AZIMUT_INTERVAL.reduce(viewingParametersBean.getCenter().azDeg()-10), viewingParametersBean.getCenter().altDeg());
-                    viewingParametersBean.setCenter(newCoordinates);
-                }
+            HorizontalCoordinates newCoordinates;
+            if(e.getCode() == KeyCode.UP && ALT_INTERVAL.contains(viewingParametersBean.getCenter().altDeg()+5)){
+                newCoordinates = HorizontalCoordinates.ofDeg(viewingParametersBean.getCenter().azDeg(), viewingParametersBean.getCenter().altDeg()+5);
             }
-            paint();
+             else if(e.getCode() == KeyCode.DOWN && ALT_INTERVAL.contains(viewingParametersBean.getCenter().altDeg()-5)){
+                newCoordinates = HorizontalCoordinates.ofDeg(viewingParametersBean.getCenter().azDeg(), viewingParametersBean.getCenter().altDeg()-5);
+            }
+            else if(e.getCode() == KeyCode.RIGHT){
+                newCoordinates = HorizontalCoordinates.ofDeg(AZIMUT_INTERVAL.reduce(viewingParametersBean.getCenter().azDeg()+10), viewingParametersBean.getCenter().altDeg());
+            }
+            else if(e.getCode() == KeyCode.LEFT){
+                newCoordinates = HorizontalCoordinates.ofDeg(AZIMUT_INTERVAL.reduce(viewingParametersBean.getCenter().azDeg()-10), viewingParametersBean.getCenter().altDeg());
+            } else {
+                newCoordinates = viewingParametersBean.getCenter();
+            }
+            viewingParametersBean.setCenter(newCoordinates);
         });
 
         canvas.setOnMousePressed(e -> {
@@ -124,7 +122,16 @@ public final class SkyCanvasManager {
             if(FOV.contains(zoom)){
                 viewingParametersBean.setFieldOfViewDeg(zoom);
             }
-            paint();
+        });
+
+        observedSky.addListener(
+            (p, o, n) -> {
+                paint();
+        });
+
+        planeToCanvas.addListener(
+            (p, o, n) -> {
+                paint();
         });
     }
 
