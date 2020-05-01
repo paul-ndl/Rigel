@@ -14,6 +14,7 @@ import javafx.beans.value.ObservableDoubleValue;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.KeyCode;
+import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Transform;
 
 public final class SkyCanvasManager {
@@ -70,7 +71,7 @@ public final class SkyCanvasManager {
                         return (getProjection().inverseApply(
                                 CartesianCoordinates.of(getPlaneToCanvas().inverseTransform(getMousePosition().x(), getMousePosition().y()).getX(),
                                         getPlaneToCanvas().inverseTransform(getMousePosition().x(), getMousePosition().y()).getY())));
-                    } catch (Exception e){
+                    } catch (NonInvertibleTransformException e){
                         return null;
                     }
                 }, projection, planeToCanvas, mousePosition
@@ -90,7 +91,7 @@ public final class SkyCanvasManager {
                     try{
                         return getObservedSky().objectClosestTo(
                                 getProjection().apply(getMouseHorizontalPosition()), MAX_DISTANCE).get();
-                    } catch (Exception e){
+                    } catch (NullPointerException e){
                         return null;
                     }
                 },
