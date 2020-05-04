@@ -39,7 +39,7 @@ public final class SkyCanvasManager {
     private static final int MAX_DISTANCE = 10;
     private static final ClosedInterval FOV = ClosedInterval.of(30,150);
     private static final RightOpenInterval AZIMUT_INTERVAL = RightOpenInterval.of(0, 360);
-    private static final ClosedInterval ALT_INTERVAL = ClosedInterval.of(-90, 90);
+    private static final ClosedInterval ALT_INTERVAL = ClosedInterval.of(5, 90);
 
     public SkyCanvasManager(StarCatalogue catalogue, DateTimeBean dateTimeBean, ObserverLocationBean observerLocationBean, ViewingParametersBean viewingParametersBean){
         this.catalogue = catalogue;
