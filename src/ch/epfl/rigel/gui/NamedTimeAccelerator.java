@@ -11,7 +11,7 @@ public enum NamedTimeAccelerator {
     TIMES_300("300x", TimeAccelerator.continuous(300)),
     TIMES_3000("3000x", TimeAccelerator.continuous(3000)),
     DAY("jour", TimeAccelerator.discrete(60, Duration.ofHours(24))),
-    SIDERAL_DAY("jour sidéral", TimeAccelerator.discrete(60, Duration.ofSeconds(89764)));
+    SIDERAL_DAY("jour sidéral", TimeAccelerator.discrete(60, Duration.parse("PT23H56M4S")));
 
     private final String name;
     private final TimeAccelerator accelerator;
