@@ -7,6 +7,8 @@ import ch.epfl.rigel.coordinates.GeographicCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableObjectValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -120,20 +122,19 @@ public final class Main extends Application {
         Label dateLabel = new Label("Date :");
         DatePicker dateField = new DatePicker();
         dateField.valueProperty().bindBidirectional(dateTimeBean.dateProperty());
-        dateField.valueProperty().set(LocalDate.now());
+        dateTimeBean.dateProperty().set(LocalDate.now());
         dateField.setStyle("-fx-pref-width: 120");
 
         Label hourLabel = new Label("Heure :");
         TextField hourField = new TextField(LocalTime.now().toString());
         TextFormatter timeFormatter = timeFormatter();
         dateTimeBean.setTime(LocalTime.of(14,07,47));
-        //hourField.setTextFormatter(timeFormatter);
+        hourField.setTextFormatter(timeFormatter);
         hourField.setStyle("-fx-pref-width: 75; -fx-alignment: baseline-right;");
 
-        ComboBox zoneId = new ComboBox();
+        ComboBox<String> zoneId = new ComboBox();
         ObservableList<String> zoneList = FXCollections.observableArrayList(ZoneId.getAvailableZoneIds());
         zoneId.setItems(zoneList);
-        //zoneId.valueProperty().bindBidirectional(dateTimeBean.zoneIdProperty());
         dateTimeBean.setZoneId(ZoneId.of("Europe/Zurich"));
         zoneId.setStyle("-fx-pref-width: 180;");
 
@@ -147,12 +148,11 @@ public final class Main extends Application {
         HBox third = new HBox();
         third.setStyle("-fx-spacing: inherit;");
 
-        ChoiceBox accelerator = new ChoiceBox();
+        ChoiceBox<NamedTimeAccelerator> accelerator = new ChoiceBox();
         ObservableList<NamedTimeAccelerator> acceleratorList = FXCollections.observableArrayList(NamedTimeAccelerator.values());
         accelerator.setItems(acceleratorList);
-        accelerator.setValue(NamedTimeAccelerator.SIDERAL_DAY);
-        //accelerator.valueProperty().bindBidirectional(timeAnimator.acceleratorProperty());
-        timeAnimator.setAccelerator(NamedTimeAccelerator.DAY.getAccelerator());
+        accelerator.setValue(NamedTimeAccelerator.TIMES_300);
+        timeAnimator.acceleratorProperty().bind(Bindings.select(accelerator.valueProperty(), "accelerator"));
 
 
 

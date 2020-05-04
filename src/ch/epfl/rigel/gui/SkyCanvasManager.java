@@ -130,9 +130,8 @@ public final class SkyCanvasManager {
             } else {
                 zoom = viewingParametersBean.getFieldOfViewDeg()+e.getDeltaY();
             }
-            if(FOV.contains(zoom)){
-                viewingParametersBean.setFieldOfViewDeg(zoom);
-            }
+            viewingParametersBean.setFieldOfViewDeg(FOV.clip(zoom));
+
         });
 
         observedSky.addListener(
