@@ -73,7 +73,7 @@ public final class Main extends Application {
             primaryStage.setMinWidth(800);
             primaryStage.setMinHeight(600);
 
-            HBox panel = ControlPanel(primaryStage);
+            HBox panel = ControlPanel();
             BorderPane infoPanel = InfoPanel(canvasManager, viewingParametersBean);
 
             BorderPane root = new BorderPane(sky, panel, null, infoPanel, null);
@@ -84,7 +84,7 @@ public final class Main extends Application {
         }
     }
 
-    private HBox ControlPanel(Stage primaryStage){
+    private HBox ControlPanel(){
         HBox panel = new HBox();
         panel.setStyle("-fx-spacing: 4; -fx-padding: 4;");
 
@@ -178,8 +178,8 @@ public final class Main extends Application {
     private BorderPane InfoPanel(SkyCanvasManager canvasManager, ViewingParametersBean view){
         Text fov = new Text("Champ de vue :" + view.getFieldOfViewDeg().toString() + "°");
         Text celestialObject = new Text(canvasManager.getObjectUnderMouse()==null ? "" : canvasManager.getObjectUnderMouse().toString());
-        //Text position = new Text("Azimut : " + canvasManager.getMouseAzDeg() + ", " + "hauteur : " + canvasManager.getMouseAltDeg());
-        BorderPane info = new BorderPane(celestialObject, null, null, null, fov);
+        Text position = new Text("Azimut : " + canvasManager.getMouseAzDeg() + ", " + "hauteur : " + canvasManager.getMouseAltDeg());
+        BorderPane info = new BorderPane(celestialObject, null, position, null, fov);
         info.setStyle("-fx-padding: 4; -fx-background-color: white");
         return info;
     }
