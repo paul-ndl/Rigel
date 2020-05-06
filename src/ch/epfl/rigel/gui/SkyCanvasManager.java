@@ -8,6 +8,8 @@ import ch.epfl.rigel.math.Angle;
 import ch.epfl.rigel.math.ClosedInterval;
 import ch.epfl.rigel.math.RightOpenInterval;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.DoubleBinding;
+import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableDoubleValue;
@@ -25,16 +27,16 @@ public final class SkyCanvasManager {
     private final ViewingParametersBean viewingParametersBean;
     private Canvas canvas;
     private SkyCanvasPainter painter;
-    private final ObservableValue<StereographicProjection> projection;
-    private final ObservableValue<Transform> planeToCanvas;
-    private final ObservableValue<ObservedSky> observedSky;
+    private final ObjectBinding<StereographicProjection> projection;
+    private final ObjectBinding<Transform> planeToCanvas;
+    private final ObjectBinding<ObservedSky> observedSky;
 
-    private final ObjectProperty<CartesianCoordinates> mousePosition = new SimpleObjectProperty<>(null);
-    private final ObservableValue<HorizontalCoordinates> mouseHorizontalPosition;
+    private final ObjectProperty<CartesianCoordinates> mousePosition = new SimpleObjectProperty<>(CartesianCoordinates.of(0,0));
+    private final ObjectBinding<HorizontalCoordinates> mouseHorizontalPosition;
 
-    public final ObservableDoubleValue mouseAzDeg;
-    public final ObservableDoubleValue mouseAltDeg;
-    public final ObservableValue<CelestialObject> objectUnderMouse;
+    public final DoubleBinding mouseAzDeg;
+    public final DoubleBinding mouseAltDeg;
+    public final ObjectBinding<CelestialObject> objectUnderMouse;
 
     private static final int MAX_DISTANCE = 10;
     private static final ClosedInterval FOV = ClosedInterval.of(30,150);

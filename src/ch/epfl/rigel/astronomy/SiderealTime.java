@@ -21,7 +21,7 @@ public final class SiderealTime {
     private final static double MILLIS_IN_HOUR = 3600000;
     private final static Polynomial polynomial = Polynomial.of(0.000025862,
                                                               2400.051336,
-                                                                          6.697374558);
+                                                                         6.697374558);
 
     /**
      * Retourne le temps sidéral de Greenwich en radians pour le couple heure/date donné
