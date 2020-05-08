@@ -27,8 +27,8 @@ public final class SkyCanvasManager {
     private final DateTimeBean dateTimeBean;
     private final ObserverLocationBean observerLocationBean;
     private final ViewingParametersBean viewingParametersBean;
-    private Canvas canvas;
-    private SkyCanvasPainter painter;
+    private final Canvas canvas;
+    private final SkyCanvasPainter painter;
     private final ObjectBinding<StereographicProjection> projection;
     private final ObjectBinding<Transform> planeToCanvas;
     private final ObjectBinding<ObservedSky> observedSky;
@@ -154,15 +154,9 @@ public final class SkyCanvasManager {
 
         });
 
-        observedSky.addListener(
-            (p, o, n) -> {
-                paint();
-        });
+        observedSky.addListener((p, o, n) -> paint());
 
-        planeToCanvas.addListener(
-            (p, o, n) -> {
-                paint();
-        });
+        planeToCanvas.addListener((p, o, n) -> paint());
     }
 
     public Canvas canvas(){

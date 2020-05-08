@@ -23,8 +23,8 @@ import java.util.Set;
 
 public final class SkyCanvasPainter {
 
-    private Canvas canvas;
-    private GraphicsContext ctx;
+    private final Canvas canvas;
+    private final GraphicsContext ctx;
 
     private static final Color BLUE = Color.BLUE;
     private static final Color GREY = Color.LIGHTGREY;

@@ -34,10 +34,10 @@ import java.util.stream.Collectors;
 
 public final class Main extends Application {
 
-    private ObserverLocationBean observerLocationBean = new ObserverLocationBean();
-    private DateTimeBean dateTimeBean = new DateTimeBean();
-    private ViewingParametersBean viewingParametersBean = new ViewingParametersBean();
-    private TimeAnimator timeAnimator = new TimeAnimator(dateTimeBean);
+    private final ObserverLocationBean observerLocationBean = new ObserverLocationBean();
+    private final DateTimeBean dateTimeBean = new DateTimeBean();
+    private final ViewingParametersBean viewingParametersBean = new ViewingParametersBean();
+    private final TimeAnimator timeAnimator = new TimeAnimator(dateTimeBean);
 
     private StarCatalogue.Builder builder = new StarCatalogue.Builder();
 
@@ -62,7 +62,7 @@ public final class Main extends Application {
 
             observerLocationBean.setCoordinates(GeographicCoordinates.ofDeg(6.57, 46.52));
 
-            ZonedDateTime when = ZonedDateTime.now();
+            ZonedDateTime when = ZonedDateTime.now(ZoneId.systemDefault());
             dateTimeBean.setZonedDateTime(when);
 
             viewingParametersBean.setCenter(HorizontalCoordinates.ofDeg(180.000000000001, 15));
@@ -103,7 +103,7 @@ public final class Main extends Application {
         TextField lonField = new TextField();
         TextFormatter<Number> lonTextFormatter = lonTextFormatter();
         lonField.setTextFormatter(lonTextFormatter);
-        lonTextFormatter.valueProperty().bind(observerLocationBean.lonDegProperty());
+        lonTextFormatter.valueProperty().bindBidirectional(observerLocationBean.lonDegProperty());
         observerLocationBean.setLonDeg(6.57);
         lonField.setStyle("-fx-pref-width: 60; -fx-alignment: baseline-right;");
 
@@ -111,7 +111,7 @@ public final class Main extends Application {
         TextField latField = new TextField();
         TextFormatter<Number> latTextFormatter = latTextFormatter();
         latField.setTextFormatter(latTextFormatter);
-        latTextFormatter.valueProperty().bind(observerLocationBean.latDegProperty());
+        latTextFormatter.valueProperty().bindBidirectional(observerLocationBean.latDegProperty());
         observerLocationBean.setLatDeg(42d);
         latField.setStyle("-fx-pref-width: 60; -fx-alignment: baseline-right;");
 
@@ -126,21 +126,22 @@ public final class Main extends Application {
 
         Label dateLabel = new Label("Date : ");
         DatePicker dateField = new DatePicker();
-        dateField.valueProperty().bind(dateTimeBean.dateProperty());
+        dateField.valueProperty().bindBidirectional(dateTimeBean.dateProperty());
         dateField.setStyle("-fx-pref-width: 120");
 
         Label hourLabel = new Label("Heure : ");
         TextField hourField = new TextField();
         TextFormatter<LocalTime> timeFormatter = timeFormatter();
-        timeFormatter.valueProperty().bind(dateTimeBean.timeProperty());
+        timeFormatter.valueProperty().bindBidirectional(dateTimeBean.timeProperty());
         hourField.setTextFormatter(timeFormatter);
         hourField.setStyle("-fx-pref-width: 75; -fx-alignment: baseline-right;");
 
-        ComboBox<String> zoneId = new ComboBox();
+        ComboBox<String> zoneId = new ComboBox<>();
         ObservableList<String> zoneList = FXCollections.observableArrayList(ZoneId.getAvailableZoneIds().stream().sorted().collect(Collectors.toUnmodifiableList()));
         zoneId.setItems(zoneList);
-        zoneId.valueProperty().set(ZoneId.systemDefault().toString());
-        dateTimeBean.zoneIdProperty().bind(Bindings.createObjectBinding(() -> ZoneId.of(zoneId.getValue()), zoneId.valueProperty()));
+        zoneId.valueProperty().bind(Bindings.createObjectBinding(() -> dateTimeBean.getZoneId().toString(), dateTimeBean.zoneIdProperty()));
+
+        Bindings.createObjectBinding(() -> ZoneId.of(zoneId.getValue()), zoneId.valueProperty());
 
         zoneId.setStyle("-fx-pref-width: 180;");
 
@@ -154,28 +155,22 @@ public final class Main extends Application {
         HBox third = new HBox();
         third.setStyle("-fx-spacing: inherit;");
 
-        ChoiceBox<NamedTimeAccelerator> accelerator = new ChoiceBox();
+        ChoiceBox<NamedTimeAccelerator> accelerator = new ChoiceBox<>();
         ObservableList<NamedTimeAccelerator> acceleratorList = FXCollections.observableArrayList(NamedTimeAccelerator.values());
         accelerator.setItems(acceleratorList);
         accelerator.setValue(NamedTimeAccelerator.TIMES_300);
         timeAnimator.acceleratorProperty().bind(Bindings.select(accelerator.valueProperty(), "accelerator"));
-
-
 
         Button resetButton = new Button("\uf0e2");
         resetButton.setFont(FONT_AWESOME);
 
         Button playButton = new Button("\uf04b");
         playButton.setFont(FONT_AWESOME);
-        playButton.setOnAction(actionEvent ->  {
-            timeAnimator.start();
-        });
+        playButton.setOnAction(actionEvent -> timeAnimator.start());
 
         Button pauseButton = new Button("\uf04c");
         pauseButton.setFont(FONT_AWESOME);
-        pauseButton.setOnAction(actionEvent ->  {
-            timeAnimator.stop();
-        });
+        pauseButton.setOnAction(actionEvent -> timeAnimator.stop());
 
         third.getChildren().addAll(accelerator, resetButton, playButton, pauseButton);
 

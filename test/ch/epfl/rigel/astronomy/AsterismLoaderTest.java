@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class AsterismLoaderTest {
-    private static Map<Integer, List<Integer>> asterisms = Map.of(
+    private static final Map<Integer, List<Integer>> asterisms = Map.of(
             35904, List.of(35904, 35205, 34444, 33579),
             34444, List.of(34444, 33977, 32349, 30324),
             37279, List.of(37279, 36188));
