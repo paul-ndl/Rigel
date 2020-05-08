@@ -15,6 +15,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -23,27 +24,31 @@ import javafx.util.converter.NumberStringConverter;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
 public final class Main extends Application {
 
-    public static void main(String[] args) { launch(args); }
-
     private ObserverLocationBean observerLocationBean = new ObserverLocationBean();
     private DateTimeBean dateTimeBean = new DateTimeBean();
-    TimeAnimator timeAnimator = new TimeAnimator(dateTimeBean);
+    private ViewingParametersBean viewingParametersBean = new ViewingParametersBean();
+    private TimeAnimator timeAnimator = new TimeAnimator(dateTimeBean);
+
+    private StarCatalogue.Builder builder = new StarCatalogue.Builder();
+
+    InputStream fontStream = getClass().getResourceAsStream("/Font Awesome 5 Free-Solid-900.otf");
+    private Font FONT_AWESOME = Font.loadFont(fontStream,15);
 
     private InputStream resourceStream(String resourceName) {
         return getClass().getResourceAsStream(resourceName);
     }
-    StarCatalogue.Builder builder = new StarCatalogue.Builder();
 
-    InputStream fontStream = getClass().getResourceAsStream("/Font Awesome 5 Free-Solid-900.otf");
-    private Font FONT_AWESOME = Font.loadFont(fontStream,15);
+    public static void main(String[] args) { launch(args); }
 
     @Override
     public void start(Stage primaryStage) throws IOException {
@@ -55,11 +60,13 @@ public final class Main extends Application {
                     .loadFrom(as, AsterismLoader.INSTANCE)
                     .build();
 
-            ViewingParametersBean viewingParametersBean =
-                    new ViewingParametersBean();
-            viewingParametersBean.setCenter(
-                    HorizontalCoordinates.ofDeg(180.000000000001, 15));
-            viewingParametersBean.setFieldOfViewDeg((double) 70);
+            observerLocationBean.setCoordinates(GeographicCoordinates.ofDeg(6.57, 46.52));
+
+            ZonedDateTime when = ZonedDateTime.now();
+            dateTimeBean.setZonedDateTime(when);
+
+            viewingParametersBean.setCenter(HorizontalCoordinates.ofDeg(180.000000000001, 15));
+            viewingParametersBean.setFieldOfViewDeg(70d);
 
             SkyCanvasManager canvasManager = new SkyCanvasManager(
                     catalogue,
@@ -68,17 +75,18 @@ public final class Main extends Application {
                     viewingParametersBean);
 
             Canvas sky = canvasManager.canvas();
+            Pane skyPane = new Pane(sky);
 
             primaryStage.setTitle("Rigel");
             primaryStage.setMinWidth(800);
             primaryStage.setMinHeight(600);
 
             HBox panel = ControlPanel();
-            BorderPane infoPanel = InfoPanel(canvasManager, viewingParametersBean);
+            BorderPane infoPanel = InfoPanel(canvasManager);
 
-            BorderPane root = new BorderPane(sky, panel, null, infoPanel, null);
-            sky.widthProperty().bind(root.widthProperty());
-            sky.heightProperty().bind(root.heightProperty());
+            BorderPane root = new BorderPane(skyPane, panel, null, infoPanel, null);
+            sky.widthProperty().bind(skyPane.widthProperty());
+            sky.heightProperty().bind(skyPane.heightProperty());
             primaryStage.setScene(new Scene(root));
             primaryStage.show();
         }
@@ -95,15 +103,15 @@ public final class Main extends Application {
         TextField lonField = new TextField();
         TextFormatter<Number> lonTextFormatter = lonTextFormatter();
         lonField.setTextFormatter(lonTextFormatter);
-        lonTextFormatter.valueProperty().bindBidirectional(observerLocationBean.lonDegProperty());
+        lonTextFormatter.valueProperty().bind(observerLocationBean.lonDegProperty());
         observerLocationBean.setLonDeg(6.57);
         lonField.setStyle("-fx-pref-width: 60; -fx-alignment: baseline-right;");
 
         Label latLabel = new Label("Latitude (°) :");
-        TextField latField = new TextField("42");
+        TextField latField = new TextField();
         TextFormatter<Number> latTextFormatter = latTextFormatter();
         latField.setTextFormatter(latTextFormatter);
-        latTextFormatter.valueProperty().bindBidirectional(observerLocationBean.latDegProperty());
+        latTextFormatter.valueProperty().bind(observerLocationBean.latDegProperty());
         observerLocationBean.setLatDeg(42d);
         latField.setStyle("-fx-pref-width: 60; -fx-alignment: baseline-right;");
 
@@ -116,23 +124,24 @@ public final class Main extends Application {
         HBox second = new HBox();
         second.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left;");
 
-        Label dateLabel = new Label("Date :");
+        Label dateLabel = new Label("Date : ");
         DatePicker dateField = new DatePicker();
-        dateField.valueProperty().bindBidirectional(dateTimeBean.dateProperty());
-        dateTimeBean.dateProperty().set(LocalDate.now());
+        dateField.valueProperty().bind(dateTimeBean.dateProperty());
         dateField.setStyle("-fx-pref-width: 120");
 
-        Label hourLabel = new Label("Heure :");
-        TextField hourField = new TextField(LocalTime.now().toString());
-        TextFormatter timeFormatter = timeFormatter();
-        dateTimeBean.setTime(LocalTime.of(14,07,47));
+        Label hourLabel = new Label("Heure : ");
+        TextField hourField = new TextField();
+        TextFormatter<LocalTime> timeFormatter = timeFormatter();
+        timeFormatter.valueProperty().bind(dateTimeBean.timeProperty());
         hourField.setTextFormatter(timeFormatter);
         hourField.setStyle("-fx-pref-width: 75; -fx-alignment: baseline-right;");
 
         ComboBox<String> zoneId = new ComboBox();
-        ObservableList<String> zoneList = FXCollections.observableArrayList(ZoneId.getAvailableZoneIds());
+        ObservableList<String> zoneList = FXCollections.observableArrayList(ZoneId.getAvailableZoneIds().stream().sorted().collect(Collectors.toUnmodifiableList()));
         zoneId.setItems(zoneList);
-        dateTimeBean.setZoneId(ZoneId.of("Europe/Zurich"));
+        zoneId.valueProperty().set(ZoneId.systemDefault().toString());
+        dateTimeBean.zoneIdProperty().bind(Bindings.createObjectBinding(() -> ZoneId.of(zoneId.getValue()), zoneId.valueProperty()));
+
         zoneId.setStyle("-fx-pref-width: 180;");
 
         Separator secondSep = new Separator();
@@ -175,10 +184,13 @@ public final class Main extends Application {
         return panel;
     }
 
-    private BorderPane InfoPanel(SkyCanvasManager canvasManager, ViewingParametersBean view){
-        Text fov = new Text("Champ de vue :" + view.getFieldOfViewDeg().toString() + "°");
-        Text celestialObject = new Text(canvasManager.getObjectUnderMouse()==null ? "" : canvasManager.getObjectUnderMouse().toString());
-        Text position = new Text("Azimut : " + canvasManager.getMouseAzDeg() + ", " + "hauteur : " + canvasManager.getMouseAltDeg());
+    private BorderPane InfoPanel(SkyCanvasManager canvasManager){
+        Text fov = new Text();
+        fov.textProperty().bind(Bindings.format(Locale.ROOT, "Champ de vue : %.1f°", viewingParametersBean.fieldOfViewDegProperty()));
+        Text celestialObject = new Text();
+        celestialObject.textProperty().bind(Bindings.format(Locale.ROOT, "%s", canvasManager.objectUnderMouseProperty()));
+        Text position = new Text();
+        position.textProperty().bind(Bindings.format(Locale.ROOT, "Azimut : %.2f° hauteur : %.2f°", canvasManager.mouseAzDegProperty(), canvasManager.mouseAltProperty()));
         BorderPane info = new BorderPane(celestialObject, null, position, null, fov);
         info.setStyle("-fx-padding: 4; -fx-background-color: white");
         return info;

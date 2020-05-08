@@ -1,6 +1,8 @@
 package ch.epfl.rigel.gui;
 
-import ch.epfl.rigel.astronomy.*;
+import ch.epfl.rigel.astronomy.CelestialObject;
+import ch.epfl.rigel.astronomy.ObservedSky;
+import ch.epfl.rigel.astronomy.StarCatalogue;
 import ch.epfl.rigel.coordinates.CartesianCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import ch.epfl.rigel.coordinates.StereographicProjection;
@@ -80,19 +82,35 @@ public final class SkyCanvasManager {
 
 
         mouseAzDeg = Bindings.createDoubleBinding(
-                () -> getMouseHorizontalPosition().azDeg(),
+                () -> {
+                    if(getMouseHorizontalPosition()==null){
+                        return 0d;
+                    } else {
+                        return getMouseHorizontalPosition().azDeg();
+                    }
+                },
                 mouseHorizontalPosition);
 
         mouseAltDeg = Bindings.createDoubleBinding(
-                () -> getMouseHorizontalPosition().altDeg(),
+                () -> {
+                    if(getMouseHorizontalPosition()==null){
+                        return 0d;
+                    } else {
+                        return getMouseHorizontalPosition().altDeg();
+                    }
+                },
                 mouseHorizontalPosition);
 
         objectUnderMouse = Bindings.createObjectBinding(
                 () -> {
                     try{
-                        return getObservedSky().objectClosestTo(
-                                getProjection().apply(getMouseHorizontalPosition()), MAX_DISTANCE).orElse(null);
-                    } catch (NullPointerException e){
+                            if(getMouseHorizontalPosition()== null){
+                                return null;
+                            } else {
+                                return getObservedSky().objectClosestTo(
+                                        getProjection().apply(getMouseHorizontalPosition()), getPlaneToCanvas().inverseDeltaTransform(MAX_DISTANCE, 0).magnitude()).orElse(null);
+                            }
+                        } catch (NonInvertibleTransformException e){
                         return null;
                     }
                 },
