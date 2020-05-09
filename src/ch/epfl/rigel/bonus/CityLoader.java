@@ -44,8 +44,8 @@ public final class CityLoader {
         public static List<Point3D> geoCoordTo3dCoord(){
             List<Point3D> citiesCoord = new ArrayList<>();
             for(City c : CITIES_LIST){
-                double lon = c.getLonDeg();
-                double lat = c.getLatDeg();
+                double lon = c.getLonDeg()+2.8;
+                double lat = c.getLatDeg()-0.2;
                 double x = -Math.sin(Angle.ofDeg(lon)) * Math.cos(Angle.ofDeg(lat));
                 double y = -Math.sin(Angle.ofDeg(lat));
                 double z = Math.cos(Angle.ofDeg(lon)) * Math.cos(Angle.ofDeg(lat));
