@@ -1,6 +1,7 @@
 package ch.epfl.rigel.bonus;
 
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 
 public final class City {
 
@@ -9,11 +10,13 @@ public final class City {
     private double lat;
     private ZoneId zone;
 
-    public City(String name, double lon, double lat, String zone){
+    public City(String name, double lon, double lat, double zone){
         this.name = name;
         this.lon = lon;
         this.lat = lat;
-        this.zone = ZoneId.of(zone);
+        int hours = (int) zone;
+        //int mins = zone%1 == 0 ? 0 : 30;
+        this.zone = ZoneId.ofOffset("GMT", ZoneOffset.ofHours(hours));
     }
 
     public String getName(){

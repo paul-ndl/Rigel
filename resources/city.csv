@@ -1,5 +1,5 @@
-PAYS;CAPITALE;LON;LAT;ZONE
-France;Paris;2.3488;48.8534;Europe/Paris
-Espagne;Madrid;-2.1417;37.7167;Europe/Madrid
-USA;NY;-73.778925;40.639751;Europe/Madrid
-Singapore;Singapore;103.994433;1.350189;Europe/Madrid
+rg;PAYS;CAPITALE;ALT;LAT;LON;ZONE
+1;France;Paris;0;49;2;1
+2;Espagne;Madrid;0;40;-4;1
+3;USA;Washington;0;39;-77;1
+4;Singapore;Singapore;0;1.350189;103.994433;1

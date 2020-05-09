@@ -10,17 +10,20 @@ import java.io.UncheckedIOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class CityLoader {
 
-        private final static int NAME = 1;
-        private final static int LON = 2;
-        private final static int LAT = 3;
-        private final static int ZONE = 4;
-        private final static String CITY = "/city.csv";
+        private final static int NAME = 2;
+        private final static int LON = 5;
+        private final static int LAT = 4;
+        private final static int ZONE = 6;
+        private final static String CITY = "/all.csv";
         private final static Charset US_ASCII = StandardCharsets.US_ASCII;
         private final static List<City> CITIES_LIST = loader();
+        public final static Map<City,Point3D> CITIES_MAP = geoCoordTo3dCoord();
 
         private static List<City> loader(){
             List<City> list = new ArrayList<>();
@@ -32,7 +35,7 @@ public final class CityLoader {
                     String name = columns[NAME];
                     double lonDeg = Double.parseDouble(columns[LON]);
                     double latDeg = Double.parseDouble(columns[LAT]);
-                    String zone = columns[ZONE];
+                    double zone = Double.parseDouble(columns[ZONE]);
                     list.add(new City(name, lonDeg, latDeg, zone));
                 }
                 return list;
@@ -41,15 +44,19 @@ public final class CityLoader {
             }
         }
 
-        public static List<Point3D> geoCoordTo3dCoord(){
-            List<Point3D> citiesCoord = new ArrayList<>();
+        private static Map<City, Point3D> geoCoordTo3dCoord(){
+            Map<City, Point3D> citiesCoord = new HashMap<>();
             for(City c : CITIES_LIST){
-                double lon = (c.getLonDeg()+179);
-                double lat = (c.getLatDeg()-16);
+                double lon = (c.getLonDeg()+2.8);
+                double lat = (c.getLatDeg()-0.2);
                 double x = -Math.sin(Angle.ofDeg(lon)) * Math.cos(Angle.ofDeg(lat));
                 double y = -Math.sin(Angle.ofDeg(lat));
                 double z = Math.cos(Angle.ofDeg(lon)) * Math.cos(Angle.ofDeg(lat));
-                citiesCoord.add(new Point3D(x, y, z));
+
+                /*double x = Math.cos(Angle.ofDeg(lon)) * Math.cos(Angle.ofDeg(lat));
+                double y = Math.cos(Angle.ofDeg(lat)) * Math.sin(Angle.ofDeg(lon));
+                double z = Math.sin(Angle.ofDeg(lat));*/
+                citiesCoord.put(c, new Point3D(x, y, z));
             }
             return citiesCoord;
         }

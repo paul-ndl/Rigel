@@ -11,7 +11,7 @@ import java.util.function.Function;
  * @author Paul Nadal (300843)
  * @author Alexandre Brun (302477)
  */
-public final class StereographicProjection implements Function<HorizontalCoordinates, CartesianCoordinates> {
+public final class  StereographicProjection implements Function<HorizontalCoordinates, CartesianCoordinates> {
 
     private final double lambdaCenter, phyCenter;
     private final double phyCos, phySin;

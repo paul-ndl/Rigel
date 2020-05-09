@@ -1,6 +1,8 @@
 package ch.epfl.rigel.bonus;
 
 
+import com.interactivemesh.jfx.importer.ImportException;
+import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
@@ -13,11 +15,13 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
+import javafx.scene.shape.MeshView;
 import javafx.scene.shape.Sphere;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Transform;
 import javafx.stage.Stage;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -36,23 +40,37 @@ public class Menu extends Application {
 
         Sphere world = world(primaryStage);
 
+        ObjModelImporter objImporter = new ObjModelImporter();
+        try{
+            URL modelUrl = this.getClass().getResource("/earth.obj");
+            objImporter.read(modelUrl);
+        } catch (ImportException e){
+
+        }
+        MeshView[] meshViews = objImporter.getImport();
+        PhongMaterial texture = new PhongMaterial();
+        texture.setDiffuseMap(new Image(getClass().getResource("/test2.png").toExternalForm()));
+        meshViews[0].setMaterial(texture);
+
         final PhongMaterial redMaterial = new PhongMaterial();
-        redMaterial.setDiffuseColor(Color.GREEN);
-        List<Point3D> cities = CityLoader.geoCoordTo3dCoord();
+        redMaterial.setDiffuseColor(Color.RED);
+        List<Point3D> cities = List.copyOf(CityLoader.CITIES_MAP.values());
         for(Point3D point : cities){
-            Sphere s = new Sphere(0.015);
+            Sphere s = new Sphere(0.01);
             s.setMaterial(redMaterial);
-            System.out.println(point);
             s.setTranslateX(point.getX());
             s.setTranslateY(point.getY());
             s.setTranslateZ(point.getZ());
             pane3D.getChildren().add(s);
         }
 
-        pane3D.getChildren().add(world);
+        pane3D.getChildren().addAll(meshViews);
 
         PerspectiveCamera camera = new PerspectiveCamera(true);
         new CameraManager(camera, pane3D, root3D);
+
+
+        BorderPane location = location();
 
         // Create scene
         Scene scene = new Scene(pane3D, 600, 600, true);
@@ -65,8 +83,9 @@ public class Menu extends Application {
         primaryStage.show();
 
     }
+
     private Sphere world(Stage primaryStage){
-        Sphere world = new Sphere();
+        Sphere world = new Sphere(1);
         PhongMaterial texture = new PhongMaterial();
         texture.setDiffuseMap(new Image(getClass().getResource("/earth_texture.png").toExternalForm()));
         world.setMaterial(texture);

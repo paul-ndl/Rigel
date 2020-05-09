@@ -19,5 +19,6 @@
     <orderEntry type="library" name="jimFxmlModelImporterJFX" level="project" />
     <orderEntry type="library" name="jimStlMeshImporterJFX" level="project" />
     <orderEntry type="library" name="jimX3dModelImporterJFX" level="project" />
+    <orderEntry type="library" name="deps" level="project" />
   </component>
 </module>
