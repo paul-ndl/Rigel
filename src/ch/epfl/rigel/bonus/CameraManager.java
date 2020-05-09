@@ -22,6 +22,7 @@ public class CameraManager {
 
     private final Group cameraXform = new Group();
     private final Group cameraXform2 = new Group();
+    private Rotate rx = new Rotate();
     private Rotate ry = new Rotate();
     private double mousePosX;
     private double mousePosY;
@@ -40,14 +41,15 @@ public class CameraManager {
         cameraXform.getChildren().add(cameraXform2);
         cameraXform2.getChildren().add(camera);
 
-
+        rx.setAxis(Rotate.X_AXIS);
         ry.setAxis(Rotate.Y_AXIS);
-        cameraXform.getTransforms().addAll(ry);
+        cameraXform.getTransforms().addAll(ry, rx);
 
         camera.setNearClip(CAMERA_NEAR_CLIP);
         camera.setFarClip(CAMERA_FAR_CLIP);
         camera.setTranslateZ(CAMERA_INITIAL_DISTANCE);
         ry.setAngle(CAMERA_INITIAL_Y_ANGLE);
+        rx.setAngle(CAMERA_INITIAL_X_ANGLE);
 
         // Add keyboard and mouse handler
         handleKeyboard(mainRoot, root);
@@ -88,7 +90,9 @@ public class CameraManager {
                 }
                 if (me.isPrimaryButtonDown()) {
                     ry.setAngle(ry.getAngle() + mouseDeltaX * modifier * ROTATION_SPEED);
+                    rx.setAngle(rx.getAngle() - mouseDeltaY * modifier * ROTATION_SPEED);
                 } else if (me.isSecondaryButtonDown()) {
+                    cameraXform2.setTranslateX(cameraXform2.getTranslateX() - mouseDeltaX * MOUSE_SPEED * modifier * TRACK_SPEED);
                     cameraXform2.setTranslateY(cameraXform2.getTranslateY() - mouseDeltaY * MOUSE_SPEED * modifier * TRACK_SPEED);
                 }
             }
@@ -119,8 +123,11 @@ public class CameraManager {
                     case ALT:
                         cameraXform2.setTranslateX(0.0);
                         cameraXform2.setTranslateY(0.0);
+
                         camera.setTranslateZ(CAMERA_INITIAL_DISTANCE);
+
                         ry.setAngle(CAMERA_INITIAL_Y_ANGLE);
+                        rx.setAngle(CAMERA_INITIAL_X_ANGLE);
                         break;
                     default:
 

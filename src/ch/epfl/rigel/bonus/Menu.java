@@ -37,8 +37,7 @@ public class Menu extends Application {
         Sphere world = world(primaryStage);
 
         final PhongMaterial redMaterial = new PhongMaterial();
-        redMaterial.setSpecularColor(Color.ORANGE);
-        redMaterial.setDiffuseColor(Color.RED);
+        redMaterial.setDiffuseColor(Color.GREEN);
         List<Point3D> cities = CityLoader.geoCoordTo3dCoord();
         for(Point3D point : cities){
             Sphere s = new Sphere(0.015);
