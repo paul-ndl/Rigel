@@ -187,7 +187,7 @@ public final class Main extends Application {
         Text position = new Text();
         position.textProperty().bind(Bindings.format(Locale.ROOT, "Azimut : %.2f° hauteur : %.2f°", canvasManager.mouseAzDegProperty(), canvasManager.mouseAltProperty()));
         BorderPane info = new BorderPane(celestialObject, null, position, null, fov);
-        info.setStyle("-fx-padding: 4; -fx-background-color: white");
+        info.setStyle("-fx-padding: 4; -fx-background-color: white;");
         return info;
     }
 
