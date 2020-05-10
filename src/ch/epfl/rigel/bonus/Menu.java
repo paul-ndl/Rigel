@@ -22,7 +22,6 @@ import javafx.scene.transform.Transform;
 import javafx.stage.Stage;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -65,7 +64,7 @@ public class Menu extends Application {
         pane3D.getChildren().addAll(meshViews);
 
         PerspectiveCamera camera = new PerspectiveCamera(true);
-        new CameraManager(camera, pane3D, root3D);
+        new CameraManager(camera, pane3D);
 
 
         BorderPane location = location();

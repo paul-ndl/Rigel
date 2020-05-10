@@ -24,7 +24,6 @@ import javafx.util.converter.NumberStringConverter;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.Clock;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -44,10 +43,6 @@ public final class Main extends Application {
 
     InputStream fontStream = getClass().getResourceAsStream("/Font Awesome 5 Free-Solid-900.otf");
     private Font FONT_AWESOME = Font.loadFont(fontStream,15);
-
-    private InputStream resourceStream(String resourceName) {
-        return getClass().getResourceAsStream(resourceName);
-    }
 
     public static void main(String[] args) { launch(args); }
 
@@ -168,13 +163,18 @@ public final class Main extends Application {
 
         Button playButton = new Button("\uf04b");
         playButton.setFont(FONT_AWESOME);
-        playButton.setOnAction(actionEvent -> timeAnimator.start());
 
-        Button pauseButton = new Button("\uf04c");
-        pauseButton.setFont(FONT_AWESOME);
-        pauseButton.setOnAction(actionEvent -> timeAnimator.stop());
+        playButton.setOnAction(actionEvent -> {
+            if (timeAnimator.getRunning()) {
+                playButton.setText("\uf04b");
+                timeAnimator.stop();
+            } else {
+                playButton.setText("\uf04c");
+                timeAnimator.start();
+            }
+        });
 
-        third.getChildren().addAll(accelerator, resetButton, playButton, pauseButton);
+        third.getChildren().addAll(accelerator, resetButton, playButton);
 
         panel.getChildren().addAll(first, second, third);
 
@@ -239,6 +239,10 @@ public final class Main extends Application {
         LocalTimeStringConverter stringConverter =
                 new LocalTimeStringConverter(hmsFormatter, hmsFormatter);
         return new TextFormatter<>(stringConverter);
+    }
+
+    private InputStream resourceStream(String resourceName) {
+        return getClass().getResourceAsStream(resourceName);
     }
 
 
