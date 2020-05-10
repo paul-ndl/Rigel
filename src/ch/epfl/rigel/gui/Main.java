@@ -175,6 +175,7 @@ public final class Main extends Application {
                 hourField.setDisable(false);
                 zoneId.setDisable(false);
                 accelerator.setDisable(false);
+                resetButton.setDisable(false);
             } else {
                 playButton.setText("\uf04c");
                 dateLabel.setDisable(true);
