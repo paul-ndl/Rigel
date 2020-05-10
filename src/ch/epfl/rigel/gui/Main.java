@@ -7,6 +7,7 @@ import ch.epfl.rigel.coordinates.GeographicCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringBinding;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Orientation;
@@ -168,8 +169,21 @@ public final class Main extends Application {
             if (timeAnimator.getRunning()) {
                 playButton.setText("\uf04b");
                 timeAnimator.stop();
+                dateLabel.setDisable(false);
+                dateField.setDisable(false);
+                hourLabel.setDisable(false);
+                hourField.setDisable(false);
+                zoneId.setDisable(false);
+                accelerator.setDisable(false);
             } else {
                 playButton.setText("\uf04c");
+                dateLabel.setDisable(true);
+                dateField.setDisable(true);
+                hourLabel.setDisable(true);
+                hourField.setDisable(true);
+                zoneId.setDisable(true);
+                accelerator.setDisable(true);
+                resetButton.setDisable(true);
                 timeAnimator.start();
             }
         });
@@ -184,11 +198,16 @@ public final class Main extends Application {
     private BorderPane InfoPanel(SkyCanvasManager canvasManager){
         Text fov = new Text();
         fov.textProperty().bind(Bindings.format(Locale.ROOT, "Champ de vue : %.1f°", viewingParametersBean.fieldOfViewDegProperty()));
-        Text celestialObject = new Text();
-        celestialObject.textProperty().bind(Bindings.format(Locale.ROOT, "%s", canvasManager.objectUnderMouseProperty()));
+        Text celestialObjectText = new Text();
+        StringBinding celestialObject = Bindings.createStringBinding(
+                () -> {
+                    return canvasManager.getObjectUnderMouse()==null ? "" : canvasManager.getObjectUnderMouse().toString();
+                }, canvasManager.objectUnderMouseProperty()
+        );
+        celestialObjectText.textProperty().bind(Bindings.format(Locale.ROOT, "%s", celestialObject));
         Text position = new Text();
         position.textProperty().bind(Bindings.format(Locale.ROOT, "Azimut : %.2f° hauteur : %.2f°", canvasManager.mouseAzDegProperty(), canvasManager.mouseAltProperty()));
-        BorderPane info = new BorderPane(celestialObject, null, position, null, fov);
+        BorderPane info = new BorderPane(celestialObjectText, null, position, null, fov);
         info.setStyle("-fx-padding: 4; -fx-background-color: white;");
         return info;
     }

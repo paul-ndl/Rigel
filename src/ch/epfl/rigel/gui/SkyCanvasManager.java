@@ -8,6 +8,7 @@ import ch.epfl.rigel.coordinates.HorizontalCoordinates;
 import ch.epfl.rigel.coordinates.StereographicProjection;
 import ch.epfl.rigel.math.Angle;
 import ch.epfl.rigel.math.ClosedInterval;
+import ch.epfl.rigel.math.RightOpenInterval;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.binding.ObjectBinding;
@@ -44,6 +45,7 @@ public final class SkyCanvasManager {
     private static final int AZ_MOVE = 10;
     private static final int ALT_MOVE = 5;
     private static final ClosedInterval FOV = ClosedInterval.of(30, 150);
+    private static final RightOpenInterval AZ_INTERVAL = RightOpenInterval.of(0, 360);
     private static final ClosedInterval ALT_INTERVAL = ClosedInterval.of(5, 90);
 
     public SkyCanvasManager(StarCatalogue catalogue, DateTimeBean dateTimeBean, ObserverLocationBean observerLocationBean, ViewingParametersBean viewingParametersBean) {
@@ -122,9 +124,9 @@ public final class SkyCanvasManager {
                 altCenter -= ALT_MOVE;
                 System.out.println(altCenter);
             } else if (e.getCode() == KeyCode.RIGHT) {
-                azCenter += AZ_MOVE;
+                azCenter = AZ_INTERVAL.reduce(azCenter + AZ_MOVE);
             } else if (e.getCode() == KeyCode.LEFT) {
-                azCenter -= AZ_MOVE;
+                azCenter = AZ_INTERVAL.reduce(azCenter - AZ_MOVE);
             }
             viewingParametersBean.setCenter(HorizontalCoordinates.ofDeg(azCenter, altCenter));
         });
