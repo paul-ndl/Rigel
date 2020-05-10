@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="jimColModelImporterJFX">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/deps/jimColModelImporterJFX.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
