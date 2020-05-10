@@ -24,6 +24,7 @@ import javafx.util.converter.NumberStringConverter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Clock;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -163,6 +164,7 @@ public final class Main extends Application {
 
         Button resetButton = new Button("\uf0e2");
         resetButton.setFont(FONT_AWESOME);
+        resetButton.setOnAction(actionEvent -> dateTimeBean.setZonedDateTime(ZonedDateTime.now(ZoneId.systemDefault())));
 
         Button playButton = new Button("\uf04b");
         playButton.setFont(FONT_AWESOME);
