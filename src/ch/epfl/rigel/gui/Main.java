@@ -94,8 +94,9 @@ public final class Main extends Application {
         panel.setStyle("-fx-spacing: 4; -fx-padding: 4;");
 
         //first Hbox
-        HBox first = new HBox();
-        first.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left;");
+        HBox coordinates = new HBox();
+        coordinates.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left;");
+
         Label lonLabel = new Label("Longitude (°) :");
         TextField lonField = new TextField();
         TextFormatter<Number> lonTextFormatter = lonTextFormatter();
@@ -115,11 +116,11 @@ public final class Main extends Application {
         Separator firstSep = new Separator();
         firstSep.setOrientation(Orientation.VERTICAL);
 
-        first.getChildren().addAll(lonLabel, lonField, latLabel, latField, firstSep);
+        coordinates.getChildren().addAll(lonLabel, lonField, latLabel, latField, firstSep);
 
         //second Hbox
-        HBox second = new HBox();
-        second.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left;");
+        HBox time = new HBox();
+        time.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left;");
 
         Label dateLabel = new Label("Date : ");
         DatePicker dateField = new DatePicker();
@@ -145,12 +146,12 @@ public final class Main extends Application {
         Separator secondSep = new Separator();
         secondSep.setOrientation(Orientation.VERTICAL);
 
-        second.getChildren().addAll(dateLabel, dateField, hourLabel, hourField, zoneId, secondSep);
+        time.getChildren().addAll(dateLabel, dateField, hourLabel, hourField, zoneId, secondSep);
 
 
         //third Hbox
-        HBox third = new HBox();
-        third.setStyle("-fx-spacing: inherit;");
+        HBox animation = new HBox();
+        animation.setStyle("-fx-spacing: inherit;");
 
         ChoiceBox<NamedTimeAccelerator> accelerator = new ChoiceBox<>();
         ObservableList<NamedTimeAccelerator> acceleratorList = FXCollections.observableArrayList(NamedTimeAccelerator.values());
@@ -189,9 +190,9 @@ public final class Main extends Application {
             }
         });
 
-        third.getChildren().addAll(accelerator, resetButton, playButton);
+        animation.getChildren().addAll(accelerator, resetButton, playButton);
 
-        panel.getChildren().addAll(first, second, third);
+        panel.getChildren().addAll(coordinates, time, animation);
 
         return panel;
     }
