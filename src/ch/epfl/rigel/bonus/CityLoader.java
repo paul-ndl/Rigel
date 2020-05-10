@@ -20,7 +20,7 @@ public final class CityLoader {
         private final static int LON = 5;
         private final static int LAT = 4;
         private final static int ZONE = 6;
-        private final static String CITY = "/all.csv";
+        private final static String CITY = "/city.csv";
         private final static Charset US_ASCII = StandardCharsets.US_ASCII;
         private final static List<City> CITIES_LIST = loader();
         public final static Map<City,Point3D> CITIES_MAP = geoCoordTo3dCoord();
