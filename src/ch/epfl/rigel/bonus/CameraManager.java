@@ -13,9 +13,13 @@ public class CameraManager {
 
     private final Group cameraXform = new Group();
     private Rotate ry = new Rotate();
+    private Rotate rx = new Rotate();
     private double mousePosX;
     private double mouseOldX;
     private double mouseDeltaX;
+    private double mousePosY;
+    private double mouseOldY;
+    private double mouseDeltaY;
 
     private Camera camera;
 
@@ -26,7 +30,8 @@ public class CameraManager {
         cameraXform.getChildren().add(camera);
 
         ry.setAxis(Rotate.Y_AXIS);
-        cameraXform.getTransforms().add(ry);
+        rx.setAxis(Rotate.X_AXIS);
+        cameraXform.getTransforms().addAll(ry, rx);
 
         camera.setTranslateZ(CAMERA_INITIAL_DISTANCE);
 
@@ -42,8 +47,12 @@ public class CameraManager {
                 mouseOldX = mousePosX;
                 mousePosX = me.getSceneX();
                 mouseDeltaX = (mousePosX - mouseOldX);
+                mouseOldY = mousePosY;
+                mousePosY = me.getSceneY();
+                mouseDeltaY = (mousePosY - mouseOldY);
                 if (me.isPrimaryButtonDown()) {
                     ry.setAngle(ry.getAngle() + 0.5*mouseDeltaX);
+                    //rx.setAngle(rx.getAngle() + 0.5*mouseDeltaY);
                 }
             }
         });

@@ -113,8 +113,7 @@ public final class Main extends Application {
         observerLocationBean.setLatDeg(42d);
         latField.setStyle("-fx-pref-width: 60; -fx-alignment: baseline-right;");
 
-        Separator firstSep = new Separator();
-        firstSep.setOrientation(Orientation.VERTICAL);
+        Separator firstSep = new Separator(Orientation.VERTICAL);
 
         coordinates.getChildren().addAll(lonLabel, lonField, latLabel, latField, firstSep);
 
@@ -134,17 +133,15 @@ public final class Main extends Application {
         hourField.setTextFormatter(timeFormatter);
         hourField.setStyle("-fx-pref-width: 75; -fx-alignment: baseline-right;");
 
-        ComboBox<String> zoneId = new ComboBox<>();
-        ObservableList<String> zoneList = FXCollections.observableArrayList(ZoneId.getAvailableZoneIds().stream().sorted().collect(Collectors.toUnmodifiableList()));
-        zoneId.setItems(zoneList);
-        zoneId.valueProperty().bind(Bindings.createObjectBinding(() -> dateTimeBean.getZoneId().toString(), dateTimeBean.zoneIdProperty()));
 
-        Bindings.createObjectBinding(() -> ZoneId.of(zoneId.getValue()), zoneId.valueProperty());
+
+        var zoneList = ZoneId.getAvailableZoneIds().stream().sorted().map(ZoneId::of).collect(Collectors.toUnmodifiableList());
+        var zoneId = new ComboBox<>(FXCollections.observableList(zoneList));
+        zoneId.valueProperty().bindBidirectional(dateTimeBean.zoneIdProperty());
 
         zoneId.setStyle("-fx-pref-width: 180;");
 
-        Separator secondSep = new Separator();
-        secondSep.setOrientation(Orientation.VERTICAL);
+        Separator secondSep = new Separator(Orientation.VERTICAL);
 
         time.getChildren().addAll(dateLabel, dateField, hourLabel, hourField, zoneId, secondSep);
 

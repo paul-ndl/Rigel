@@ -117,6 +117,7 @@ public final class SkyCanvasManager {
         canvas.setOnKeyPressed(e -> {
             double azCenter = viewingParametersBean.getCenter().azDeg();
             double altCenter = viewingParametersBean.getCenter().altDeg();
+
             if (e.getCode() == KeyCode.UP && ALT_INTERVAL.contains(altCenter + ALT_MOVE)) {
                 altCenter += ALT_MOVE;
                 System.out.println(altCenter);

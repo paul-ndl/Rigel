@@ -1,78 +1,39 @@
 package ch.epfl.rigel.bonus;
 
 
-import com.interactivemesh.jfx.importer.ImportException;
-import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.ObjectBinding;
-import javafx.geometry.Point3D;
-import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.PhongMaterial;
-import javafx.scene.shape.MeshView;
-import javafx.scene.shape.Sphere;
 import javafx.scene.text.Text;
-import javafx.scene.transform.Transform;
 import javafx.stage.Stage;
 
-import java.net.URL;
-import java.util.List;
 import java.util.Locale;
 
 public class Menu extends Application {
 
-    ObjectBinding<Transform> transform;
+    private static final double ROTATE_SECS   = 30;
 
     public static void main(String[] args) { launch(args); }
 
     @Override
     public void start(Stage primaryStage) {
 
-        Group root3D = new Group();
-        Pane pane3D = new Pane(root3D);
+        Earth earth = new Earth();
+        Pane pane = earth.getPane();
 
-        ObjModelImporter objImporter = new ObjModelImporter();
-        try{
-            URL modelUrl = this.getClass().getResource("/earth.obj");
-            objImporter.read(modelUrl);
-        } catch (ImportException e){
-
-        }
-        MeshView[] meshViews = objImporter.getImport();
-        PhongMaterial texture = new PhongMaterial();
-        texture.setDiffuseMap(new Image(getClass().getResource("/test2.png").toExternalForm()));
-        meshViews[0].setMaterial(texture);
-
-        final PhongMaterial redMaterial = new PhongMaterial();
-        redMaterial.setDiffuseColor(Color.RED);
-        List<Point3D> cities = List.copyOf(CityLoader.CITIES_MAP.values());
-        for(Point3D point : cities){
-            Sphere s = new Sphere(0.01);
-            s.setMaterial(redMaterial);
-            s.setTranslateX(point.getX());
-            s.setTranslateY(point.getY());
-            s.setTranslateZ(point.getZ());
-            pane3D.getChildren().add(s);
-        }
-
-        pane3D.getChildren().addAll(meshViews);
 
         PerspectiveCamera camera = new PerspectiveCamera(true);
-        new CameraManager(camera, pane3D);
-
-
-        BorderPane location = location();
+        new CameraManager(camera, pane);
 
         // Create scene
-        Scene scene = new Scene(pane3D, 600, 600, true);
+        Scene scene = new Scene(pane, 600, 600, true);
         scene.setCamera(camera);
         scene.setFill(Color.GREY);
+
 
         //Add the scene to the stage and show it
         primaryStage.setTitle("Menu");
@@ -80,6 +41,7 @@ public class Menu extends Application {
         primaryStage.show();
 
     }
+
 
     private BorderPane location(){
         Text city = new Text();
