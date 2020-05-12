@@ -11,7 +11,7 @@ import javafx.scene.shape.MeshView;
 import javafx.scene.shape.Sphere;
 
 import java.net.URL;
-import java.util.List;
+import java.util.Map;
 
 public final class Earth {
 
@@ -19,7 +19,7 @@ public final class Earth {
     private Pane pane = new Pane();
 
     public Earth(){
-        world = new Sphere(1);
+        world = new Sphere();
         PhongMaterial texture = new PhongMaterial();
         texture.setDiffuseMap(new Image(getClass().getResource("/earth_texture.png").toExternalForm()));
         world.setMaterial(texture);
@@ -36,8 +36,10 @@ public final class Earth {
 
         final PhongMaterial redMaterial = new PhongMaterial();
         redMaterial.setDiffuseColor(Color.RED);
-        List<Point3D> cities = List.copyOf(CityLoader.CITIES_MAP.values());
-        for(Point3D point : cities){
+        Map<Point3D, City> cities = (CityLoader.CITIES_MAP);
+        for(Point3D point : cities.keySet()){
+            System.out.println(point);
+            System.out.println(cities.get(point));
             Sphere s = new Sphere(0.01);
             s.setMaterial(redMaterial);
             s.setTranslateX(point.getX());

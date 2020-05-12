@@ -42,8 +42,8 @@ public final class SkyCanvasManager {
     public final ObjectBinding<CelestialObject> objectUnderMouse;
 
     private static final int MAX_DISTANCE = 10;
-    private static final int AZ_MOVE = 10;
-    private static final int ALT_MOVE = 5;
+    private static final double AZ_MOVE = 10;
+    private static final double ALT_MOVE = 5d;
     private static final ClosedInterval FOV = ClosedInterval.of(30, 150);
     private static final RightOpenInterval AZ_INTERVAL = RightOpenInterval.of(0, 360);
     private static final ClosedInterval ALT_INTERVAL = ClosedInterval.of(5, 90);

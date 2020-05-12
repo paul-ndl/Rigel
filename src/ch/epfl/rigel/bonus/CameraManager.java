@@ -39,6 +39,10 @@ public class CameraManager {
         handleMouse(pane);
     }
 
+    public Rotate getRy() {
+        return ry;
+    }
+
     private void handleMouse(Pane pane) {
 
         pane.setOnMouseDragged(new EventHandler<MouseEvent>() {

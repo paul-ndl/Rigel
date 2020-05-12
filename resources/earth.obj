@@ -1,6 +1,6 @@
 # Blender v2.79 (sub 0) OBJ File: 'earth.blend'
 # www.blender.org
-mtllib earth.mtl
+ mtllib earth.mtl
 o Sphere
 v -0.049068 0.998795 0.000000
 v -0.098017 0.995185 0.000000

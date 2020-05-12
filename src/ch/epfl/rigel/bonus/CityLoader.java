@@ -20,10 +20,10 @@ public final class CityLoader {
         private final static int LON = 5;
         private final static int LAT = 4;
         private final static int ZONE = 6;
-        private final static String CITY = "/all.csv";
+        private final static String CITY = "/city.csv";
         private final static Charset US_ASCII = StandardCharsets.US_ASCII;
         private final static List<City> CITIES_LIST = loader();
-        public final static Map<City,Point3D> CITIES_MAP = geoCoordTo3dCoord();
+        public final static Map<Point3D, City> CITIES_MAP = geoCoordTo3dCoord();
 
         private static List<City> loader(){
             List<City> list = new ArrayList<>();
@@ -44,19 +44,15 @@ public final class CityLoader {
             }
         }
 
-        private static Map<City, Point3D> geoCoordTo3dCoord(){
-            Map<City, Point3D> citiesCoord = new HashMap<>();
+        private static Map<Point3D, City> geoCoordTo3dCoord(){
+            Map<Point3D, City> citiesCoord = new HashMap<>();
             for(City c : CITIES_LIST){
                 double lon = (c.getLonDeg()+2.8);
                 double lat = (c.getLatDeg()-0.2);
                 double x = -Math.sin(Angle.ofDeg(lon)) * Math.cos(Angle.ofDeg(lat));
                 double y = -Math.sin(Angle.ofDeg(lat));
                 double z = Math.cos(Angle.ofDeg(lon)) * Math.cos(Angle.ofDeg(lat));
-
-                /*double x = Math.cos(Angle.ofDeg(lon)) * Math.cos(Angle.ofDeg(lat));
-                double y = Math.cos(Angle.ofDeg(lat)) * Math.sin(Angle.ofDeg(lon));
-                double z = Math.sin(Angle.ofDeg(lat));*/
-                citiesCoord.put(c, new Point3D(x, y, z));
+                citiesCoord.put(new Point3D(x, y, z), c);
             }
             return citiesCoord;
         }
