@@ -1,6 +1,7 @@
 package ch.epfl.rigel.bonus;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -16,6 +17,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 public class MenuButton extends Application {
+
 
     public static void main(String[] args) { launch(args); }
 
@@ -47,6 +49,12 @@ public class MenuButton extends Application {
         location.setOnMouseExited(new EventHandler<MouseEvent>(){
             public void handle(MouseEvent me){
                 location.setStyle("-fx-text-fill: white; -fx-background-color: black");;
+            }
+        });
+        location.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                showWorld(primaryStage);
+
             }
         });
         gridPane.add(location, 0,1);
@@ -91,6 +99,12 @@ public class MenuButton extends Application {
         primaryStage.setMinHeight(600);
         primaryStage.setScene(new Scene(gridPane));
         primaryStage.show();
+    }
+
+    private void showWorld(Stage primaryStage) {
+        primaryStage.close();
+        //Stage stage = new Stage();
+        //Menu menu = new Menu(stage);
     }
 
 

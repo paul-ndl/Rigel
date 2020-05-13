@@ -19,7 +19,7 @@ public final class Earth {
     private Pane pane = new Pane();
 
     public Earth(){
-        world = new Sphere();
+        world = new Sphere(150);
         PhongMaterial texture = new PhongMaterial();
         texture.setDiffuseMap(new Image(getClass().getResource("/earth_texture.png").toExternalForm()));
         world.setMaterial(texture);

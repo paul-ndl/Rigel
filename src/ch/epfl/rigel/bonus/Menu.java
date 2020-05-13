@@ -18,7 +18,7 @@ import java.util.Locale;
 
 public class Menu extends Application {
 
-    private static final double ROTATE_SECS   = 30;
+    private Scene scene;
 
     public static void main(String[] args) { launch(args); }
 
@@ -28,12 +28,11 @@ public class Menu extends Application {
         Earth earth = new Earth();
         Pane pane = earth.getPane();
 
-
         PerspectiveCamera camera = new PerspectiveCamera(true);
         CameraManager manager = new CameraManager(camera, pane);
 
         // Create scene
-        Scene scene = new Scene(pane, 600, 600, true);
+        scene = new Scene(pane, 600, 600);
         scene.setCamera(camera);
         scene.setFill(Color.GREY);
 
@@ -46,6 +45,10 @@ public class Menu extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
+    }
+
+    public Scene getScene(){
+        return scene;
     }
 
 
@@ -72,8 +75,8 @@ public class Menu extends Application {
     }
 
     private HorizontalCoordinates transformPoint(double x, double y){
-        double lat = Angle.toDeg(Math.asin(-y) + 0.2);
-        double lon = Angle.toDeg(Math.asin(-x/Math.cos(lat)) -2.8);
+        double lat = Angle.toDeg(Math.asin(-y)) + 0.2;
+        double lon = Angle.toDeg(Math.asin(-x/Math.cos(lat))) - 2.8;
         return HorizontalCoordinates.ofDeg(lon, lat);
     }
 
