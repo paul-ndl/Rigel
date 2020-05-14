@@ -102,7 +102,6 @@ public final class Main extends Application {
         TextFormatter<Number> lonTextFormatter = lonTextFormatter();
         lonField.setTextFormatter(lonTextFormatter);
         lonTextFormatter.valueProperty().bindBidirectional(observerLocationBean.lonDegProperty());
-        observerLocationBean.setLonDeg(6.57);
         lonField.setStyle("-fx-pref-width: 60; -fx-alignment: baseline-right;");
 
         Label latLabel = new Label("Latitude (°) :");
@@ -110,7 +109,6 @@ public final class Main extends Application {
         TextFormatter<Number> latTextFormatter = latTextFormatter();
         latField.setTextFormatter(latTextFormatter);
         latTextFormatter.valueProperty().bindBidirectional(observerLocationBean.latDegProperty());
-        observerLocationBean.setLatDeg(42d);
         latField.setStyle("-fx-pref-width: 60; -fx-alignment: baseline-right;");
 
         Separator firstSep = new Separator(Orientation.VERTICAL);

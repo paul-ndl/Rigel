@@ -1,4 +1,4 @@
-package ch.epfl.rigel.bonus;
+package ch.epfl.rigel.bonus2;
 
 import javafx.event.EventHandler;
 import javafx.scene.Camera;
@@ -7,7 +7,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.transform.Rotate;
 
-public class CameraManager {
+public class CameraManager2 {
 
     private static final double CAMERA_INITIAL_DISTANCE = -4;
 
@@ -23,7 +23,7 @@ public class CameraManager {
 
     private Camera camera;
 
-    public CameraManager(Camera cam, Pane pane) {
+    public CameraManager2(Camera cam, Pane pane) {
         camera = cam;
 
         pane.getChildren().add(cameraXform);

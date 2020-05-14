@@ -1,4 +1,4 @@
-package ch.epfl.rigel.bonus;
+package ch.epfl.rigel.bonus2;
 
 import ch.epfl.rigel.math.Angle;
 import javafx.geometry.Point3D;

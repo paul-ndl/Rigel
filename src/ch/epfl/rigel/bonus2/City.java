@@ -1,4 +1,4 @@
-package ch.epfl.rigel.bonus;
+package ch.epfl.rigel.bonus2;
 
 import java.time.ZoneId;
 import java.time.ZoneOffset;

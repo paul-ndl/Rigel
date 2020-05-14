@@ -28,14 +28,14 @@ public class MenuButton extends Application {
         gridPane.setPadding(new Insets(40, 40, 40, 40));
         gridPane.setHgap(10);
         gridPane.setVgap(10);
-        gridPane.setStyle("-fx-background-image: url('stars2.jpg');-fx-background-size: stretch;-fx-background-position:center top;");
+        gridPane.setStyle("-fx-background-image: url('background_stars.jpg');-fx-background-size: stretch;-fx-background-position:center top;");
 
         Label headerLabel = new Label("RIGEL");
         headerLabel.setFont(Font.font("Impact", FontWeight.BOLD, 50));
         headerLabel.setTextFill(Color.WHITE);
         gridPane.add(headerLabel, 0,0,2,1);
-        GridPane.setHalignment(headerLabel, HPos.CENTER);
-        GridPane.setMargin(headerLabel, new Insets(20, 0,20,0));
+        gridPane.setHalignment(headerLabel, HPos.CENTER);
+        gridPane.setMargin(headerLabel, new Insets(20, 0,20,0));
 
         Button location = new Button("CHOISIR LA LOCALISATION");
         location.setPrefHeight(40);

@@ -1,4 +1,4 @@
-package ch.epfl.rigel.bonus;
+package ch.epfl.rigel.bonus2;
 
 
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 
 import java.util.Locale;
 
-public class Menu extends Application {
+public class Menu2 extends Application {
 
     private Scene scene;
 
@@ -25,11 +25,11 @@ public class Menu extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        Earth earth = new Earth();
+        Earth2 earth = new Earth2();
         Pane pane = earth.getPane();
 
         PerspectiveCamera camera = new PerspectiveCamera(true);
-        CameraManager manager = new CameraManager(camera, pane);
+        CameraManager2 manager = new CameraManager2(camera, pane);
 
         // Create scene
         scene = new Scene(pane, 600, 600);

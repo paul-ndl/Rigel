@@ -2,28 +2,24 @@ package ch.epfl.rigel.bonus;
 
 import com.interactivemesh.jfx.importer.ImportException;
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
-import javafx.geometry.Point3D;
+import javafx.beans.binding.Bindings;
+import javafx.scene.Cursor;
+import javafx.scene.Group;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.MeshView;
-import javafx.scene.shape.Sphere;
+import javafx.scene.transform.Rotate;
 
 import java.net.URL;
-import java.util.Map;
 
 public final class Earth {
 
-    private Sphere world;
-    private Pane pane = new Pane();
+    private Pane pane;
+    private MeshView meshView;
 
     public Earth(){
-        world = new Sphere(150);
-        PhongMaterial texture = new PhongMaterial();
-        texture.setDiffuseMap(new Image(getClass().getResource("/earth_texture.png").toExternalForm()));
-        world.setMaterial(texture);
-
         ObjModelImporter objImporter = new ObjModelImporter();
         try{
             URL modelUrl = this.getClass().getResource("/earth.obj");
@@ -32,28 +28,61 @@ public final class Earth {
 
         }
         MeshView[] meshViews = objImporter.getImport();
-        meshViews[0].setMaterial(texture);
+        meshView = meshViews[0];
 
-        final PhongMaterial redMaterial = new PhongMaterial();
-        redMaterial.setDiffuseColor(Color.RED);
-        Map<Point3D, City> cities = (CityLoader.CITIES_MAP);
-        for(Point3D point : cities.keySet()){
-            System.out.println(point);
-            System.out.println(cities.get(point));
-            Sphere s = new Sphere(0.01);
-            s.setMaterial(redMaterial);
-            s.setTranslateX(point.getX());
-            s.setTranslateY(point.getY());
-            s.setTranslateZ(point.getZ());
-            pane.getChildren().add(s);
-        }
+        PhongMaterial texture = new PhongMaterial();
+        texture.setDiffuseMap(new Image(getClass().getResource("/earth_texture.png").toExternalForm()));
+        meshView.setMaterial(texture);
+        meshView.setCursor(Cursor.CROSSHAIR);
+
+        Group root = new Group(meshViews[0]);
+        pane = new Pane(root);
+        pane.setStyle("-fx-background-color : black;");
+
+        meshView.scaleXProperty().bind(Bindings.createDoubleBinding(
+                () -> pane.getWidth()>pane.getHeight() ? pane.getHeight()/2 : pane.getWidth()/2,
+                pane.heightProperty(), pane.widthProperty()
+        ));
+        meshView.scaleYProperty().bind(Bindings.createDoubleBinding(
+                () -> pane.getWidth()>pane.getHeight() ? pane.getHeight()/2 : pane.getWidth()/2,
+                pane.heightProperty(), pane.widthProperty()
+        ));
+        meshView.scaleZProperty().bind(Bindings.createDoubleBinding(
+                () -> pane.getWidth()>pane.getHeight() ? pane.getHeight()/2 : pane.getWidth()/2,
+                pane.heightProperty(), pane.widthProperty()
+        ));
+        meshView.translateXProperty().bind(Bindings.createDoubleBinding(
+                () -> pane.getWidth()/2,
+                pane.widthProperty()
+        ));
+        meshView.translateYProperty().bind(Bindings.createDoubleBinding(
+                () -> pane.getHeight()/2,
+                pane.heightProperty()
+        ));
 
 
-        pane.getChildren().add(meshViews[0]);
+        meshView.setRotationAxis(Rotate.Y_AXIS);
+        pane.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.RIGHT) {
+                meshViews[0].setRotate(meshViews[0].getRotate() - 5);
+            } else if (e.getCode() == KeyCode.LEFT) {
+                meshViews[0].setRotate(meshViews[0].getRotate() + 5);
+            }
+        });
+
+        pane.setOnMousePressed(e -> {
+            if (e.isPrimaryButtonDown()) {
+                pane.requestFocus();
+            }
+        });
+
     }
 
-    public Pane getPane(){
+    public Pane getPane() {
         return pane;
     }
 
+    public MeshView getEarth(){
+        return meshView;
+    }
 }
