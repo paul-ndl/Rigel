@@ -16,6 +16,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 public class Menu extends Application {
 
 
@@ -53,13 +55,12 @@ public class Menu extends Application {
         });
         location.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
-                showWorld(primaryStage);
-
+                new Globe(primaryStage);
             }
         });
         gridPane.add(location, 0,1);
 
-        Button sky = new Button("ACCÉDER À LA VUE DU CIEL");
+        Button sky = new Button("ACCÉDER À LA VUE DU CIEL DEPUIS LAUSANNE");
         sky.setPrefHeight(40);
         sky.setPrefWidth(350);
         sky.setStyle("-fx-text-fill: white; -fx-background-color: black");
@@ -71,6 +72,15 @@ public class Menu extends Application {
         sky.setOnMouseExited(new EventHandler<MouseEvent>(){
             public void handle(MouseEvent me){
                 sky.setStyle("-fx-text-fill: white; -fx-background-color: black");;
+            }
+        });
+        sky.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                try{
+                    new Main2(primaryStage,6.57, 46.52);
+                } catch (IOException exception){
+
+                }
             }
         });
         gridPane.add(sky, 0,2);
@@ -99,12 +109,6 @@ public class Menu extends Application {
         primaryStage.setMinHeight(600);
         primaryStage.setScene(new Scene(gridPane));
         primaryStage.show();
-    }
-
-    private void showWorld(Stage primaryStage) {
-        primaryStage.setTitle("Globe Terrestre");
-        Globe globe = new Globe();
-        primaryStage.setScene(globe.getScene());
     }
 
 

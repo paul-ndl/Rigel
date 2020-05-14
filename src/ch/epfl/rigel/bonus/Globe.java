@@ -2,6 +2,7 @@ package ch.epfl.rigel.bonus;
 
 import ch.epfl.rigel.coordinates.GeographicCoordinates;
 import ch.epfl.rigel.math.Angle;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point3D;
@@ -17,26 +18,27 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.MeshView;
+import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
 
+import java.io.IOException;
 import java.util.function.UnaryOperator;
 
 public class Globe {
 
-    private Scene scene;
+    private Stage primaryStage;
 
-    public Globe() {
+    public Globe(Stage primaryStage) {
+        this.primaryStage = primaryStage;
         Earth earth = new Earth();
         Pane pane = earth.getPane();
 
         HBox location = location(pane, earth.getEarth());
         BorderPane main = new BorderPane(pane, null, location, null, null);
 
-        scene = new Scene(main, 1000, 600);
-    }
-
-    public Scene getScene() {
-        return scene;
+        Scene scene = new Scene(main, 1000, 600);
+        primaryStage.setTitle("Globe Terrestre");
+        primaryStage.setScene(scene);
     }
 
     private HBox location(Pane pane , MeshView meshView){
@@ -78,6 +80,15 @@ public class Globe {
         select.setOnMouseExited(new EventHandler<MouseEvent>(){
             public void handle(MouseEvent me){
                 select.setStyle("-fx-text-fill: white; -fx-background-color: black");;
+            }
+        });
+        select.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                try{
+                    new Main2(primaryStage, (Double) lonTextFormatter.getValue(), (Double) latTextFormatter.getValue());
+                } catch (IOException exception){
+
+                }
             }
         });
         gridPane.add(select, 0, 5);
@@ -147,7 +158,7 @@ public class Globe {
                 return null;
             }
         });
-        return new TextFormatter<>(stringConverter, null, lonFilter);
+        return new TextFormatter<>(stringConverter, 6.57, lonFilter);
     }
 
     private TextFormatter<Number> latTextFormatter(){
@@ -161,6 +172,6 @@ public class Globe {
                 return null;
             }
         });
-        return new TextFormatter<>(stringConverter, null, lonFilter);
+        return new TextFormatter<>(stringConverter, 46.52, lonFilter);
     }
 }

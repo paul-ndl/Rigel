@@ -1,11 +1,12 @@
-package ch.epfl.rigel.gui;
+package ch.epfl.rigel.bonus;
+
 
 import ch.epfl.rigel.astronomy.AsterismLoader;
 import ch.epfl.rigel.astronomy.HygDatabaseLoader;
 import ch.epfl.rigel.astronomy.StarCatalogue;
 import ch.epfl.rigel.coordinates.GeographicCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
-import javafx.application.Application;
+import ch.epfl.rigel.gui.*;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.collections.FXCollections;
@@ -33,7 +34,7 @@ import java.util.Locale;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
-public final class Main extends Application {
+public final class Main2 {
 
     private final ObserverLocationBean observerLocationBean = new ObserverLocationBean();
     private final DateTimeBean dateTimeBean = new DateTimeBean();
@@ -45,10 +46,10 @@ public final class Main extends Application {
     InputStream fontStream = getClass().getResourceAsStream("/Font Awesome 5 Free-Solid-900.otf");
     private Font FONT_AWESOME = Font.loadFont(fontStream,15);
 
-    public static void main(String[] args) { launch(args); }
+    private Stage primaryStage;
 
-    @Override
-    public void start(Stage primaryStage) throws IOException {
+
+    public Main2(Stage primaryStage, double lon, double lat) throws IOException {
         try (InputStream hs = resourceStream("/hygdata_v3.csv")) {
             builder = builder.loadFrom(hs, HygDatabaseLoader.INSTANCE);
         }
@@ -57,7 +58,8 @@ public final class Main extends Application {
                     .loadFrom(as, AsterismLoader.INSTANCE)
                     .build();
 
-            observerLocationBean.setCoordinates(GeographicCoordinates.ofDeg(6.57, 46.52));
+            this.primaryStage = primaryStage;
+            observerLocationBean.setCoordinates(GeographicCoordinates.ofDeg(lon, lat));
 
             ZonedDateTime when = ZonedDateTime.now(ZoneId.systemDefault());
             dateTimeBean.setZonedDateTime(when);
@@ -74,9 +76,6 @@ public final class Main extends Application {
             Canvas sky = canvasManager.canvas();
             Pane skyPane = new Pane(sky);
 
-            primaryStage.setTitle("Rigel");
-            primaryStage.setMinWidth(800);
-            primaryStage.setMinHeight(600);
 
             HBox panel = ControlPanel();
             BorderPane infoPanel = InfoPanel(canvasManager);
@@ -84,8 +83,10 @@ public final class Main extends Application {
             BorderPane root = new BorderPane(skyPane, panel, null, infoPanel, null);
             sky.widthProperty().bind(skyPane.widthProperty());
             sky.heightProperty().bind(skyPane.heightProperty());
-            primaryStage.setScene(new Scene(root));
-            primaryStage.show();
+
+            Scene scene = new Scene(root, 1000, 600);
+            primaryStage.setTitle("Rigel");
+            primaryStage.setScene(scene);
         }
     }
 
