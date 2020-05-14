@@ -16,7 +16,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
-public class MenuButton extends Application {
+public class Menu extends Application {
 
 
     public static void main(String[] args) { launch(args); }
@@ -95,16 +95,16 @@ public class MenuButton extends Application {
 
 
         primaryStage.setTitle("Menu");
-        primaryStage.setMinWidth(800);
+        primaryStage.setMinWidth(1000);
         primaryStage.setMinHeight(600);
         primaryStage.setScene(new Scene(gridPane));
         primaryStage.show();
     }
 
     private void showWorld(Stage primaryStage) {
-        primaryStage.close();
-        //Stage stage = new Stage();
-        //Menu menu = new Menu(stage);
+        primaryStage.setTitle("Globe Terrestre");
+        Globe globe = new Globe();
+        primaryStage.setScene(globe.getScene());
     }
 
 

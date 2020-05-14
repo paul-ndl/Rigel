@@ -2,7 +2,6 @@ package ch.epfl.rigel.bonus;
 
 import ch.epfl.rigel.coordinates.GeographicCoordinates;
 import ch.epfl.rigel.math.Angle;
-import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point3D;
@@ -18,30 +17,26 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.MeshView;
-import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
 
 import java.util.function.UnaryOperator;
 
-public class rotation extends Application {
+public class Globe {
 
-    public static void main(String args[]){
-        launch(args);
-    }
+    private Scene scene;
 
-    @Override
-    public void start(Stage stage) {
+    public Globe() {
         Earth earth = new Earth();
         Pane pane = earth.getPane();
 
         HBox location = location(pane, earth.getEarth());
         BorderPane main = new BorderPane(pane, null, location, null, null);
 
-        stage.setTitle("Globe Terrestre");
-        stage.setMinWidth(1000);
-        stage.setMinHeight(600);
-        stage.setScene(new Scene(main));
-        stage.show();
+        scene = new Scene(main, 1000, 600);
+    }
+
+    public Scene getScene() {
+        return scene;
     }
 
     private HBox location(Pane pane , MeshView meshView){
@@ -90,8 +85,8 @@ public class rotation extends Application {
         meshView.setOnMousePressed(e ->
         {
             if(e.isSecondaryButtonDown()){
-                Point3D point = transformMouse(e.getSceneX(), e.getSceneY(), pane, -Angle.ofDeg(meshView.getRotate()));
-                GeographicCoordinates coord = transformPoint(point.getX(), point.getY(), point.getZ());
+                Point3D point = cartesianToPoint3D(e.getSceneX(), e.getSceneY(), pane, -Angle.ofDeg(meshView.getRotate()));
+                GeographicCoordinates coord = Point3DToGeoCoord(point.getX(), point.getY(), point.getZ());
                 lonTextFormatter.setValue(coord.lonDeg());
                 latTextFormatter.setValue(coord.latDeg());
             }
@@ -101,7 +96,7 @@ public class rotation extends Application {
         return coordinates;
     }
 
-    private Point3D transformMouse(double x, double y, Pane pane, double angle){
+    private Point3D cartesianToPoint3D(double x, double y, Pane pane, double angle){
         //rescale the cartesian coordinates
         double scaleX = pane.getWidth()/2;
         double scaleY = pane.getHeight()/2;
@@ -121,7 +116,7 @@ public class rotation extends Application {
         return point;
     }
 
-    private GeographicCoordinates transformPoint(double x, double y, double z){
+    private GeographicCoordinates Point3DToGeoCoord(double x, double y, double z){
         //latitude calculation
         double lat = Angle.toDeg(Math.asin(-y)) + 0.2;
         //longitude calculation

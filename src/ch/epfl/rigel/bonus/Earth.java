@@ -37,7 +37,7 @@ public final class Earth {
 
         Group root = new Group(meshViews[0]);
         pane = new Pane(root);
-        pane.setStyle("-fx-background-color : black;");
+        pane.setStyle("-fx-background-color : #2A2525;");
 
         meshView.scaleXProperty().bind(Bindings.createDoubleBinding(
                 () -> pane.getWidth()>pane.getHeight() ? pane.getHeight()/2 : pane.getWidth()/2,
@@ -62,11 +62,12 @@ public final class Earth {
 
 
         meshView.setRotationAxis(Rotate.Y_AXIS);
+        meshView.setRotate(182.8);
         pane.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.RIGHT) {
-                meshViews[0].setRotate(meshViews[0].getRotate() - 5);
+                meshView.setRotate(meshView.getRotate() - 5);
             } else if (e.getCode() == KeyCode.LEFT) {
-                meshViews[0].setRotate(meshViews[0].getRotate() + 5);
+                meshView.setRotate(meshView.getRotate() + 5);
             }
         });
 
