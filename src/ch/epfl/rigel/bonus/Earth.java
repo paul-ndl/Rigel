@@ -37,7 +37,7 @@ public final class Earth {
 
         Group root = new Group(meshViews[0]);
         pane = new Pane(root);
-        pane.setStyle("-fx-background-color : #2A2525;");
+        pane.setStyle("-fx-background-image: url('ciel_etoile.jpg');-fx-background-size: stretch;-fx-background-position:center top;");
 
         meshView.scaleXProperty().bind(Bindings.createDoubleBinding(
                 () -> pane.getWidth()>pane.getHeight() ? pane.getHeight()/2 : pane.getWidth()/2,
