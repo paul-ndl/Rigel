@@ -36,10 +36,6 @@ public class Menu2 extends Application {
         scene.setCamera(camera);
         scene.setFill(Color.GREY);
 
-        pane.setOnMousePressed(
-                event -> System.out.println(transformMouse(event.getSceneX(), event.getSceneY(), pane, Angle.ofDeg(-manager.getRy().getAngle())))
-        );
-
         //Add the scene to the stage and show it
         primaryStage.setTitle("Menu");
         primaryStage.setScene(scene);

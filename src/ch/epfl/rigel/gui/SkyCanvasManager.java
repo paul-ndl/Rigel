@@ -127,6 +127,7 @@ public final class SkyCanvasManager {
             } else if (e.getCode() == KeyCode.LEFT) {
                 azCenter = AZ_INTERVAL.reduce(azCenter - AZ_MOVE);
             }
+            e.consume();
             viewingParametersBean.setCenter(HorizontalCoordinates.ofDeg(azCenter, altCenter));
         });
 

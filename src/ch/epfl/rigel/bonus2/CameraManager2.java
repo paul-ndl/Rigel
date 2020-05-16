@@ -55,8 +55,8 @@ public class CameraManager2 {
                 mousePosY = me.getSceneY();
                 mouseDeltaY = (mousePosY - mouseOldY);
                 if (me.isPrimaryButtonDown()) {
-                    ry.setAngle(ry.getAngle() + 0.5*mouseDeltaX);
-                    //rx.setAngle(rx.getAngle() + 0.5*mouseDeltaY);
+                    ry.setAngle(ry.getAngle() + 0.5 * mouseDeltaX);
+                    rx.setAngle(rx.getAngle() + 0.5 * mouseDeltaY);
                 }
             }
         });

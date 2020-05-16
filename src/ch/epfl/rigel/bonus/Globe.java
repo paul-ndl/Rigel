@@ -17,7 +17,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.MeshView;
+import javafx.scene.shape.Sphere;
 import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
 
@@ -36,12 +36,12 @@ public class Globe {
         HBox location = location(pane, earth.getEarth());
         BorderPane main = new BorderPane(pane, null, location, null, null);
 
-        Scene scene = new Scene(main, 1000, 600);
+        Scene scene = new Scene(main, primaryStage.getWidth(), primaryStage.getHeight());
         primaryStage.setTitle("Globe Terrestre");
         primaryStage.setScene(scene);
     }
 
-    private HBox location(Pane pane , MeshView meshView){
+    private HBox location(Pane pane , Sphere meshView){
 
         HBox coordinates = new HBox();
         coordinates.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left; -fx-spacing: 10; -fx-padding: 4;");
@@ -129,21 +129,20 @@ public class Globe {
 
     private GeographicCoordinates Point3DToGeoCoord(double x, double y, double z){
         //latitude calculation
-        double lat = Angle.toDeg(Math.asin(-y)) + 0.2;
+        double lat = Angle.toDeg(Math.asin(-y)) + 0.7;
         //longitude calculation
-        double lonA = Angle.toDeg(Math.asin(-x/Math.cos(Angle.ofDeg(lat-0.2)))) - 2.8;
-        double lonB = Angle.toDeg(Math.acos(z/Math.cos(Angle.ofDeg(lat-0.2)))) - 2.8;
+        double lonA = Angle.toDeg(Math.asin(-x/Math.cos(Angle.ofDeg(lat-0.2))));
+        double lonB = Angle.toDeg(Math.acos(z/Math.cos(Angle.ofDeg(lat-0.2))));
         double lon;
-        if(z>=0){
+        if(z>0){
             lon = lonA;
         } else {
-            if (x <= 0) {
+            if (x < 0) {
                 lon = lonB;
             } else {
                 lon = -lonB;
             }
         }
-        //return coordinates
         return GeographicCoordinates.ofDeg(lon, lat);
     }
 
@@ -153,7 +152,7 @@ public class Globe {
             try {
                 String newText = change.getControlNewText();
                 double newLonDeg = stringConverter.fromString(newText).doubleValue();
-                return GeographicCoordinates.isValidLonDeg(newLonDeg) ? change : null;
+                return GeographicCoordinates.isValidLonDeg(newLonDeg) && newLonDeg!=0 ? change : null;
             } catch (Exception e) {
                 return null;
             }
@@ -167,7 +166,7 @@ public class Globe {
             try {
                 String newText = change.getControlNewText();
                 double newLatDeg = stringConverter.fromString(newText).doubleValue();
-                return GeographicCoordinates.isValidLatDeg(newLatDeg) ? change : null;
+                return GeographicCoordinates.isValidLatDeg(newLatDeg) && newLatDeg!=0 ? change : null;
             } catch (Exception e) {
                 return null;
             }

@@ -19,9 +19,9 @@ public final class Earth2 {
     private Pane pane = new Pane();
 
     public Earth2(){
-        world = new Sphere(150);
+        world = new Sphere(1);
         PhongMaterial texture = new PhongMaterial();
-        texture.setDiffuseMap(new Image(getClass().getResource("/earth_texture.png").toExternalForm()));
+        texture.setDiffuseMap(new Image(getClass().getResource("/test5.jpg").toExternalForm()));
         world.setMaterial(texture);
 
         ObjModelImporter objImporter = new ObjModelImporter();
@@ -38,8 +38,6 @@ public final class Earth2 {
         redMaterial.setDiffuseColor(Color.RED);
         Map<Point3D, City> cities = (CityLoader.CITIES_MAP);
         for(Point3D point : cities.keySet()){
-            System.out.println(point);
-            System.out.println(cities.get(point));
             Sphere s = new Sphere(0.01);
             s.setMaterial(redMaterial);
             s.setTranslateX(point.getX());
@@ -49,7 +47,7 @@ public final class Earth2 {
         }
 
 
-        pane.getChildren().add(meshViews[0]);
+        pane.getChildren().add(world);
     }
 
     public Pane getPane(){

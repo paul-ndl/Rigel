@@ -84,7 +84,7 @@ public final class Main2 {
             sky.widthProperty().bind(skyPane.widthProperty());
             sky.heightProperty().bind(skyPane.heightProperty());
 
-            Scene scene = new Scene(root, 1000, 600);
+            Scene scene = new Scene(root, primaryStage.getWidth(), primaryStage.getHeight());
             primaryStage.setTitle("Rigel");
             primaryStage.setScene(scene);
         }

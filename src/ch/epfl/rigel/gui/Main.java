@@ -113,7 +113,7 @@ public final class Main extends Application {
 
         Separator firstSep = new Separator(Orientation.VERTICAL);
 
-        coordinates.getChildren().addAll(lonLabel, lonField, latLabel, latField, firstSep);
+        coordinates.getChildren().addAll(lonLabel, lonField, latLabel, latField);
 
         //second Hbox
         HBox time = new HBox();
@@ -141,7 +141,7 @@ public final class Main extends Application {
 
         Separator secondSep = new Separator(Orientation.VERTICAL);
 
-        time.getChildren().addAll(dateLabel, dateField, hourLabel, hourField, zoneId, secondSep);
+        time.getChildren().addAll(dateLabel, dateField, hourLabel, hourField, zoneId);
 
 
         //third Hbox
@@ -187,7 +187,7 @@ public final class Main extends Application {
 
         animation.getChildren().addAll(accelerator, resetButton, playButton);
 
-        panel.getChildren().addAll(coordinates, time, animation);
+        panel.getChildren().addAll(coordinates, firstSep, time, secondSep, animation);
 
         return panel;
     }
