@@ -31,7 +31,7 @@ public final class BlackBodyColor {
     private final static Map<Integer, Color> COLOR_MAP = loader();
 
     private static Map<Integer, Color> loader(){
-        final Map<Integer, Color> tempColor = new HashMap();
+        final Map<Integer, Color> tempColor = new HashMap<>();
         String line;
         try(BufferedReader r = new BufferedReader(new InputStreamReader(BlackBodyColor.class.getResourceAsStream(BBR_COLOR), US_ASCII))){
             while((line = r.readLine()) != null) {

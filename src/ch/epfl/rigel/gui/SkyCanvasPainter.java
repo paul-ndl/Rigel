@@ -18,10 +18,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Transform;
 
+import java.util.List;
+import java.util.Set;
+
 public final class SkyCanvasPainter {
 
-    private Canvas canvas;
-    private GraphicsContext ctx;
+    private final Canvas canvas;
+    private final GraphicsContext ctx;
 
     private static final Color BLUE = Color.BLUE;
     private static final Color GREY = Color.LIGHTGREY;
@@ -31,7 +34,7 @@ public final class SkyCanvasPainter {
     private static final Color RED = Color.RED;
     private static final Color BLACK = Color.BLACK;
 
-    private static final ClosedInterval interval = ClosedInterval.of(-2, 5);
+    private static final ClosedInterval CLIP_INTERVAL = ClosedInterval.of(-2, 5);
 
     public SkyCanvasPainter(Canvas canvas) {
         this.canvas = canvas;
@@ -46,31 +49,35 @@ public final class SkyCanvasPainter {
     public void drawStars(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas) {
         ctx.setStroke(BLUE);
         ctx.setLineWidth(1);
-        Star[] stars = sky.stars().toArray(Star[]::new);
+        List<Star> stars = sky.stars();
         double[] coordinates = sky.starPositions();
         planeToCanvas.transform2DPoints(coordinates, 0, coordinates, 0, coordinates.length/2);
-        Asterism[] asterisms = sky.asterism().toArray(Asterism[]::new);
+        Set<Asterism> asterisms = sky.asterism();
         boolean previousInBounds = false;
         Bounds canvasBounds = canvas.getBoundsInLocal();
+
+        //Construction des astérisms
         for (Asterism a : asterisms) {
             ctx.beginPath();
-            int[] indices = sky.asterismIndices(a).stream()
-                                                  .mapToInt(Integer :: intValue)
-                                                  .toArray();
+            List<Integer> indices = sky.asterismIndices(a);
             for (Integer i : indices) {
                 double x = coordinates[2*i];
                 double y = coordinates[2*i + 1];
-                ctx.lineTo(x, y);
                 if (canvasBounds.contains(x, y) || previousInBounds) {
-                    ctx.stroke();
+                    ctx.lineTo(x,y);
+                } else {
+                    ctx.moveTo(x,y);
                 }
                 previousInBounds = (canvasBounds.contains(x, y));
             }
+            ctx.stroke();
         }
-        for (int i=0; i<stars.length; ++i) {
-            double diameter = size(stars[i].magnitude(), projection);
+
+        //Construction des étoiles
+        for (int i=0; i<stars.size(); ++i) {
+            double diameter = size(stars.get(i).magnitude(), projection);
             double trueDiameter = planeToCanvas.deltaTransform(diameter, 0).magnitude();
-            ctx.setFill(BlackBodyColor.colorForTemperature(stars[i].colorTemperature()));
+            ctx.setFill(BlackBodyColor.colorForTemperature(stars.get(i).colorTemperature()));
             ctx.fillOval(coordinates[2*i]-trueDiameter/2, coordinates[2*i+1]-trueDiameter/2, trueDiameter, trueDiameter);
         }
     }
@@ -79,9 +86,9 @@ public final class SkyCanvasPainter {
         ctx.setFill(GREY);
         double[] coordinates = sky.planetPositions();
         planeToCanvas.transform2DPoints(coordinates, 0, coordinates, 0, coordinates.length / 2);
-        Planet[] planets = sky.planets().toArray(Planet[]::new);
-        for (int i=0; i<planets.length; ++i) {
-            double diameter = size(planets[i].magnitude(), projection);
+        List<Planet> planets = sky.planets();
+        for (int i=0; i<planets.size(); ++i) {
+            double diameter = size(planets.get(i).magnitude(), projection);
             double trueDiameter = planeToCanvas.deltaTransform(diameter, 0).magnitude();
             ctx.fillOval(coordinates[2*i]-trueDiameter/2, coordinates[2*i+1]-trueDiameter/2, trueDiameter, trueDiameter);
         }
@@ -134,7 +141,7 @@ public final class SkyCanvasPainter {
     }
 
     private double size(double magnitude, StereographicProjection projection) {
-        final double clipedMagnitude = interval.clip(magnitude);
+        final double clipedMagnitude = CLIP_INTERVAL.clip(magnitude);
         final double function = (99 - 17*clipedMagnitude) / 140;
         return function * projection.applyToAngle(Angle.ofDeg(0.5));
     }

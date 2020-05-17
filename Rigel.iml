@@ -12,5 +12,13 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="TEST" name="org.junit.jupiter:junit-jupiter:5.6.0" level="project" />
     <orderEntry type="library" name="OpenJFX 11" level="application" />
+    <orderEntry type="library" name="jimObjModelImporterJFX" level="project" />
+    <orderEntry type="library" name="jimObjModelImporterJFX (2)" level="project" />
+    <orderEntry type="library" name="jim3dsModelImporterJFX" level="project" />
+    <orderEntry type="library" name="jimColModelImporterJFX" level="project" />
+    <orderEntry type="library" name="jimFxmlModelImporterJFX" level="project" />
+    <orderEntry type="library" name="jimStlMeshImporterJFX" level="project" />
+    <orderEntry type="library" name="jimX3dModelImporterJFX" level="project" />
+    <orderEntry type="library" name="deps" level="project" />
   </component>
 </module>

@@ -1,0 +1,24 @@
+<changelist name="Uncommitted_changes_before_Update_at_23_04_2020_12_17_[Default_Changelist]" date="1587637021485" recycled="false" toDelete="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_23_04_2020_12_17_[Default_Changelist]/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before Update at 23/04/2020 12:17 [Default Changelist]" />
+  <binary>
+    <option name="BEFORE_PATH" value=".idea/shelf/Uncommitted_changes_before_Update_at_14_04_2020_23_59_[Default_Changelist]/HygDatabaseLoaderTest$ThrowingInputStream.class" />
+    <option name="AFTER_PATH" />
+    <option name="SHELVED_PATH" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="sky.png" />
+    <option name="AFTER_PATH" value="sky.png" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_23_04_2020_12_17_[Default_Changelist]/sky.png" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="out/production/Rigel/ch/epfl/rigel/gui/SkyCanvasPainter.class" />
+    <option name="AFTER_PATH" value="out/production/Rigel/ch/epfl/rigel/gui/SkyCanvasPainter.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_23_04_2020_12_17_[Default_Changelist]/SkyCanvasPainter.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value=".idea/shelf/Uncommitted_changes_before_Update_at_14_04_2020_23_59_[Default_Changelist]/HygDataBaseLoaderTest.class" />
+    <option name="AFTER_PATH" />
+    <option name="SHELVED_PATH" />
+  </binary>
+</changelist>
