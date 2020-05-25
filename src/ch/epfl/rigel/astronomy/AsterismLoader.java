@@ -4,12 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.nio.charset.StandardCharsets.US_ASCII;
 
 /**
  * Un chargeur de catalogue d'astérismes
@@ -19,8 +19,6 @@ import java.util.Map;
  */
 public enum AsterismLoader implements StarCatalogue.Loader {
     INSTANCE;
-
-    private final static Charset US_ASCII = StandardCharsets.US_ASCII;
 
     /**
      * Charge les astérismes du flot d'entrée et les ajoute au bâtisseur

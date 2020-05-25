@@ -38,7 +38,7 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
     private final static double TAU_PER_YEAR = Angle.TAU / 365.242191;
 
     private final String name;
-    private final double orbitalRev, lonJ2010, lonPer, e, a, i, omega, angularSizeUA, magnitude;
+    private final double orbitalRev, lonJ2010, lonPer, eccentricity, axis, cosInclination, sinInclination, omega, angularSizeUA, magnitude;
 
     /**
      * Construit un modèle d'une planète
@@ -47,21 +47,22 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
      * @param orbitalRev la période de révolution en années tropiques
      * @param lonJ2010   la longitude à J2010 en degrés
      * @param lonPer     la longitude au périgée en degrés
-     * @param e          l'excentricité
-     * @param a          le demi grand-axe de l'orbite
-     * @param i          l'inclinaison de l'orbite à l'écliptique en degrés
+     * @param eccentricity          l'excentricité
+     * @param axis          le demi grand-axe de l'orbite
+     * @param inclination          l'inclinaison de l'orbite à l'écliptique en degrés
      * @param omega      la longitude du noeud ascendant en degrés
      * @param teta0      la taille angulaire en secondes d'arc
      * @param magnitude  la magnitude
      */
-    PlanetModel(String name, double orbitalRev, double lonJ2010, double lonPer, double e, double a, double i, double omega, double teta0, double magnitude) {
+    PlanetModel(String name, double orbitalRev, double lonJ2010, double lonPer, double eccentricity, double axis, double inclination, double omega, double teta0, double magnitude) {
         this.name = name;
         this.orbitalRev = orbitalRev;
         this.lonJ2010 = Angle.ofDeg(lonJ2010);
         this.lonPer = Angle.ofDeg(lonPer);
-        this.e = e;
-        this.a = a;
-        this.i = Angle.ofDeg(i);
+        this.eccentricity = eccentricity;
+        this.axis = axis;
+        this.cosInclination = Math.cos(Angle.ofDeg(inclination));
+        this.sinInclination = Math.sin(Angle.ofDeg(inclination));
         this.omega = Angle.ofDeg(omega);
         this.angularSizeUA = Angle.ofArcsec(teta0);
         this.magnitude = magnitude;
@@ -117,8 +118,8 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
      */
     private double[] orbitalCoordinates(double daysSinceJ2010) {
         double meanAnomaly = TAU_PER_YEAR * (daysSinceJ2010 / orbitalRev) + lonJ2010 - lonPer;
-        double trueAnomaly = meanAnomaly + 2 * e * Math.sin(meanAnomaly);
-        double radius = (a * (1 - e * e)) / (1 + e * Math.cos(trueAnomaly));
+        double trueAnomaly = meanAnomaly + 2 * eccentricity * Math.sin(meanAnomaly);
+        double radius = (axis * (1 - eccentricity * eccentricity)) / (1 + eccentricity * Math.cos(trueAnomaly));
         double lon = trueAnomaly + lonPer;
         double[] orbitalCoordinates = {radius, lon};
         return orbitalCoordinates;
@@ -134,9 +135,9 @@ public enum PlanetModel implements CelestialObjectModel<Planet> {
      * les coordonnées orbitales données
      */
     private double[] eclipticCoordinates(double radius, double lon) {
-        double eclLat = Math.asin(Math.sin(lon - omega) * Math.sin(i));
+        double eclLat = Math.asin(Math.sin(lon - omega) * sinInclination);
         double projRadius = radius * Math.cos(eclLat);
-        double eclLon = Math.atan2(Math.sin(lon - omega) * Math.cos(i), Math.cos(lon - omega)) + omega;
+        double eclLon = Math.atan2(Math.sin(lon - omega) * cosInclination, Math.cos(lon - omega)) + omega;
         double[] eclipticCoordinates = {projRadius, eclLon, eclLat};
         return eclipticCoordinates;
     }

@@ -6,8 +6,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+
+import static java.nio.charset.StandardCharsets.US_ASCII;
 
 /**
  * Un chargeur de catalogue HYG
@@ -26,7 +26,6 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
     private final static int DECRAD = 24;
     private final static int BAYER = 27;
     private final static int CON = 29;
-    private final static Charset US_ASCII = StandardCharsets.US_ASCII;
 
     /**
      * Charge les étoiles du flot d'entrée et les ajoute au bâtisseur
@@ -43,13 +42,25 @@ public enum HygDatabaseLoader implements StarCatalogue.Loader {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] columns = line.split(",");
-                int hip = (!columns[HIP].isEmpty() ? Integer.parseInt(columns[HIP]) : 0);
-                String name = ((!columns[PROPER].isEmpty()) ? columns[PROPER] : ((!columns[BAYER].isEmpty() ? columns[BAYER] : "?") + " " + columns[CON]));
+                int hip = valueOrDefaultInt(columns, HIP);
+                String name = valueOrDefaultString(columns, PROPER, BAYER, CON);
                 EquatorialCoordinates eq = EquatorialCoordinates.of(Double.parseDouble(columns[RARAD]), Double.parseDouble(columns[DECRAD]));
-                float magnitude = (!columns[MAG].isEmpty() ? Float.parseFloat(columns[MAG]) : 0);
-                float colorIndex = (!columns[CI].isEmpty() ? Float.parseFloat(columns[CI]) : 0);
+                float magnitude = valueOrDefaultFloat(columns, MAG);
+                float colorIndex = valueOrDefaultFloat(columns, CI);
                 builder.addStar(new Star(hip, name, eq, magnitude, colorIndex));
             }
         }
+    }
+
+    private int valueOrDefaultInt(String[] columns, int index){
+        return !columns[index].isEmpty() ? Integer.parseInt(columns[index]) : 0;
+    }
+
+    private String valueOrDefaultString(String[] columns, int proper, int bayer, int con){
+        return (!columns[proper].isEmpty()) ? columns[proper] : ((!columns[bayer].isEmpty() ? columns[bayer] : "?") + " " + columns[con]);
+    }
+
+    private float valueOrDefaultFloat(String[] columns, int index){
+        return !columns[index].isEmpty() ? Float.parseFloat(columns[index]) : 0;
     }
 }

@@ -15,7 +15,6 @@ import java.util.*;
 public final class StarCatalogue {
 
     private final List<Star> stars;
-    private final Set<Asterism> asterisms;
     private final Map<Asterism, List<Integer>> map = new HashMap<>();
 
     /**
@@ -40,7 +39,6 @@ public final class StarCatalogue {
             map.put(a, List.copyOf(list));
             list.clear();
         }
-        this.asterisms = Set.copyOf(map.keySet());
     }
 
     /**
@@ -58,7 +56,7 @@ public final class StarCatalogue {
      * @return le set d'astérismes
      */
     public Set<Asterism> asterisms() {
-        return asterisms;
+        return Collections.unmodifiableSet(map.keySet());
     }
 
     /**
@@ -68,7 +66,7 @@ public final class StarCatalogue {
      * @return la liste des indices des étoiles de l'astérisme donné dans le catalogue
      */
     public List<Integer> asterismIndices(Asterism asterism) {
-        Preconditions.checkArgument(asterisms.contains(asterism));
+        Preconditions.checkArgument(asterisms().contains(asterism));
         return map.get(asterism);
     }
 
