@@ -1,8 +1,6 @@
 package ch.epfl.rigel.gui;
 
 import java.time.Duration;
-import java.time.ZonedDateTime;
-import java.util.function.BiFunction;
 
 public enum NamedTimeAccelerator {
 

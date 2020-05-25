@@ -10,6 +10,7 @@ public final class TimeAnimator extends AnimationTimer {
     private final DateTimeBean dateTimeBean;
     private final ObjectProperty<TimeAccelerator> accelerator = new SimpleObjectProperty<>(null);
     private final BooleanProperty running = new SimpleBooleanProperty(false);
+
     private ZonedDateTime initTime;
     private long time0;
     private boolean initial;

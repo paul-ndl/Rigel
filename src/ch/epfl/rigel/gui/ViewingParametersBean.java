@@ -6,8 +6,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-import java.time.LocalDate;
-
 
 public final class ViewingParametersBean {
 

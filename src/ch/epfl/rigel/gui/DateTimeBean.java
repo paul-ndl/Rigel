@@ -18,11 +18,11 @@ public final class DateTimeBean {
         return date;
     }
 
-    public LocalDate getDate(){
+    private LocalDate getDate(){
         return date.get();
     }
 
-    public void setDate(LocalDate date){
+    private void setDate(LocalDate date){
         this.date.set(date);
     }
 
@@ -30,11 +30,11 @@ public final class DateTimeBean {
         return time;
     }
 
-    public LocalTime getTime(){
+    private LocalTime getTime(){
         return time.get();
     }
 
-    public void setTime(LocalTime time){
+    private void setTime(LocalTime time){
         this.time.set(time);
     }
 
@@ -42,11 +42,11 @@ public final class DateTimeBean {
         return zoneId;
     }
 
-    public ZoneId getZoneId(){
+    private ZoneId getZoneId(){
         return zoneId.get();
     }
 
-    public void setZoneId(ZoneId zoneId){
+    private void setZoneId(ZoneId zoneId){
         this.zoneId.set(zoneId);
     }
 

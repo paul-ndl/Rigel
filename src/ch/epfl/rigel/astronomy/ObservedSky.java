@@ -27,27 +27,27 @@ public final class ObservedSky {
     private final Map<CelestialObject, CartesianCoordinates> coordMap = new HashMap<>();
 
     public ObservedSky(ZonedDateTime when, GeographicCoordinates where, StereographicProjection stereographicProjection, StarCatalogue catalogue){
-        final double daysSinceJ2010 = J2010.daysUntil(when);
-        final EclipticToEquatorialConversion eclipticToEquatorialConversion = new EclipticToEquatorialConversion(when);
-        final EquatorialToHorizontalConversion equatorialToHorizontalConversion = new EquatorialToHorizontalConversion(when, where);
+        double daysSinceJ2010 = J2010.daysUntil(when);
+        EclipticToEquatorialConversion eclipticToEquatorialConversion = new EclipticToEquatorialConversion(when);
+        EquatorialToHorizontalConversion equatorialToHorizontalConversion = new EquatorialToHorizontalConversion(when, where);
         this.catalogue = catalogue;
-
+        //Calcul des coordonnées du Soleil
         sun = SUN.at(daysSinceJ2010, eclipticToEquatorialConversion);
         sunPosition = stereographicProjection.apply(equatorialToHorizontalConversion.apply(sun.equatorialPos()));
         coordMap.put(sun, sunPosition);
-
+        //Calcul des coordonnées de la Lune
         moon = MOON.at(daysSinceJ2010, eclipticToEquatorialConversion);
         moonPosition = stereographicProjection.apply(equatorialToHorizontalConversion.apply(moon.equatorialPos()));
         coordMap.put(moon, moonPosition);
-
+        //Calcul des coordonnées des planètes
         PlanetModel.ALL.stream().filter(p -> p!=PlanetModel.EARTH).forEach(p -> planets.add(p.at(daysSinceJ2010, eclipticToEquatorialConversion)));
         for (int i = 0; i < 7; i++) {
                 planetPositions[2*i] = stereographicProjection.apply(equatorialToHorizontalConversion.apply(planets.get(i).equatorialPos())).x();
                 planetPositions[2*i+1] = stereographicProjection.apply(equatorialToHorizontalConversion.apply(planets.get(i).equatorialPos())).y();
                 coordMap.put(planets.get(i), CartesianCoordinates.of(planetPositions[2*i], planetPositions[2*i+1]));
         }
-
-        this.stars = List.copyOf(catalogue.stars());
+        //Calcul des coordonnées des étoiles
+        this.stars = this.catalogue.stars();
         starPositions = new double[stars.size()*2];
         for (int i = 0; i < stars().size(); i++) {
             starPositions[2*i] = stereographicProjection.apply(equatorialToHorizontalConversion.apply(stars.get(i).equatorialPos())).x();
@@ -74,7 +74,7 @@ public final class ObservedSky {
     }
 
     public List<Planet> planets(){
-        return List.copyOf(planets);
+        return planets;
     }
 
     public double[] planetPositions(){
@@ -82,7 +82,7 @@ public final class ObservedSky {
     }
 
     public List<Star> stars(){
-        return List.copyOf(stars);
+        return stars;
     }
 
     public double[] starPositions(){
@@ -100,11 +100,13 @@ public final class ObservedSky {
     public Optional<CelestialObject> objectClosestTo(CartesianCoordinates point, double max) {
         CelestialObject closest = Collections.min(coordMap.keySet(),
                                         Comparator.comparingDouble(a -> squaredDistance(point, coordMap.get(a))));
-        return (Math.sqrt(squaredDistance(point, coordMap.get(closest)))<=max) ? Optional.of(closest) : Optional.empty();
+        return (Math.sqrt(squaredDistance(point, coordMap.get(closest))) <= max) ? Optional.of(closest) : Optional.empty();
     }
 
-    private Double squaredDistance(CartesianCoordinates point, CartesianCoordinates c){
-        return (point.x()-c.x())*(point.x()-c.x()) + (point.y()-c.y())*(point.y()-c.y());
+    private double squaredDistance(CartesianCoordinates point, CartesianCoordinates c){
+        double distX = point.x()-c.x();
+        double distY = point.y()-c.y();
+        return distX*distX + distY*distY;
     }
 
 }
