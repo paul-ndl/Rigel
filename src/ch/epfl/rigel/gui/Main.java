@@ -29,6 +29,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -42,15 +43,18 @@ public final class Main extends Application {
 
     private StarCatalogue.Builder builder = new StarCatalogue.Builder();
 
-    InputStream fontStream = getClass().getResourceAsStream("/Font Awesome 5 Free-Solid-900.otf");
-    private Font FONT_AWESOME = Font.loadFont(fontStream,15);
+    private final InputStream fontStream = resourceStream("/Font Awesome 5 Free-Solid-900.otf");
+    private final Font FONT_AWESOME = Font.loadFont(fontStream,15);
+    private static final String RESET_ICON = "\uf0e2";
+    private static final String PLAY_ICON = "\uf04b";
+    private static final String PAUSE_ICON = "\uf04c";
 
     public static void main(String[] args) { launch(args); }
 
     @Override
     public void start(Stage primaryStage) throws IOException {
         try (InputStream hs = resourceStream("/hygdata_v3.csv")) {
-            builder = builder.loadFrom(hs, HygDatabaseLoader.INSTANCE);
+            builder.loadFrom(hs, HygDatabaseLoader.INSTANCE);
         }
         try (InputStream as = resourceStream("/asterisms.txt")) {
             StarCatalogue catalogue = builder
@@ -58,64 +62,56 @@ public final class Main extends Application {
                     .build();
 
             observerLocationBean.setCoordinates(GeographicCoordinates.ofDeg(6.57, 46.52));
-
-            ZonedDateTime when = ZonedDateTime.now(ZoneId.systemDefault());
-            dateTimeBean.setZonedDateTime(when);
-
+            dateTimeBean.setZonedDateTime(ZonedDateTime.now(ZoneId.systemDefault()));
             viewingParametersBean.setCenter(HorizontalCoordinates.ofDeg(180.000000000001, 15));
             viewingParametersBean.setFieldOfViewDeg(70d);
 
-            SkyCanvasManager canvasManager = new SkyCanvasManager(
-                    catalogue,
-                    dateTimeBean,
-                    observerLocationBean,
-                    viewingParametersBean);
-
+            SkyCanvasManager canvasManager = new SkyCanvasManager(catalogue,
+                                                                  dateTimeBean,
+                                                                  observerLocationBean,
+                                                                  viewingParametersBean);
             Canvas sky = canvasManager.canvas();
             Pane skyPane = new Pane(sky);
+            sky.widthProperty().bind(skyPane.widthProperty());
+            sky.heightProperty().bind(skyPane.heightProperty());
 
+            HBox panel = controlPanel();
+            BorderPane infoPanel = InfoPanel(canvasManager);
+            BorderPane root = new BorderPane(skyPane, panel, null, infoPanel, null);
+            
+            primaryStage.setScene(new Scene(root));
             primaryStage.setTitle("Rigel");
             primaryStage.setMinWidth(800);
             primaryStage.setMinHeight(600);
-
-            HBox panel = ControlPanel();
-            BorderPane infoPanel = InfoPanel(canvasManager);
-
-            BorderPane root = new BorderPane(skyPane, panel, null, infoPanel, null);
-            sky.widthProperty().bind(skyPane.widthProperty());
-            sky.heightProperty().bind(skyPane.heightProperty());
-            primaryStage.setScene(new Scene(root));
             primaryStage.show();
         }
     }
 
-    private HBox ControlPanel(){
+    private HBox controlPanel(){
         HBox panel = new HBox();
         panel.setStyle("-fx-spacing: 4; -fx-padding: 4;");
 
-        //first Hbox
+        //first HBox
         HBox coordinates = new HBox();
         coordinates.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left;");
 
         Label lonLabel = new Label("Longitude (°) :");
         TextField lonField = new TextField();
-        TextFormatter<Number> lonTextFormatter = lonTextFormatter();
+        lonField.setStyle("-fx-pref-width: 60; -fx-alignment: baseline-right;");
+        TextFormatter<Number> lonTextFormatter = coordTextFormatter(true, 6.57);
         lonField.setTextFormatter(lonTextFormatter);
         lonTextFormatter.valueProperty().bindBidirectional(observerLocationBean.lonDegProperty());
-        lonField.setStyle("-fx-pref-width: 60; -fx-alignment: baseline-right;");
 
         Label latLabel = new Label("Latitude (°) :");
         TextField latField = new TextField();
-        TextFormatter<Number> latTextFormatter = latTextFormatter();
+        latField.setStyle("-fx-pref-width: 60; -fx-alignment: baseline-right;");
+        TextFormatter<Number> latTextFormatter = coordTextFormatter(false, 46.52);
         latField.setTextFormatter(latTextFormatter);
         latTextFormatter.valueProperty().bindBidirectional(observerLocationBean.latDegProperty());
-        latField.setStyle("-fx-pref-width: 60; -fx-alignment: baseline-right;");
-
-        Separator firstSep = new Separator(Orientation.VERTICAL);
 
         coordinates.getChildren().addAll(lonLabel, lonField, latLabel, latField);
 
-        //second Hbox
+        //second HBox
         HBox time = new HBox();
         time.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left;");
 
@@ -131,18 +127,12 @@ public final class Main extends Application {
         hourField.setTextFormatter(timeFormatter);
         hourField.setStyle("-fx-pref-width: 75; -fx-alignment: baseline-right;");
 
-
-
-        var zoneList = ZoneId.getAvailableZoneIds().stream().sorted().map(ZoneId::of).collect(Collectors.toUnmodifiableList());
-        var zoneId = new ComboBox<>(FXCollections.observableList(zoneList));
+        List<ZoneId> zoneList = ZoneId.getAvailableZoneIds().stream().sorted().map(ZoneId::of).collect(Collectors.toUnmodifiableList());
+        ComboBox<ZoneId> zoneId = new ComboBox<>(FXCollections.observableList(zoneList));
+        zoneId.setStyle("-fx-pref-width: 180;");
         zoneId.valueProperty().bindBidirectional(dateTimeBean.zoneIdProperty());
 
-        zoneId.setStyle("-fx-pref-width: 180;");
-
-        Separator secondSep = new Separator(Orientation.VERTICAL);
-
         time.getChildren().addAll(dateLabel, dateField, hourLabel, hourField, zoneId);
-
 
         //third Hbox
         HBox animation = new HBox();
@@ -154,16 +144,16 @@ public final class Main extends Application {
         accelerator.setValue(NamedTimeAccelerator.TIMES_300);
         timeAnimator.acceleratorProperty().bind(Bindings.select(accelerator.valueProperty(), "accelerator"));
 
-        Button resetButton = new Button("\uf0e2");
+        Button resetButton = new Button(RESET_ICON);
         resetButton.setFont(FONT_AWESOME);
         resetButton.setOnAction(actionEvent -> dateTimeBean.setZonedDateTime(ZonedDateTime.now(ZoneId.systemDefault())));
 
-        Button playButton = new Button("\uf04b");
-        playButton.setFont(FONT_AWESOME);
+        Button playPauseButton = new Button(PLAY_ICON);
+        playPauseButton.setFont(FONT_AWESOME);
 
-        playButton.setOnAction(actionEvent -> {
+        playPauseButton.setOnAction(actionEvent -> {
             if (timeAnimator.getRunning()) {
-                playButton.setText("\uf04b");
+                playPauseButton.setText(PLAY_ICON);
                 timeAnimator.stop();
                 dateLabel.setDisable(false);
                 dateField.setDisable(false);
@@ -173,7 +163,7 @@ public final class Main extends Application {
                 accelerator.setDisable(false);
                 resetButton.setDisable(false);
             } else {
-                playButton.setText("\uf04c");
+                playPauseButton.setText(PAUSE_ICON);
                 dateLabel.setDisable(true);
                 dateField.setDisable(true);
                 hourLabel.setDisable(true);
@@ -185,10 +175,12 @@ public final class Main extends Application {
             }
         });
 
-        animation.getChildren().addAll(accelerator, resetButton, playButton);
+        animation.getChildren().addAll(accelerator, resetButton, playPauseButton);
 
-        panel.getChildren().addAll(coordinates, firstSep, time, secondSep, animation);
-
+        //final HBox
+        Separator sepCoordVsTime = new Separator(Orientation.VERTICAL);
+        Separator sepTimeVsAnim = new Separator(Orientation.VERTICAL);
+        panel.getChildren().addAll(coordinates, sepCoordVsTime, time, sepTimeVsAnim, animation);
         return panel;
     }
 
@@ -197,56 +189,35 @@ public final class Main extends Application {
         fov.textProperty().bind(Bindings.format(Locale.ROOT, "Champ de vue : %.1f°", viewingParametersBean.fieldOfViewDegProperty()));
         Text celestialObjectText = new Text();
         StringBinding celestialObject = Bindings.createStringBinding(
-                () -> {
-                    return canvasManager.getObjectUnderMouse()==null ? "" : canvasManager.getObjectUnderMouse().toString();
-                }, canvasManager.objectUnderMouseProperty()
+                () ->  canvasManager.getObjectUnderMouse()==null ? "" : canvasManager.getObjectUnderMouse().toString(), 
+                canvasManager.objectUnderMouseProperty()
         );
         celestialObjectText.textProperty().bind(Bindings.format(Locale.ROOT, "%s", celestialObject));
         Text position = new Text();
-        position.textProperty().bind(Bindings.format(Locale.ROOT, "Azimut : %.2f° hauteur : %.2f°", canvasManager.mouseAzDegProperty(), canvasManager.mouseAltProperty()));
+        position.textProperty().bind(Bindings.format(Locale.ROOT, "Azimut : %.2f°, hauteur : %.2f°", canvasManager.mouseAzDegProperty(), canvasManager.mouseAltProperty()));
         BorderPane info = new BorderPane(celestialObjectText, null, position, null, fov);
         info.setStyle("-fx-padding: 4; -fx-background-color: white;");
         return info;
     }
 
-    private TextFormatter<Number> lonTextFormatter(){
+    private TextFormatter<Number> coordTextFormatter(boolean lon, double defaultValue){
         NumberStringConverter stringConverter = new NumberStringConverter("#0.00");
 
-        UnaryOperator<TextFormatter.Change> lonFilter = (change -> {
+        UnaryOperator<TextFormatter.Change> filter = (change -> {
             try {
-                String newText =
-                        change.getControlNewText();
-                double newLonDeg =
-                        stringConverter.fromString(newText).doubleValue();
-                return GeographicCoordinates.isValidLonDeg(newLonDeg)
-                        ? change
-                        : null;
+                String newText = change.getControlNewText();
+                double newDeg = stringConverter.fromString(newText).doubleValue();
+                if(lon){
+                    return GeographicCoordinates.isValidLonDeg(newDeg) ? change : null;
+                } else {
+                    return GeographicCoordinates.isValidLatDeg(newDeg) ? change : null;
+                }
             } catch (Exception e) {
                 return null;
             }
         });
 
-        return new TextFormatter<>(stringConverter, 6.57, lonFilter);
-    }
-
-    private TextFormatter<Number> latTextFormatter(){
-        NumberStringConverter stringConverter = new NumberStringConverter("#0.00");
-
-        UnaryOperator<TextFormatter.Change> lonFilter = (change -> {
-            try {
-                String newText =
-                        change.getControlNewText();
-                double newLatDeg =
-                        stringConverter.fromString(newText).doubleValue();
-                return GeographicCoordinates.isValidLatDeg(newLatDeg)
-                        ? change
-                        : null;
-            } catch (Exception e) {
-                return null;
-            }
-        });
-
-        return new TextFormatter<>(stringConverter, 46.52, lonFilter);
+        return new TextFormatter<>(stringConverter, defaultValue, filter);
     }
 
     private TextFormatter<LocalTime> timeFormatter(){
@@ -260,6 +231,5 @@ public final class Main extends Application {
     private InputStream resourceStream(String resourceName) {
         return getClass().getResourceAsStream(resourceName);
     }
-
 
 }
