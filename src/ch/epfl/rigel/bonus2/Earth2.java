@@ -2,16 +2,13 @@ package ch.epfl.rigel.bonus2;
 
 import com.interactivemesh.jfx.importer.ImportException;
 import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
-import javafx.geometry.Point3D;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.MeshView;
 import javafx.scene.shape.Sphere;
 
 import java.net.URL;
-import java.util.Map;
 
 public final class Earth2 {
 
@@ -34,17 +31,6 @@ public final class Earth2 {
         MeshView[] meshViews = objImporter.getImport();
         meshViews[0].setMaterial(texture);
 
-        final PhongMaterial redMaterial = new PhongMaterial();
-        redMaterial.setDiffuseColor(Color.RED);
-        Map<Point3D, City> cities = (CityLoader.CITIES_MAP);
-        for(Point3D point : cities.keySet()){
-            Sphere s = new Sphere(0.01);
-            s.setMaterial(redMaterial);
-            s.setTranslateX(point.getX());
-            s.setTranslateY(point.getY());
-            s.setTranslateZ(point.getZ());
-            pane.getChildren().add(s);
-        }
 
 
         pane.getChildren().add(world);

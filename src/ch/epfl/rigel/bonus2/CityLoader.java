@@ -1,7 +1,6 @@
 package ch.epfl.rigel.bonus2;
 
-import ch.epfl.rigel.math.Angle;
-import javafx.geometry.Point3D;
+import ch.epfl.rigel.coordinates.GeographicCoordinates;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,7 +22,7 @@ public final class CityLoader {
         private final static String CITY = "/city.csv";
         private final static Charset US_ASCII = StandardCharsets.US_ASCII;
         private final static List<City> CITIES_LIST = loader();
-        public final static Map<Point3D, City> CITIES_MAP = geoCoordTo3dCoord();
+        public final static Map<GeographicCoordinates, String> CITIES_MAP = getMap();
 
         private static List<City> loader(){
             List<City> list = new ArrayList<>();
@@ -44,15 +43,10 @@ public final class CityLoader {
             }
         }
 
-        private static Map<Point3D, City> geoCoordTo3dCoord(){
-            Map<Point3D, City> citiesCoord = new HashMap<>();
+        private static Map<GeographicCoordinates, String> getMap(){
+            Map<GeographicCoordinates, String> citiesCoord = new HashMap<>();
             for(City c : CITIES_LIST){
-                double lon = (c.getLonDeg()+2.8);
-                double lat = (c.getLatDeg()-0.2);
-                double x = -Math.sin(Angle.ofDeg(lon)) * Math.cos(Angle.ofDeg(lat));
-                double y = -Math.sin(Angle.ofDeg(lat));
-                double z = Math.cos(Angle.ofDeg(lon)) * Math.cos(Angle.ofDeg(lat));
-                citiesCoord.put(new Point3D(x, y, z), c);
+                citiesCoord.put(GeographicCoordinates.ofDeg(c.getLonDeg(), c.getLatDeg()), c.getName());
             }
             return citiesCoord;
         }
