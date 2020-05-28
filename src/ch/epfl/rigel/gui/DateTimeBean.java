@@ -8,53 +8,84 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+/**
+ * Un bean contenant l'instant d'observation
+ *
+ * @author Paul Nadal (300843)
+ * @author Alexandre Brun (302477)
+ */
 public final class DateTimeBean {
 
     private final ObjectProperty<LocalDate> date = new SimpleObjectProperty<>(null);
     private final ObjectProperty<LocalTime> time = new SimpleObjectProperty<>(null);
     private final ObjectProperty<ZoneId> zoneId = new SimpleObjectProperty<>(null);
 
-    public ObjectProperty<LocalDate> dateProperty(){
+    /**
+     * Retourne la propriété de la date d'observation
+     *
+     * @return la propriété de la date d'observation
+     */
+    public ObjectProperty<LocalDate> dateProperty() {
         return date;
     }
 
-    private LocalDate getDate(){
+    private LocalDate getDate() {
         return date.get();
     }
 
-    private void setDate(LocalDate date){
+    private void setDate(LocalDate date) {
         this.date.set(date);
     }
 
-    public ObjectProperty<LocalTime> timeProperty(){
+    /**
+     * Retourne la propriété du temps d'observation
+     *
+     * @return la propriété du temps d'observation
+     */
+    public ObjectProperty<LocalTime> timeProperty() {
         return time;
     }
 
-    private LocalTime getTime(){
+    private LocalTime getTime() {
         return time.get();
     }
 
-    private void setTime(LocalTime time){
+    private void setTime(LocalTime time) {
         this.time.set(time);
     }
 
-    public ObjectProperty<ZoneId> zoneIdProperty(){
+    /**
+     * Retourne la propriété de la zone d'observation
+     *
+     * @return la propriété de la zone d'observation
+     */
+    public ObjectProperty<ZoneId> zoneIdProperty() {
         return zoneId;
     }
 
-    private ZoneId getZoneId(){
+    private ZoneId getZoneId() {
         return zoneId.get();
     }
 
-    private void setZoneId(ZoneId zoneId){
+    private void setZoneId(ZoneId zoneId) {
         this.zoneId.set(zoneId);
     }
 
-    public ZonedDateTime getZonedDateTime(){
+    /**
+     * Retourne l'instant d'observation complet
+     *
+     * @return l'instant d'observation complet
+     */
+    public ZonedDateTime getZonedDateTime() {
         return ZonedDateTime.of(getDate(), getTime(), getZoneId());
     }
 
-    public void setZonedDateTime(ZonedDateTime zonedDateTime){
+    /**
+     * Paramètre l'instant d'observation à celui donné
+     *
+     * @param zonedDateTime le nouvel instant d'observation
+     */
+    public void setZonedDateTime(ZonedDateTime zonedDateTime) {
         setDate(zonedDateTime.toLocalDate());
         setTime(zonedDateTime.toLocalTime());
         setZoneId(zonedDateTime.getZone());
