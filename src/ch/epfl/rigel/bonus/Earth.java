@@ -7,26 +7,24 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.PhongMaterial;
-import javafx.scene.shape.MeshView;
 import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
 
 public final class Earth {
 
     private Pane pane;
-    private MeshView meshView;
     private Sphere world;
 
     public Earth(){
         world = new Sphere();
         PhongMaterial texture1 = new PhongMaterial();
-        texture1.setDiffuseMap(new Image(getClass().getResource("/test11.png").toExternalForm()));
+        texture1.setDiffuseMap(new Image(getClass().getResource("/earth_texture.png").toExternalForm()));
         world.setMaterial(texture1);
         world.setCursor(Cursor.CROSSHAIR);
 
         Group root = new Group(world);
         pane = new Pane(root);
-        pane.setStyle("-fx-background-image: url('ciel_etoile.jpg');-fx-background-size: stretch;-fx-background-position:center top;");
+        pane.setStyle("-fx-background-image: url('stars_sky.jpg');-fx-background-size: stretch;-fx-background-position:center top;");
 
         pane.setOnMousePressed(e -> {
             if (e.isPrimaryButtonDown()) {
