@@ -53,10 +53,10 @@ public final class BlackBodyColor {
     }
 
     /**
-     * Retourne la couleur attribuée à la température donnée
+     * Retourne la couleur associée à la température donnée
      *
      * @param temp la température
-     * @return la couleur attribuée à la température donnée
+     * @return la couleur associée à la température donnée
      * @throws IllegalArgumentException si la température donnée n'est pas comprise entre 1000 et 40000
      */
     public static Color colorForTemperature(double temp) {
