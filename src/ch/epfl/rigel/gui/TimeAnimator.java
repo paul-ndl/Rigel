@@ -5,6 +5,12 @@ import javafx.beans.property.*;
 
 import java.time.ZonedDateTime;
 
+/**
+ * Un animateur de temps
+ *
+ * @author Paul Nadal (300843)
+ * @author Alexandre Brun (302477)
+ */
 public final class TimeAnimator extends AnimationTimer {
 
     private final DateTimeBean dateTimeBean;
@@ -15,53 +21,99 @@ public final class TimeAnimator extends AnimationTimer {
     private long time0;
     private boolean initial;
 
-    public TimeAnimator(DateTimeBean dateTimeBean){
+    /**
+     * Construit un animateur de temps à partir de l'instant d'observation donné
+     *
+     * @param dateTimeBean l'instant d'observation
+     */
+    public TimeAnimator(DateTimeBean dateTimeBean) {
         this.dateTimeBean = dateTimeBean;
     }
 
-    public ObjectProperty<TimeAccelerator> acceleratorProperty(){
+    /**
+     * Retourne la propriété de l'accélérateur
+     *
+     * @return la propriété de l'accélérateur
+     */
+    public ObjectProperty<TimeAccelerator> acceleratorProperty() {
         return accelerator;
     }
 
-    public TimeAccelerator getAccelerator(){
+    /**
+     * Retourne l'accélérateur
+     *
+     * @return l'accélérateur
+     */
+    public TimeAccelerator getAccelerator() {
         return accelerator.get();
     }
 
-    public void setAccelerator(TimeAccelerator accelerator){
+    /**
+     * Paramètre l'accélérateur à celui donné
+     *
+     * @param accelerator le nouvel accélérateur
+     */
+    public void setAccelerator(TimeAccelerator accelerator) {
         this.accelerator.set(accelerator);
     }
 
-    public ReadOnlyBooleanProperty runningProperty(){
+    /**
+     * Retourne la propriété du booléen running
+     *
+     * @return la propriété du booléen running
+     */
+    public ReadOnlyBooleanProperty runningProperty() {
         return running;
     }
 
-    public Boolean getRunning(){
+    /**
+     * Retourne le booléen running
+     *
+     * @return le booléen running
+     */
+    public Boolean getRunning() {
         return running.get();
     }
 
-    public void setRunning(Boolean running){
+    private void setRunning(Boolean running) {
         this.running.set(running);
     }
 
+    /**
+     * Modifie l'instant d'observation à chaque séquence de l'animation
+     *
+     * @param now la durée de la séquence courante donnée en nanosecondes
+     * @see AnimationTimer#handle(long)
+     */
     @Override
     public void handle(long now) {
-        if(initial){
+        if (initial) {
             time0 = now;
             initial = false;
         }
-        dateTimeBean.setZonedDateTime(getAccelerator().adjust(initTime, now-time0));
+        dateTimeBean.setZonedDateTime(getAccelerator().adjust(initTime, now - time0));
     }
 
+    /**
+     * Lance l'animation
+     *
+     * @see AnimationTimer#start()
+     */
     @Override
-    public void start(){
+    public void start() {
         super.start();
         setRunning(true);
         initTime = dateTimeBean.getZonedDateTime();
         initial = true;
     }
 
+    /**
+     * Arrête l'animation
+     *
+     * @see AnimationTimer#stop()
+     */
     @Override
-    public void stop(){
+    public void stop() {
         super.stop();
         setRunning(false);
     }
