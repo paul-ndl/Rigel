@@ -10,7 +10,7 @@ import static ch.epfl.rigel.astronomy.MoonModel.MOON;
 import static ch.epfl.rigel.astronomy.SunModel.SUN;
 
 /**
- * Un ciel observable
+ * Un ciel observé
  *
  * @author Paul Nadal (300843)
  * @author Alexandre Brun (302477)
@@ -33,7 +33,7 @@ public final class ObservedSky {
     private final Map<CelestialObject, CartesianCoordinates> coordMap = new HashMap<>();
 
     /**
-     * Construit un ciel observable
+     * Construit un ciel observé
      *
      * @param when                    l'instant d'observation
      * @param where                   la position d'observation
