@@ -9,6 +9,12 @@ import static ch.epfl.rigel.astronomy.Epoch.J2010;
 import static ch.epfl.rigel.astronomy.MoonModel.MOON;
 import static ch.epfl.rigel.astronomy.SunModel.SUN;
 
+/**
+ * Un ciel observable
+ *
+ * @author Paul Nadal (300843)
+ * @author Alexandre Brun (302477)
+ */
 public final class ObservedSky {
 
     private final Sun sun;
@@ -26,7 +32,15 @@ public final class ObservedSky {
     private final StarCatalogue catalogue;
     private final Map<CelestialObject, CartesianCoordinates> coordMap = new HashMap<>();
 
-    public ObservedSky(ZonedDateTime when, GeographicCoordinates where, StereographicProjection stereographicProjection, StarCatalogue catalogue){
+    /**
+     * Construit un ciel observable
+     *
+     * @param when                    l'instant d'observation
+     * @param where                   la position d'observation
+     * @param stereographicProjection la projection stéréographique
+     * @param catalogue               le catalogue contenant les étoiles et les astérismes
+     */
+    public ObservedSky(ZonedDateTime when, GeographicCoordinates where, StereographicProjection stereographicProjection, StarCatalogue catalogue) {
         double daysSinceJ2010 = J2010.daysUntil(when);
         EclipticToEquatorialConversion eclipticToEquatorialConversion = new EclipticToEquatorialConversion(when);
         EquatorialToHorizontalConversion equatorialToHorizontalConversion = new EquatorialToHorizontalConversion(when, where);
@@ -40,73 +54,131 @@ public final class ObservedSky {
         moonPosition = stereographicProjection.apply(equatorialToHorizontalConversion.apply(moon.equatorialPos()));
         coordMap.put(moon, moonPosition);
         //Calcul des coordonnées des planètes
-        PlanetModel.ALL.stream().filter(p -> p!=PlanetModel.EARTH).forEach(p -> planets.add(p.at(daysSinceJ2010, eclipticToEquatorialConversion)));
+        PlanetModel.ALL.stream().filter(p -> p != PlanetModel.EARTH).forEach(p -> planets.add(p.at(daysSinceJ2010, eclipticToEquatorialConversion)));
         for (int i = 0; i < 7; i++) {
-                planetPositions[2*i] = stereographicProjection.apply(equatorialToHorizontalConversion.apply(planets.get(i).equatorialPos())).x();
-                planetPositions[2*i+1] = stereographicProjection.apply(equatorialToHorizontalConversion.apply(planets.get(i).equatorialPos())).y();
-                coordMap.put(planets.get(i), CartesianCoordinates.of(planetPositions[2*i], planetPositions[2*i+1]));
+            planetPositions[2 * i] = stereographicProjection.apply(equatorialToHorizontalConversion.apply(planets.get(i).equatorialPos())).x();
+            planetPositions[2 * i + 1] = stereographicProjection.apply(equatorialToHorizontalConversion.apply(planets.get(i).equatorialPos())).y();
+            coordMap.put(planets.get(i), CartesianCoordinates.of(planetPositions[2 * i], planetPositions[2 * i + 1]));
         }
         //Calcul des coordonnées des étoiles
         this.stars = this.catalogue.stars();
-        starPositions = new double[stars.size()*2];
+        starPositions = new double[stars.size() * 2];
         for (int i = 0; i < stars().size(); i++) {
-            starPositions[2*i] = stereographicProjection.apply(equatorialToHorizontalConversion.apply(stars.get(i).equatorialPos())).x();
-            starPositions[2*i+1] = stereographicProjection.apply(equatorialToHorizontalConversion.apply(stars.get(i).equatorialPos())).y();
-            coordMap.put(stars.get(i), CartesianCoordinates.of(starPositions[2*i], starPositions[2*i+1]));
+            starPositions[2 * i] = stereographicProjection.apply(equatorialToHorizontalConversion.apply(stars.get(i).equatorialPos())).x();
+            starPositions[2 * i + 1] = stereographicProjection.apply(equatorialToHorizontalConversion.apply(stars.get(i).equatorialPos())).y();
+            coordMap.put(stars.get(i), CartesianCoordinates.of(starPositions[2 * i], starPositions[2 * i + 1]));
         }
 
     }
 
-    public Sun sun(){
+    /**
+     * Retourne le Soleil
+     *
+     * @return le Soleil
+     */
+    public Sun sun() {
         return sun;
     }
 
-    public CartesianCoordinates sunPosition(){
+    /**
+     * Retourne la position du Soleil
+     *
+     * @return la position du Soleil
+     */
+    public CartesianCoordinates sunPosition() {
         return sunPosition;
     }
 
-    public Moon moon(){
+    /**
+     * Retourne la Lune
+     *
+     * @return la Lune
+     */
+    public Moon moon() {
         return moon;
     }
 
-    public CartesianCoordinates moonPosition(){
+    /**
+     * Retourne la position de la Lune
+     *
+     * @return la position de la Lune
+     */
+    public CartesianCoordinates moonPosition() {
         return moonPosition;
     }
 
-    public List<Planet> planets(){
+    /**
+     * Retourne la liste des planètes
+     *
+     * @return la liste des planètes
+     */
+    public List<Planet> planets() {
         return planets;
     }
 
-    public double[] planetPositions(){
+    /**
+     * Retourne le tableau des positions des planètes
+     *
+     * @return le tableau des positions des planètes
+     */
+    public double[] planetPositions() {
         return planetPositions.clone();
     }
 
-    public List<Star> stars(){
+    /**
+     * Retourne la liste des étoiles
+     *
+     * @return la liste des étoiles
+     */
+    public List<Star> stars() {
         return stars;
     }
 
-    public double[] starPositions(){
+    /**
+     * Retourne le tableau des positions des étoiles
+     *
+     * @return le tableau des positions des étoiles
+     */
+    public double[] starPositions() {
         return starPositions.clone();
     }
 
-    public Set<Asterism> asterism(){
+    /**
+     * Retourne le set d'astérismes
+     *
+     * @see StarCatalogue#asterisms()
+     */
+    public Set<Asterism> asterism() {
         return catalogue.asterisms();
     }
 
-    public List<Integer> asterismIndices(Asterism asterism){
+    /**
+     * Retourne la liste des indices des étoiles de l'astérisme donné dans le catalogue
+     *
+     * @param asterism l'astérisme
+     * @see StarCatalogue#asterismIndices(Asterism)
+     */
+    public List<Integer> asterismIndices(Asterism asterism) {
         return catalogue.asterismIndices(asterism);
     }
 
+    /**
+     * Retourne l'objet le plus proche du point de référence avec une distance inférieure à la distance maximale donnée
+     *
+     * @param point le point de référence
+     * @param max   la distance maximale
+     * @return l'objet le plus proche du point de référence avec une distance inférieure à la distance maximale donnée
+     */
     public Optional<CelestialObject> objectClosestTo(CartesianCoordinates point, double max) {
         CelestialObject closest = Collections.min(coordMap.keySet(),
-                                        Comparator.comparingDouble(a -> squaredDistance(point, coordMap.get(a))));
+                Comparator.comparingDouble(a -> squaredDistance(point, coordMap.get(a))));
         return (Math.sqrt(squaredDistance(point, coordMap.get(closest))) <= max) ? Optional.of(closest) : Optional.empty();
     }
 
-    private double squaredDistance(CartesianCoordinates point, CartesianCoordinates c){
-        double distX = point.x()-c.x();
-        double distY = point.y()-c.y();
-        return distX*distX + distY*distY;
+    private double squaredDistance(CartesianCoordinates point, CartesianCoordinates c) {
+        double distX = point.x() - c.x();
+        double distY = point.y() - c.y();
+        return distX * distX + distY * distY;
     }
 
 }
