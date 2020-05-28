@@ -20,6 +20,12 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Transform;
 
+/**
+ * Un manager du ciel
+ *
+ * @author Paul Nadal (300843)
+ * @author Alexandre Brun (302477)
+ */
 public final class SkyCanvasManager {
 
     private final StarCatalogue catalogue;
@@ -40,11 +46,19 @@ public final class SkyCanvasManager {
 
     private static final int MAX_DISTANCE = 10;
     private static final double AZ_MOVE = 10;
-    private static final double ALT_MOVE = 5d;
+    private static final double ALT_MOVE = 5;
     private static final ClosedInterval FOV = ClosedInterval.of(30, 150);
     private static final RightOpenInterval AZ_INTERVAL = RightOpenInterval.of(0, 360);
     private static final ClosedInterval ALT_INTERVAL = ClosedInterval.of(5, 90);
 
+    /**
+     * Construit un manager du ciel
+     *
+     * @param catalogue             le catalogue d'étoiles et d'astérismes du ciel
+     * @param dateTimeBean          l'instant d'observation
+     * @param observerLocationBean  la position de l'observateur
+     * @param viewingParametersBean la portion du ciel visible
+     */
     public SkyCanvasManager(StarCatalogue catalogue, DateTimeBean dateTimeBean, ObserverLocationBean observerLocationBean, ViewingParametersBean viewingParametersBean) {
         this.catalogue = catalogue;
         this.dateTimeBean = dateTimeBean;
@@ -61,12 +75,12 @@ public final class SkyCanvasManager {
         planeToCanvas = Bindings.createObjectBinding(
                 () -> {
                     double dilatation = dilatation(getProjection(), canvas.getWidth(), viewingParametersBean.getFieldOfViewDeg());
-                    return Transform.affine(dilatation, 0, 0, -dilatation, canvas.getWidth()/2, canvas.getHeight()/2);
+                    return Transform.affine(dilatation, 0, 0, -dilatation, canvas.getWidth() / 2, canvas.getHeight() / 2);
                 }, projection, canvas.widthProperty(), canvas.heightProperty(), viewingParametersBean.fieldOfViewDegProperty());
 
         observedSky = Bindings.createObjectBinding(
                 () -> new ObservedSky(dateTimeBean.getZonedDateTime(), observerLocationBean.getCoordinates(), getProjection(), catalogue),
-                dateTimeBean.dateProperty(), dateTimeBean.timeProperty(), dateTimeBean.zoneIdProperty(), observerLocationBean.lonDegProperty(), observerLocationBean.latDegProperty(), projection);
+                dateTimeBean.dateProperty(), dateTimeBean.timeProperty(), dateTimeBean.zoneIdProperty(), observerLocationBean.coordinatesProperty(), projection);
 
         mouseHorizontalPosition = Bindings.createObjectBinding(
                 () -> {
@@ -152,8 +166,49 @@ public final class SkyCanvasManager {
         planeToCanvas.addListener((p, o, n) -> paint());
     }
 
+    /**
+     * Retourne le canvas sur lequel le ciel est dessiné
+     *
+     * @return le canvas sur lequel le ciel est dessiné
+     */
     public Canvas canvas() {
         return canvas;
+    }
+
+    /**
+     * Retourne la propriété de l'azimut par rapport à la position de la souris sur le canvas
+     *
+     * @return la propriété de l'azimut par rapport à la position de la souris sur le canvas
+     */
+    public DoubleBinding mouseAzDegProperty() {
+        return mouseAzDeg;
+    }
+
+    /**
+     * Retourne la propriété de l'altitude par rapport à la position de la souris sur le canvas
+     *
+     * @return la propriété de l'altitude par rapport à la position de la souris sur le canvas
+     */
+    public DoubleBinding mouseAltProperty() {
+        return mouseAltDeg;
+    }
+
+    /**
+     * Retourne la propriété de l'objet céleste le plus proche de la position de la souris sur le canvas
+     *
+     * @return la propriété de l'objet céleste le plus proche de la position de la souris sur le canvas
+     */
+    public ObjectBinding<CelestialObject> objectUnderMouseProperty() {
+        return objectUnderMouse;
+    }
+
+    /**
+     * Retourne l'objet céleste le plus proche de la position de la souris sur le canvas
+     *
+     * @return l'objet céleste le plus proche de la position de la souris sur le canvas
+     */
+    public CelestialObject getObjectUnderMouse() {
+        return objectUnderMouse.getValue();
     }
 
     private void paint() {
@@ -187,22 +242,6 @@ public final class SkyCanvasManager {
 
     private HorizontalCoordinates getMouseHorizontalPosition() {
         return mouseHorizontalPosition.getValue();
-    }
-
-    public DoubleBinding mouseAzDegProperty() {
-        return mouseAzDeg;
-    }
-
-    public DoubleBinding mouseAltProperty() {
-        return mouseAltDeg;
-    }
-
-    public ObjectBinding<CelestialObject> objectUnderMouseProperty() {
-        return objectUnderMouse;
-    }
-
-    public CelestialObject getObjectUnderMouse() {
-        return objectUnderMouse.getValue();
     }
 
     private double dilatation(StereographicProjection projection, double width, double fieldOfView) {
