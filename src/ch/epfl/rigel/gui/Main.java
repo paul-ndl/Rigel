@@ -34,6 +34,12 @@ import java.util.Locale;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
+/**
+ * Programme principal
+ *
+ * @author Paul Nadal (300843)
+ * @author Alexandre Brun (302477)
+ */
 public final class Main extends Application {
 
     private final ObserverLocationBean observerLocationBean = new ObserverLocationBean();
@@ -49,8 +55,21 @@ public final class Main extends Application {
     private static final String PLAY_ICON = "\uf04b";
     private static final String PAUSE_ICON = "\uf04c";
 
+    /**
+     * Lance le programme principal avec les arguments données
+     * 
+     * @param args les arguments
+     * @see Application#launch(String...) 
+     */
     public static void main(String[] args) { launch(args); }
 
+    /**
+     * Lance l'application
+     * 
+     * @param primaryStage la scène
+     * @throws IOException en cas d'erreur entrée/sortie
+     * @see Application#start(Stage) 
+     */
     @Override
     public void start(Stage primaryStage) throws IOException {
         try (InputStream hs = resourceStream("/hygdata_v3.csv")) {
