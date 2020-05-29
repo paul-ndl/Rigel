@@ -49,14 +49,17 @@ public final class ObservedSky {
         equatorialToHorizontalConversion = new EquatorialToHorizontalConversion(when, where);
         this.stereographicProjection = stereographicProjection;
         this.catalogue = catalogue;
+
         //Calcul des coordonnées du Soleil
         sun = SUN.at(daysSinceJ2010, eclipticToEquatorialConversion);
         sunPosition = applyProjection(sun.equatorialPos());
         coordMap.put(sun, sunPosition);
+
         //Calcul des coordonnées de la Lune
         moon = MOON.at(daysSinceJ2010, eclipticToEquatorialConversion);
         moonPosition = applyProjection(moon.equatorialPos());
         coordMap.put(moon, moonPosition);
+
         //Calcul des coordonnées des planètes
         PlanetModel.ALL.stream().filter(p -> p != PlanetModel.EARTH).forEach(p -> planets.add(p.at(daysSinceJ2010, eclipticToEquatorialConversion)));
         for (int i = 0; i < 7; i++) {
@@ -65,6 +68,7 @@ public final class ObservedSky {
             planetPositions[2 * i + 1] = position.y();
             coordMap.put(planets.get(i), position);
         }
+
         //Calcul des coordonnées des étoiles
         this.stars = this.catalogue.stars();
         starPositions = new double[2 * stars.size()];
