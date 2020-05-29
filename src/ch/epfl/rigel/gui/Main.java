@@ -144,6 +144,7 @@ public final class Main extends Application {
         //second HBox
         HBox time = new HBox();
         time.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left;");
+        time.disableProperty().bind(timeAnimator.runningProperty());
 
         Label dateLabel = new Label("Date : ");
         DatePicker dateField = new DatePicker();
@@ -172,11 +173,13 @@ public final class Main extends Application {
         ObservableList<NamedTimeAccelerator> acceleratorList = FXCollections.observableArrayList(NamedTimeAccelerator.values());
         accelerator.setItems(acceleratorList);
         accelerator.setValue(NamedTimeAccelerator.TIMES_300);
+        accelerator.disableProperty().bind(timeAnimator.runningProperty());
         timeAnimator.acceleratorProperty().bind(Bindings.select(accelerator.valueProperty(), "accelerator"));
 
         Button resetButton = new Button(RESET_ICON);
         resetButton.setFont(FONT_AWESOME);
         resetButton.setOnAction(actionEvent -> dateTimeBean.setZonedDateTime(ZonedDateTime.now(ZoneId.systemDefault())));
+        resetButton.disableProperty().bind(timeAnimator.runningProperty());
 
         Button playPauseButton = new Button(PLAY_ICON);
         playPauseButton.setFont(FONT_AWESOME);
@@ -185,15 +188,9 @@ public final class Main extends Application {
             if (timeAnimator.getRunning()) {
                 timeAnimator.stop();
                 playPauseButton.setText(PLAY_ICON);
-                time.setDisable(false);
-                accelerator.setDisable(false);
-                resetButton.setDisable(false);
             } else {
                 timeAnimator.start();
                 playPauseButton.setText(PAUSE_ICON);
-                time.setDisable(true);
-                accelerator.setDisable(true);
-                resetButton.setDisable(true);
             }
         });
 
