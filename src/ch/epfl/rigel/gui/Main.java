@@ -25,6 +25,7 @@ import javafx.util.converter.NumberStringConverter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -46,14 +47,28 @@ public final class Main extends Application {
     private final DateTimeBean dateTimeBean = new DateTimeBean();
     private final ViewingParametersBean viewingParametersBean = new ViewingParametersBean();
     private final TimeAnimator timeAnimator = new TimeAnimator(dateTimeBean);
+    private final StarCatalogue.Builder builder = new StarCatalogue.Builder();
 
-    private StarCatalogue.Builder builder = new StarCatalogue.Builder();
+    private static final String TITLE = "Rigel";
+    private static final double MIN_WIDTH = 800;
+    private static final double MIN_HEIGHT = 600;
 
-    private final InputStream fontStream = resourceStream("/Font Awesome 5 Free-Solid-900.otf");
-    private final Font FONT_AWESOME = Font.loadFont(fontStream,15);
+    private static final String HYG_FILE = "/hygdata_v3.csv";
+    private static final String AST_FILE = "/asterisms.txt";
+
+    private static final double INIT_LON = 6.57;
+    private static final double INIT_LAT = 46.52;
+    private static final double INIT_AZ = 180.000000000001;
+    private static final double INIT_ALT = 15;
+    private static final double INIT_FOV = 70;
+
     private static final String RESET_ICON = "\uf0e2";
     private static final String PLAY_ICON = "\uf04b";
     private static final String PAUSE_ICON = "\uf04c";
+    private static final String FONT_FILE = "/Font Awesome 5 Free-Solid-900.otf";
+    private static final double FONT_SIZE = 15;
+    private final static Font FONT_AWESOME = fontLoader();
+
 
     /**
      * Lance le programme principal avec les arguments données
@@ -72,15 +87,15 @@ public final class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws IOException {
-        try (InputStream hs = resourceStream("/hygdata_v3.csv"); InputStream as = resourceStream("/asterisms.txt")) {
+        try (InputStream hs = resourceStream(HYG_FILE); InputStream as = resourceStream(AST_FILE)) {
             StarCatalogue catalogue = builder.loadFrom(hs, HygDatabaseLoader.INSTANCE)
                                              .loadFrom(as, AsterismLoader.INSTANCE)
                                              .build();
 
-            observerLocationBean.setCoordinates(GeographicCoordinates.ofDeg(6.57, 46.52));
+            observerLocationBean.setCoordinates(GeographicCoordinates.ofDeg(INIT_LON, INIT_LAT));
             dateTimeBean.setZonedDateTime(ZonedDateTime.now(ZoneId.systemDefault()));
-            viewingParametersBean.setCenter(HorizontalCoordinates.ofDeg(180.000000000001, 15));
-            viewingParametersBean.setFieldOfViewDeg(70d);
+            viewingParametersBean.setCenter(HorizontalCoordinates.ofDeg(INIT_AZ, INIT_ALT));
+            viewingParametersBean.setFieldOfViewDeg(INIT_FOV);
 
             SkyCanvasManager canvasManager = new SkyCanvasManager(catalogue,
                                                                   dateTimeBean,
@@ -96,17 +111,14 @@ public final class Main extends Application {
             BorderPane root = new BorderPane(skyPane, panel, null, infoPanel, null);
             
             primaryStage.setScene(new Scene(root));
-            primaryStage.setTitle("Rigel");
-            primaryStage.setMinWidth(800);
-            primaryStage.setMinHeight(600);
+            primaryStage.setTitle(TITLE);
+            primaryStage.setMinWidth(MIN_WIDTH);
+            primaryStage.setMinHeight(MIN_HEIGHT);
             primaryStage.show();
         }
     }
 
     private HBox controlPanel(){
-        HBox panel = new HBox();
-        panel.setStyle("-fx-spacing: 4; -fx-padding: 4;");
-
         //first HBox
         HBox coordinates = new HBox();
         coordinates.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left;");
@@ -114,14 +126,14 @@ public final class Main extends Application {
         Label lonLabel = new Label("Longitude (°) :");
         TextField lonField = new TextField();
         lonField.setStyle("-fx-pref-width: 60; -fx-alignment: baseline-right;");
-        TextFormatter<Number> lonTextFormatter = coordTextFormatter(true, 6.57);
+        TextFormatter<Number> lonTextFormatter = coordTextFormatter(true, INIT_LON);
         lonField.setTextFormatter(lonTextFormatter);
         lonTextFormatter.valueProperty().bindBidirectional(observerLocationBean.lonDegProperty());
 
         Label latLabel = new Label("Latitude (°) :");
         TextField latField = new TextField();
         latField.setStyle("-fx-pref-width: 60; -fx-alignment: baseline-right;");
-        TextFormatter<Number> latTextFormatter = coordTextFormatter(false, 46.52);
+        TextFormatter<Number> latTextFormatter = coordTextFormatter(false, INIT_LAT);
         latField.setTextFormatter(latTextFormatter);
         latTextFormatter.valueProperty().bindBidirectional(observerLocationBean.latDegProperty());
 
@@ -188,6 +200,8 @@ public final class Main extends Application {
         //final HBox
         Separator sepCoordVsTime = new Separator(Orientation.VERTICAL);
         Separator sepTimeVsAnim = new Separator(Orientation.VERTICAL);
+        HBox panel = new HBox();
+        panel.setStyle("-fx-spacing: 4; -fx-padding: 4;");
         panel.getChildren().addAll(coordinates, sepCoordVsTime, time, sepTimeVsAnim, animation);
         return panel;
     }
@@ -235,6 +249,16 @@ public final class Main extends Application {
                 new LocalTimeStringConverter(hmsFormatter, hmsFormatter);
         return new TextFormatter<>(stringConverter);
     }
+
+    private static Font fontLoader(){
+        try(InputStream fontStream = Main.class.getResourceAsStream(FONT_FILE)){
+            return Font.loadFont(fontStream, FONT_SIZE);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+
 
     private InputStream resourceStream(String resourceName) {
         return getClass().getResourceAsStream(resourceName);
