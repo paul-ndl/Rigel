@@ -16,7 +16,6 @@ public final class Star extends CelestialObject {
     private final static Interval COLOR_INDEX_INTERVAL = ClosedInterval.of(-0.5, 5.5);
 
     private final int hipparcosId;
-    private final float colorIndex;
     private final int colorTemperature;
 
     /**
@@ -34,7 +33,7 @@ public final class Star extends CelestialObject {
     public Star(int hipparcosId, String name, EquatorialCoordinates equatorialPos, float magnitude, float colorIndex) {
         super(name, equatorialPos, 0f, magnitude);
         Preconditions.checkArgument(hipparcosId >= 0);
-        this.colorIndex = (float) Preconditions.checkInInterval(COLOR_INDEX_INTERVAL, colorIndex);
+        Preconditions.checkInInterval(COLOR_INDEX_INTERVAL, colorIndex);
         this.hipparcosId = hipparcosId;
         double colorIndexMult = 0.92*colorIndex;
         colorTemperature = (int) (4600 * (1d/(colorIndexMult + 1.7) + 1d/(colorIndexMult + 0.62)));

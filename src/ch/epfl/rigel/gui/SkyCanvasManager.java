@@ -28,10 +28,6 @@ import javafx.scene.transform.Transform;
  */
 public final class SkyCanvasManager {
 
-    private final StarCatalogue catalogue;
-    private final DateTimeBean dateTimeBean;
-    private final ObserverLocationBean observerLocationBean;
-    private final ViewingParametersBean viewingParametersBean;
     private final Canvas canvas;
     private final SkyCanvasPainter painter;
     private final ObjectBinding<StereographicProjection> projection;
@@ -60,10 +56,6 @@ public final class SkyCanvasManager {
      * @param viewingParametersBean la portion du ciel visible
      */
     public SkyCanvasManager(StarCatalogue catalogue, DateTimeBean dateTimeBean, ObserverLocationBean observerLocationBean, ViewingParametersBean viewingParametersBean) {
-        this.catalogue = catalogue;
-        this.dateTimeBean = dateTimeBean;
-        this.observerLocationBean = observerLocationBean;
-        this.viewingParametersBean = viewingParametersBean;
 
         canvas = new Canvas();
         painter = new SkyCanvasPainter(canvas);
