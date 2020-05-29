@@ -61,8 +61,8 @@ public final class ObservedSky {
         PlanetModel.ALL.stream().filter(p -> p != PlanetModel.EARTH).forEach(p -> planets.add(p.at(daysSinceJ2010, eclipticToEquatorialConversion)));
         for (int i = 0; i < 7; i++) {
             CartesianCoordinates position = applyProjection(planets.get(i).equatorialPos());
-            planetPositions[2*i] = position.x();
-            planetPositions[2*i + 1] = position.y();
+            planetPositions[2 * i] = position.x();
+            planetPositions[2 * i + 1] = position.y();
             coordMap.put(planets.get(i), position);
         }
         //Calcul des coordonnées des étoiles
@@ -70,8 +70,8 @@ public final class ObservedSky {
         starPositions = new double[2 * stars.size()];
         for (int i = 0; i < stars().size(); i++) {
             CartesianCoordinates position = applyProjection(stars.get(i).equatorialPos());
-            starPositions[2*i] = position.x();
-            starPositions[2*i + 1] = position.y();
+            starPositions[2 * i] = position.x();
+            starPositions[2 * i + 1] = position.y();
             coordMap.put(stars.get(i), position);
         }
 
@@ -187,7 +187,7 @@ public final class ObservedSky {
         return distX * distX + distY * distY;
     }
 
-    private CartesianCoordinates applyProjection(EquatorialCoordinates position){
+    private CartesianCoordinates applyProjection(EquatorialCoordinates position) {
         return stereographicProjection.apply(equatorialToHorizontalConversion.apply(position));
     }
 

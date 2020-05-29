@@ -75,7 +75,7 @@ public final class SkyCanvasPainter {
     public void drawStars(ObservedSky sky, StereographicProjection projection, Transform planeToCanvas) {
         List<Star> stars = sky.stars();
         double[] coordinates = sky.starPositions();
-        planeToCanvas.transform2DPoints(coordinates, 0, coordinates, 0, coordinates.length/2);
+        planeToCanvas.transform2DPoints(coordinates, 0, coordinates, 0, coordinates.length / 2);
         //Construction des astérisms
         ctx.setStroke(BLUE);
         ctx.setLineWidth(1);
@@ -86,8 +86,8 @@ public final class SkyCanvasPainter {
             ctx.beginPath();
             List<Integer> indices = sky.asterismIndices(a);
             for (Integer i : indices) {
-                double x = coordinates[2*i];
-                double y = coordinates[2*i + 1];
+                double x = coordinates[2 * i];
+                double y = coordinates[2 * i + 1];
                 if (canvasBounds.contains(x, y) || previousInBounds) {
                     ctx.lineTo(x, y);
                 } else {
@@ -102,7 +102,7 @@ public final class SkyCanvasPainter {
             double diameter = size(stars.get(i).magnitude(), projection);
             double trueDiameter = planeToCanvas.deltaTransform(diameter, 0).magnitude();
             ctx.setFill(BlackBodyColor.colorForTemperature(stars.get(i).colorTemperature()));
-            ctx.fillOval(coordinates[2*i] - trueDiameter/2, coordinates[2*i + 1] - trueDiameter/2, trueDiameter, trueDiameter);
+            ctx.fillOval(coordinates[2 * i] - trueDiameter / 2, coordinates[2 * i + 1] - trueDiameter / 2, trueDiameter, trueDiameter);
         }
     }
 
@@ -122,7 +122,7 @@ public final class SkyCanvasPainter {
         for (int i = 0; i < planets.size(); ++i) {
             double diameter = size(planets.get(i).magnitude(), projection);
             double trueDiameter = planeToCanvas.deltaTransform(diameter, 0).magnitude();
-            ctx.fillOval(coordinates[2*i] - trueDiameter/2, coordinates[2*i + 1] - trueDiameter/2, trueDiameter, trueDiameter);
+            ctx.fillOval(coordinates[2 * i] - trueDiameter / 2, coordinates[2 * i + 1] - trueDiameter / 2, trueDiameter, trueDiameter);
         }
     }
 
@@ -144,11 +144,11 @@ public final class SkyCanvasPainter {
         double bigDiameter = SUN_BIG_DIAMETER * trueDiameter;
         double mediumDiameter = SUN_MEDIUM_DIAMETER + trueDiameter;
         ctx.setFill(OPAQUE_YELLOW);
-        ctx.fillOval(x - bigDiameter/2, y - bigDiameter/2, bigDiameter, bigDiameter);
+        ctx.fillOval(x - bigDiameter / 2, y - bigDiameter / 2, bigDiameter, bigDiameter);
         ctx.setFill(YELLOW);
-        ctx.fillOval(x - mediumDiameter/2, y - mediumDiameter/2, mediumDiameter, mediumDiameter);
+        ctx.fillOval(x - mediumDiameter / 2, y - mediumDiameter / 2, mediumDiameter, mediumDiameter);
         ctx.setFill(WHITE);
-        ctx.fillOval(x - trueDiameter/2, y - trueDiameter/2, trueDiameter, trueDiameter);
+        ctx.fillOval(x - trueDiameter / 2, y - trueDiameter / 2, trueDiameter, trueDiameter);
     }
 
     /**
@@ -165,7 +165,7 @@ public final class SkyCanvasPainter {
         Point2D coordinates = planeToCanvas.transform(position.x(), position.y());
         double diameter = projection.applyToAngle(sky.moon().angularSize());
         double trueDiameter = planeToCanvas.deltaTransform(diameter, 0).magnitude();
-        ctx.fillOval(coordinates.getX() - trueDiameter/2, coordinates.getY() - trueDiameter/2, trueDiameter, trueDiameter);
+        ctx.fillOval(coordinates.getX() - trueDiameter / 2, coordinates.getY() - trueDiameter / 2, trueDiameter, trueDiameter);
     }
 
     /**
@@ -182,7 +182,7 @@ public final class SkyCanvasPainter {
         Point2D coordinates = planeToCanvas.transform(center.x(), center.y());
         double diameter = 2 * projection.circleRadiusForParallel(HorizontalCoordinates.of(0, 0));
         double trueDiameter = planeToCanvas.deltaTransform(diameter, 0).magnitude();
-        ctx.strokeOval(coordinates.getX() - trueDiameter/2, coordinates.getY() - trueDiameter/2, trueDiameter, trueDiameter);
+        ctx.strokeOval(coordinates.getX() - trueDiameter / 2, coordinates.getY() - trueDiameter / 2, trueDiameter, trueDiameter);
         drawCardinalPoints(projection, planeToCanvas);
     }
 
@@ -191,7 +191,7 @@ public final class SkyCanvasPainter {
         ctx.setTextBaseline(VPos.TOP);
         ctx.setTextAlign(TextAlignment.CENTER);
         for (int i = 0; i < 8; ++i) {
-            HorizontalCoordinates horCoordinates = HorizontalCoordinates.ofDeg(45*i, -0.5);
+            HorizontalCoordinates horCoordinates = HorizontalCoordinates.ofDeg(45 * i, -0.5);
             CartesianCoordinates projCoordinates = projection.apply(horCoordinates);
             Point2D coordinates = planeToCanvas.transform(projCoordinates.x(), projCoordinates.y());
             String text = horCoordinates.azOctantName("N", "E", "S", "O");
@@ -201,7 +201,7 @@ public final class SkyCanvasPainter {
 
     private double size(double magnitude, StereographicProjection projection) {
         final double clipedMagnitude = CLIP_INTERVAL.clip(magnitude);
-        final double function = (99 - 17*clipedMagnitude)/140;
+        final double function = (99 - 17 * clipedMagnitude) / 140;
         return function * projection.applyToAngle(SUN_ANGULAR_SIZE);
     }
 

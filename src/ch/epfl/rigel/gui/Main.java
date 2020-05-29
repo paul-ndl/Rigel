@@ -72,25 +72,27 @@ public final class Main extends Application {
 
     /**
      * Lance le programme principal avec les arguments données
-     * 
+     *
      * @param args les arguments
-     * @see Application#launch(String...) 
+     * @see Application#launch(String...)
      */
-    public static void main(String[] args) { launch(args); }
+    public static void main(String[] args) {
+        launch(args);
+    }
 
     /**
      * Lance l'application
-     * 
+     *
      * @param primaryStage la scène
      * @throws IOException en cas d'erreur entrée/sortie
-     * @see Application#start(Stage) 
+     * @see Application#start(Stage)
      */
     @Override
     public void start(Stage primaryStage) throws IOException {
         try (InputStream hs = resourceStream(HYG_FILE); InputStream as = resourceStream(AST_FILE)) {
             StarCatalogue catalogue = builder.loadFrom(hs, HygDatabaseLoader.INSTANCE)
-                                             .loadFrom(as, AsterismLoader.INSTANCE)
-                                             .build();
+                    .loadFrom(as, AsterismLoader.INSTANCE)
+                    .build();
 
             observerLocationBean.setCoordinates(GeographicCoordinates.ofDeg(INIT_LON, INIT_LAT));
             dateTimeBean.setZonedDateTime(ZonedDateTime.now(ZoneId.systemDefault()));
@@ -98,9 +100,9 @@ public final class Main extends Application {
             viewingParametersBean.setFieldOfViewDeg(INIT_FOV);
 
             SkyCanvasManager canvasManager = new SkyCanvasManager(catalogue,
-                                                                  dateTimeBean,
-                                                                  observerLocationBean,
-                                                                  viewingParametersBean);
+                    dateTimeBean,
+                    observerLocationBean,
+                    viewingParametersBean);
             Canvas sky = canvasManager.canvas();
             Pane skyPane = new Pane(sky);
             sky.widthProperty().bind(skyPane.widthProperty());
@@ -109,7 +111,7 @@ public final class Main extends Application {
             HBox panel = controlPanel();
             BorderPane infoPanel = InfoPanel(canvasManager);
             BorderPane root = new BorderPane(skyPane, panel, null, infoPanel, null);
-            
+
             primaryStage.setScene(new Scene(root));
             primaryStage.setTitle(TITLE);
             primaryStage.setMinWidth(MIN_WIDTH);
@@ -118,7 +120,7 @@ public final class Main extends Application {
         }
     }
 
-    private HBox controlPanel(){
+    private HBox controlPanel() {
         //first HBox
         HBox coordinates = new HBox();
         coordinates.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left;");
@@ -206,12 +208,12 @@ public final class Main extends Application {
         return panel;
     }
 
-    private BorderPane InfoPanel(SkyCanvasManager canvasManager){
+    private BorderPane InfoPanel(SkyCanvasManager canvasManager) {
         Text fov = new Text();
         fov.textProperty().bind(Bindings.format(Locale.ROOT, "Champ de vue : %.1f°", viewingParametersBean.fieldOfViewDegProperty()));
         Text celestialObjectText = new Text();
         StringBinding celestialObject = Bindings.createStringBinding(
-                () ->  canvasManager.getObjectUnderMouse()==null ? "" : canvasManager.getObjectUnderMouse().toString(), 
+                () -> canvasManager.getObjectUnderMouse() == null ? "" : canvasManager.getObjectUnderMouse().toString(),
                 canvasManager.objectUnderMouseProperty()
         );
         celestialObjectText.textProperty().bind(Bindings.format(Locale.ROOT, "%s", celestialObject));
@@ -222,14 +224,14 @@ public final class Main extends Application {
         return info;
     }
 
-    private TextFormatter<Number> coordTextFormatter(boolean lon, double defaultValue){
+    private TextFormatter<Number> coordTextFormatter(boolean lon, double defaultValue) {
         NumberStringConverter stringConverter = new NumberStringConverter("#0.00");
 
         UnaryOperator<TextFormatter.Change> filter = (change -> {
             try {
                 String newText = change.getControlNewText();
                 double newDeg = stringConverter.fromString(newText).doubleValue();
-                if(lon){
+                if (lon) {
                     return GeographicCoordinates.isValidLonDeg(newDeg) ? change : null;
                 } else {
                     return GeographicCoordinates.isValidLatDeg(newDeg) ? change : null;
@@ -242,23 +244,19 @@ public final class Main extends Application {
         return new TextFormatter<>(stringConverter, defaultValue, filter);
     }
 
-    private TextFormatter<LocalTime> timeFormatter(){
-        DateTimeFormatter hmsFormatter =
-                DateTimeFormatter.ofPattern("HH:mm:ss");
-        LocalTimeStringConverter stringConverter =
-                new LocalTimeStringConverter(hmsFormatter, hmsFormatter);
+    private TextFormatter<LocalTime> timeFormatter() {
+        DateTimeFormatter hmsFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        LocalTimeStringConverter stringConverter = new LocalTimeStringConverter(hmsFormatter, hmsFormatter);
         return new TextFormatter<>(stringConverter);
     }
 
-    private static Font fontLoader(){
-        try(InputStream fontStream = Main.class.getResourceAsStream(FONT_FILE)){
+    private static Font fontLoader() {
+        try (InputStream fontStream = Main.class.getResourceAsStream(FONT_FILE)) {
             return Font.loadFont(fontStream, FONT_SIZE);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
-
-
 
     private InputStream resourceStream(String resourceName) {
         return getClass().getResourceAsStream(resourceName);
