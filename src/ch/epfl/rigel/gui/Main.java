@@ -72,13 +72,10 @@ public final class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws IOException {
-        try (InputStream hs = resourceStream("/hygdata_v3.csv")) {
-            builder.loadFrom(hs, HygDatabaseLoader.INSTANCE);
-        }
-        try (InputStream as = resourceStream("/asterisms.txt")) {
-            StarCatalogue catalogue = builder
-                    .loadFrom(as, AsterismLoader.INSTANCE)
-                    .build();
+        try (InputStream hs = resourceStream("/hygdata_v3.csv"); InputStream as = resourceStream("/asterisms.txt")) {
+            StarCatalogue catalogue = builder.loadFrom(hs, HygDatabaseLoader.INSTANCE)
+                                             .loadFrom(as, AsterismLoader.INSTANCE)
+                                             .build();
 
             observerLocationBean.setCoordinates(GeographicCoordinates.ofDeg(6.57, 46.52));
             dateTimeBean.setZonedDateTime(ZonedDateTime.now(ZoneId.systemDefault()));
@@ -172,25 +169,17 @@ public final class Main extends Application {
 
         playPauseButton.setOnAction(actionEvent -> {
             if (timeAnimator.getRunning()) {
-                playPauseButton.setText(PLAY_ICON);
                 timeAnimator.stop();
-                dateLabel.setDisable(false);
-                dateField.setDisable(false);
-                hourLabel.setDisable(false);
-                hourField.setDisable(false);
-                zoneId.setDisable(false);
+                playPauseButton.setText(PLAY_ICON);
+                time.setDisable(false);
                 accelerator.setDisable(false);
                 resetButton.setDisable(false);
             } else {
+                timeAnimator.start();
                 playPauseButton.setText(PAUSE_ICON);
-                dateLabel.setDisable(true);
-                dateField.setDisable(true);
-                hourLabel.setDisable(true);
-                hourField.setDisable(true);
-                zoneId.setDisable(true);
+                time.setDisable(true);
                 accelerator.setDisable(true);
                 resetButton.setDisable(true);
-                timeAnimator.start();
             }
         });
 
