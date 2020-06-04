@@ -27,12 +27,12 @@ public final class About {
      */
     public About(Stage primaryStage) {
         Text text = new Text("Bonjour," +
-                "\n \n Ceci est un programme qui permet de visualiser les étoiles dans le ciel!" +
+                "\n \n Ceci est un programme qui permet de visualiser les étoiles dans le ciel." +
                 "\n Naviguez entre les différents menus facilement grâce à l'interface intuitive de l'application." +
                 "\n \n Vous pouvez tout d'abord : " +
                 "\n \n     1. Choisir l'endroit d'où vous souhaitez voir le ciel grâce à un globe terrestre rotatif" +
                 "\n     2. Choisir de regarder le ciel directement depuis Lausanne" +
-                "\n \n Une fois l'endroit choisi, vous pouvez obeserver le ciel." +
+                "\n \n Une fois l'endroit choisi, vous pouvez observer le ciel." +
                 "\n \n Plusieurs options s'offrent à vous :" +
                 "\n \n     1. Vous pouvez changer le champ de vue à l'aide de la molette de la souris" +
                 "\n     2. Vous pouvez \"tourner la tête\" à l'aide des flèches directionnelles de votre clavier" +

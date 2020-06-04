@@ -32,11 +32,14 @@ public class Globe {
 
     private final Stage primaryStage;
 
+    private final Stage popupStage = new Stage();
+
     private static final String TITLE = "Globe Terrestre";
     private static final double INIT_LON = 6.57;
     private static final double INIT_LAT = 46.52;
     private static final String SKY_BUTTON = "ACCÉDER AU CIEL";
     private static final String MENU_BUTTON = "RETOURNER AU MENU";
+    private static final String INSTRUCTION_BUTTON = "AFFICHER LE TUTO";
     private static final double BUTTON_WIDTH = 150;
     private static final double BUTTON_HEIGHT = 40;
 
@@ -46,7 +49,6 @@ public class Globe {
      * @param primaryStage la scène
      */
     public Globe(Stage primaryStage) {
-
         this.primaryStage = primaryStage;
         Earth earth = new Earth();
         Pane pane = earth.getPane();
@@ -57,6 +59,8 @@ public class Globe {
         Scene scene = new Scene(main, primaryStage.getWidth(), primaryStage.getHeight());
         primaryStage.setTitle(TITLE);
         primaryStage.setScene(scene);
+
+        new Instruction(popupStage);
     }
 
     private HBox location(Pane pane, Sphere meshView) {
@@ -76,8 +80,8 @@ public class Globe {
         TextFormatter<Number> lonTextFormatter = coordTextFormatter(true, INIT_LON);
         lonField.setTextFormatter(lonTextFormatter);
         lonField.setStyle("-fx-pref-width: 60; -fx-alignment: baseline-right;");
-        gridPane.add(lonLabel, 0, 1);
-        gridPane.add(lonField, 0, 2);
+        gridPane.add(lonLabel, 0, 2);
+        gridPane.add(lonField, 0, 3);
 
         //Information sur la latitude
         Label latLabel = new Label("Latitude (°) : ");
@@ -85,8 +89,8 @@ public class Globe {
         TextFormatter<Number> latTextFormatter = coordTextFormatter(false, INIT_LAT);
         latField.setTextFormatter(latTextFormatter);
         latField.setStyle("-fx-pref-width: 60; -fx-alignment: baseline-right;");
-        gridPane.add(latLabel, 0, 3);
-        gridPane.add(latField, 0, 4);
+        gridPane.add(latLabel, 0, 4);
+        gridPane.add(latField, 0, 5);
 
         //Bouton de sélection
         Button select = new Button(SKY_BUTTON);
@@ -95,14 +99,25 @@ public class Globe {
         select.setStyle("-fx-text-fill: white; -fx-background-color: black");
         select.setOnMouseEntered(me -> select.setStyle("-fx-text-fill: white; -fx-background-color: red"));
         select.setOnMouseExited(me -> select.setStyle("-fx-text-fill: white; -fx-background-color: black"));
-        select.setOnAction(e -> {
+        select.setOnAction(me -> {
             try {
                 new Main(primaryStage, lonTextFormatter.getValue().doubleValue(), latTextFormatter.getValue().doubleValue());
+                popupStage.close();
             } catch (IOException ignored) {
 
             }
         });
-        gridPane.add(select, 0, 5);
+        gridPane.add(select, 0, 6);
+
+        //Bouton d'instructions
+        Button tuto = new Button(INSTRUCTION_BUTTON);
+        tuto.setPrefHeight(BUTTON_HEIGHT);
+        tuto.setPrefWidth(BUTTON_WIDTH);
+        tuto.setStyle("-fx-text-fill: white; -fx-background-color: black");
+        tuto.setOnMouseEntered(me -> tuto.setStyle("-fx-text-fill: white; -fx-background-color: red"));
+        tuto.setOnMouseExited(me -> tuto.setStyle("-fx-text-fill: white; -fx-background-color: black"));
+        tuto.setOnAction(me -> new Instruction(popupStage));
+        gridPane.add(tuto, 0, 7);
 
         //Bouton de retour au menu
         Button menu = new Button(MENU_BUTTON);
@@ -111,19 +126,16 @@ public class Globe {
         menu.setStyle("-fx-text-fill: white; -fx-background-color: black");
         menu.setOnMouseEntered(me -> menu.setStyle("-fx-text-fill: white; -fx-background-color: red"));
         menu.setOnMouseExited(me -> menu.setStyle("-fx-text-fill: white; -fx-background-color: black"));
-        menu.setOnAction(me -> new Menu(primaryStage));
-        gridPane.add(menu, 0, 6);
-
-        //Information sur la rotation
-        Label rotation = new Label("(Utilisez les flèches directionnelles");
-        Label rotation2 = new Label("pour faire pivoter  le globe)");
-        gridPane.add(rotation, 0, 7);
-        gridPane.add(rotation2, 0, 8);
+        menu.setOnAction(me -> {
+            new Menu(primaryStage);
+            popupStage.close();
+        });
+        gridPane.add(menu, 0, 8);
 
         //Choix du point sur le globe
         meshView.setOnMousePressed(e ->
         {
-            if (e.isSecondaryButtonDown()) {
+            if (e.isPrimaryButtonDown()) {
                 Point3D point = cartesianToPoint3D(e.getSceneX(), e.getSceneY(), pane, -Angle.ofDeg(meshView.getRotate()));
                 GeographicCoordinates coord = Point3DToGeoCoord(point.getX(), point.getY(), point.getZ());
                 lonTextFormatter.setValue(coord.lonDeg());
@@ -173,6 +185,7 @@ public class Globe {
         }
         return GeographicCoordinates.ofDeg(lon, lat);
     }
+
 
     private TextFormatter<Number> coordTextFormatter(boolean lon, double defaultValue) {
         NumberStringConverter stringConverter = new NumberStringConverter("#0.00");
