@@ -4,6 +4,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -41,6 +42,7 @@ public final class About {
                 "\n     5. Vous pouvez animer le ciel à la vitesse voulue" +
                 "\n \n En bas de l'écran, vous apercevez la position de la souris (azimut, hauteur), ainsi que l'objet céleste le plus proche de votre souris." +
                 "\n \n Profitez bien du ciel ;) !!!");
+        text.setFill(Color.WHITE);
 
         HBox menu = new HBox();
         menu.setStyle("-fx-alignment: baseline-center; -fx-spacing: 10; -fx-padding: 4;");
@@ -56,7 +58,7 @@ public final class About {
         menu.getChildren().add(menuButton);
 
         BorderPane pane = new BorderPane(text, null, null, menu, null);
-        pane.setStyle("-fx-background-color: #707171;");
+        pane.setStyle("-fx-background-color: black;");
 
         Scene scene = new Scene(pane);
         primaryStage.setScene(scene);
