@@ -97,7 +97,7 @@ public class Globe {
         select.setOnMouseExited(me -> select.setStyle("-fx-text-fill: white; -fx-background-color: black"));
         select.setOnAction(e -> {
             try {
-                new Main(primaryStage, (Double) lonTextFormatter.getValue(), (Double) latTextFormatter.getValue());
+                new Main(primaryStage, lonTextFormatter.getValue().doubleValue(), latTextFormatter.getValue().doubleValue());
             } catch (IOException ignored) {
 
             }
@@ -180,14 +180,10 @@ public class Globe {
             try {
                 String newText = change.getControlNewText();
                 double newDeg = stringConverter.fromString(newText).doubleValue();
-                if(newDeg != 0 && newDeg !=90){
-                    if (lon) {
-                        return GeographicCoordinates.isValidLonDeg(newDeg) ? change : null;
-                    } else {
-                        return GeographicCoordinates.isValidLatDeg(newDeg) ? change : null;
-                    }
+                if (lon) {
+                    return GeographicCoordinates.isValidLonDeg(newDeg) ? change : null;
                 } else {
-                    return null;
+                    return GeographicCoordinates.isValidLatDeg(newDeg) ? change : null;
                 }
             } catch (Exception e) {
                 return null;
