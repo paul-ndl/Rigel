@@ -26,7 +26,21 @@ public final class About {
      * @param primaryStage la scène
      */
     public About(Stage primaryStage) {
-        Text text = new Text("Zouzou");
+        Text text = new Text("Bonjour, " +
+                "\n Ceci est un programme qui permet de visualiser les étoiles dans le ciel!" +
+                "\n Naviguez entre les différents menus facilement grâce à l'interface intuitive de l'application." +
+                "\n Vous pouvez tout d'abord : " +
+                "\n     1. Choisir l'endroit d'où vous souhaitez voir le ciel grâce à un globe terrestre rotatif" +
+                "\n     2. Choisir de regarder le ciel directement depuis Lausanne" +
+                "\n Une fois l'endroit choisi, vous pouvez obeserver le ciel." +
+                "\n Plusieurs options s'offrent à vous :" +
+                "\n     1. Vous pouvez changer le champ de vue à l'aide de la molette de la souris" +
+                "\n     2. Vous pouvez \"tourner la tête\" à l'aide des flèches directionnelles de votre clavier" +
+                "\n     3. Vous pouvez changer directement le lieu d'observation avec la longitude et latitude" +
+                "\n     4. Vous pouvez changer l'instant d'observation (date, heure, fuseau horaire)" +
+                "\n     5. Vous pouvez animer le ciel à la vitesse voulue" +
+                "\n En bas de l'écran, vous apercevez la position de la souris (azimut, hauteur), ainsi que l'objet celeste le plus proche de votre souris." +
+                "\n Profitez bien du ciel ;) !!!");
 
         HBox menu = new HBox();
         menu.setStyle("-fx-alignment: baseline-center; -fx-spacing: 10; -fx-padding: 4;");
@@ -42,6 +56,7 @@ public final class About {
         menu.getChildren().add(menuButton);
 
         BorderPane pane = new BorderPane(text, null, null, menu, null);
+        pane.setStyle("-fx-background-color: #707171;");
 
         Scene scene = new Scene(pane);
         primaryStage.setScene(scene);
