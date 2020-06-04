@@ -10,60 +10,87 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
 
+/**
+ * Une Terre
+ *
+ * @author Paul Nadal (300843)
+ * @author Alexandre Brun (302477)
+ */
 public final class Earth {
 
-    private Pane pane;
-    private Sphere world;
+    private final Pane pane;
+    private final Sphere world = new Sphere();
 
-    public Earth(){
-        world = new Sphere();
-        PhongMaterial texture1 = new PhongMaterial();
-        texture1.setDiffuseMap(new Image(getClass().getResource("/earth_texture.png").toExternalForm()));
-        world.setMaterial(texture1);
-        world.setCursor(Cursor.CROSSHAIR);
+    private static final int INIT_ROTATION = 180;
+    private static final int ROTATION_MOVE = 5;
+    private static final String EARTH_TEXTURE = "/earth_texture.png";
+    private static final String BACKGROUND_URL = "/stars_sky.jpg";
 
+    /**
+     * Construit une Terre
+     */
+    public Earth() {
         Group root = new Group(world);
         pane = new Pane(root);
-        pane.setStyle("-fx-background-image: url('stars_sky.jpg');-fx-background-size: stretch;-fx-background-position:center top;");
 
+        //Paramètre la taille et la position de la Terre
+        world.radiusProperty().bind(Bindings.createDoubleBinding(
+                () -> pane.getWidth() > pane.getHeight() ? pane.getHeight() / 2 : pane.getWidth() / 2,
+                pane.heightProperty(), pane.widthProperty()
+        ));
+        world.translateXProperty().bind(Bindings.createDoubleBinding(
+                () -> pane.getWidth() / 2,
+                pane.widthProperty()
+        ));
+        world.translateYProperty().bind(Bindings.createDoubleBinding(
+                () -> pane.getHeight() / 2,
+                pane.heightProperty()
+        ));
+
+        //Paramètre la rotation de la Terre
+        world.setRotationAxis(Rotate.Y_AXIS);
+        world.setRotate(INIT_ROTATION);
+        pane.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.RIGHT) {
+                world.setRotate(world.getRotate() - ROTATION_MOVE);
+            } else if (e.getCode() == KeyCode.LEFT) {
+                world.setRotate(world.getRotate() + ROTATION_MOVE);
+            }
+            e.consume();
+        });
+
+        //Paramètre le curseur de la souris
+        world.setCursor(Cursor.CROSSHAIR);
+
+        //Applique la texture
+        PhongMaterial texture = new PhongMaterial();
+        texture.setDiffuseMap(new Image(getClass().getResource(EARTH_TEXTURE).toExternalForm()));
+        world.setMaterial(texture);
+
+        pane.setStyle("-fx-background-image: url('" + BACKGROUND_URL + "');-fx-background-size: stretch;-fx-background-position:center top;");
         pane.setOnMousePressed(e -> {
             if (e.isPrimaryButtonDown()) {
                 pane.requestFocus();
             }
         });
 
-        world.radiusProperty().bind(Bindings.createDoubleBinding(
-                () -> pane.getWidth()>pane.getHeight() ? pane.getHeight()/2 : pane.getWidth()/2,
-                pane.heightProperty(), pane.widthProperty()
-        ));
-        world.translateXProperty().bind(Bindings.createDoubleBinding(
-                () -> pane.getWidth()/2,
-                pane.widthProperty()
-        ));
-        world.translateYProperty().bind(Bindings.createDoubleBinding(
-                () -> pane.getHeight()/2,
-                pane.heightProperty()
-        ));
-
-
-        world.setRotationAxis(Rotate.Y_AXIS);
-        world.setRotate(180);
-        pane.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.RIGHT) {
-                world.setRotate(world.getRotate() - 5);
-            } else if (e.getCode() == KeyCode.LEFT) {
-                world.setRotate(world.getRotate() + 5);
-            }
-            e.consume();
-        });
-
     }
 
+    /**
+     * Retourne le panneau
+     *
+     * @return le panneau
+     */
     public Pane getPane() {
         return pane;
     }
 
-    public Sphere getEarth(){
+    /**
+     * Retourne la Terre
+     *
+     * @return la Terre
+     */
+    public Sphere getEarth() {
         return world;
     }
 }

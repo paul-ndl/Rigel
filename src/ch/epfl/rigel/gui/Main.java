@@ -3,9 +3,10 @@ package ch.epfl.rigel.gui;
 import ch.epfl.rigel.astronomy.AsterismLoader;
 import ch.epfl.rigel.astronomy.HygDatabaseLoader;
 import ch.epfl.rigel.astronomy.StarCatalogue;
+import ch.epfl.rigel.bonus.Globe;
+import ch.epfl.rigel.bonus.Menu;
 import ch.epfl.rigel.coordinates.GeographicCoordinates;
 import ch.epfl.rigel.coordinates.HorizontalCoordinates;
-import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.collections.FXCollections;
@@ -41,17 +42,15 @@ import java.util.stream.Collectors;
  * @author Paul Nadal (300843)
  * @author Alexandre Brun (302477)
  */
-public final class Main extends Application {
+public final class Main {
 
+    private final Stage primaryStage;
     private final ObserverLocationBean observerLocationBean = new ObserverLocationBean();
     private final DateTimeBean dateTimeBean = new DateTimeBean();
     private final ViewingParametersBean viewingParametersBean = new ViewingParametersBean();
     private final TimeAnimator timeAnimator = new TimeAnimator(dateTimeBean);
-    private final StarCatalogue.Builder builder = new StarCatalogue.Builder();
 
     private static final String TITLE = "Rigel";
-    private static final double MIN_WIDTH = 800;
-    private static final double MIN_HEIGHT = 600;
 
     private static final String HYG_FILE = "/hygdata_v3.csv";
     private static final String AST_FILE = "/asterisms.txt";
@@ -67,34 +66,29 @@ public final class Main extends Application {
     private static final String PAUSE_ICON = "\uf04c";
     private static final String FONT_FILE = "/Font Awesome 5 Free-Solid-900.otf";
     private static final double FONT_SIZE = 15;
-    private final static Font FONT_AWESOME = fontLoader();
+    private static final Font FONT_AWESOME = fontLoader();
 
-
-    /**
-     * Lance le programme principal avec les arguments données
-     *
-     * @param args les arguments
-     * @see Application#launch(String...)
-     */
-    public static void main(String[] args) {
-        launch(args);
-    }
+    private static final String MENU_BUTTON = "Menu";
+    private static final String LOCATION_BUTTON = "Choisir la localisation";
 
     /**
-     * Lance l'application
+     * Construit le programme principal avec les valeurs données par défaut
      *
      * @param primaryStage la scène
+     * @param lon          la longitude par défaut
+     * @param lat          la latitude par défaut
      * @throws IOException en cas d'erreur entrée/sortie
-     * @see Application#start(Stage)
      */
-    @Override
-    public void start(Stage primaryStage) throws IOException {
+    public Main(Stage primaryStage, double lon, double lat) throws IOException {
         try (InputStream hs = resourceStream(HYG_FILE); InputStream as = resourceStream(AST_FILE)) {
+            StarCatalogue.Builder builder = new StarCatalogue.Builder();
             StarCatalogue catalogue = builder.loadFrom(hs, HygDatabaseLoader.INSTANCE)
                     .loadFrom(as, AsterismLoader.INSTANCE)
                     .build();
 
-            observerLocationBean.setCoordinates(GeographicCoordinates.ofDeg(INIT_LON, INIT_LAT));
+            this.primaryStage = primaryStage;
+
+            observerLocationBean.setCoordinates(GeographicCoordinates.ofDeg(lon, lat));
             dateTimeBean.setZonedDateTime(ZonedDateTime.now(ZoneId.systemDefault()));
             viewingParametersBean.setCenter(HorizontalCoordinates.ofDeg(INIT_AZ, INIT_ALT));
             viewingParametersBean.setFieldOfViewDeg(INIT_FOV);
@@ -112,11 +106,9 @@ public final class Main extends Application {
             BorderPane infoPanel = InfoPanel(canvasManager);
             BorderPane root = new BorderPane(skyPane, panel, null, infoPanel, null);
 
-            primaryStage.setScene(new Scene(root));
+            Scene scene = new Scene(root, primaryStage.getWidth(), primaryStage.getHeight());
             primaryStage.setTitle(TITLE);
-            primaryStage.setMinWidth(MIN_WIDTH);
-            primaryStage.setMinHeight(MIN_HEIGHT);
-            primaryStage.show();
+            primaryStage.setScene(scene);
         }
     }
 
@@ -167,7 +159,7 @@ public final class Main extends Application {
 
         //third Hbox
         HBox animation = new HBox();
-        animation.setStyle("-fx-spacing: inherit;");
+        animation.setStyle("-fx-spacing: inherit; -fx-alignment: baseline-left;");
 
         ChoiceBox<NamedTimeAccelerator> accelerator = new ChoiceBox<>();
         ObservableList<NamedTimeAccelerator> acceleratorList = FXCollections.observableArrayList(NamedTimeAccelerator.values());
@@ -196,12 +188,25 @@ public final class Main extends Application {
 
         animation.getChildren().addAll(accelerator, resetButton, playPauseButton);
 
+        //fourth Hbox
+        HBox menu = new HBox();
+        menu.setStyle("-fx-spacing: inherit;");
+
+        Button menuButton = new Button(MENU_BUTTON);
+        menuButton.setOnAction(me -> new Menu(primaryStage));
+
+        Button locationButton = new Button(LOCATION_BUTTON);
+        locationButton.setOnAction(me -> new Globe(primaryStage));
+
+        menu.getChildren().addAll(menuButton, locationButton);
+
         //final HBox
         Separator sepCoordVsTime = new Separator(Orientation.VERTICAL);
         Separator sepTimeVsAnim = new Separator(Orientation.VERTICAL);
+        Separator sepAnimVsMenu = new Separator(Orientation.VERTICAL);
         HBox panel = new HBox();
         panel.setStyle("-fx-spacing: 4; -fx-padding: 4;");
-        panel.getChildren().addAll(coordinates, sepCoordVsTime, time, sepTimeVsAnim, animation);
+        panel.getChildren().addAll(coordinates, sepCoordVsTime, time, sepTimeVsAnim, animation, sepAnimVsMenu, menu);
         return panel;
     }
 
