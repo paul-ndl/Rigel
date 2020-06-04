@@ -181,9 +181,9 @@ public class Globe {
                 String newText = change.getControlNewText();
                 double newDeg = stringConverter.fromString(newText).doubleValue();
                 if (lon) {
-                    return GeographicCoordinates.isValidLonDeg(newDeg) ? change : null;
+                    return GeographicCoordinates.isValidLonDeg(newDeg) && newDeg != 0 ? change : null;
                 } else {
-                    return GeographicCoordinates.isValidLatDeg(newDeg) ? change : null;
+                    return GeographicCoordinates.isValidLatDeg(newDeg) && newDeg != 0 ? change : null;
                 }
             } catch (Exception e) {
                 return null;
