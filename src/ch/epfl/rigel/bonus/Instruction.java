@@ -8,10 +8,25 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
+/**
+ * Un popup d'instructions
+ *
+ * @author Paul Nadal (300843)
+ * @author Alexandre Brun (302477)
+ */
 public class Instruction {
 
+    private static final String TITLE = "Instructions";
+    private static final double POPUP_WIDTH = 450;
+    private static final double POPUP_HEIGHT = 150;
+
+    /**
+     * Construit un popup d'instructions
+     *
+     * @param stage la scène
+     */
     public Instruction(Stage stage) {
-        stage.setTitle("Instructions");
+        stage.setTitle(TITLE);
         GridPane gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER);
         gridPane.setPadding(new Insets(5, 5, 5, 5));
@@ -31,14 +46,14 @@ public class Instruction {
 
         button.setOnAction(e -> stage.close());
 
-        Scene scene = new Scene(gridPane, 430, 150);
+        Scene scene = new Scene(gridPane, POPUP_WIDTH, POPUP_HEIGHT);
 
-        stage.setHeight(150);
-        stage.setMaxHeight(150);
-        stage.setMinHeight(150);
-        stage.setWidth(430);
-        stage.setMaxWidth(430);
-        stage.setMinWidth(430);
+        stage.setHeight(POPUP_HEIGHT);
+        stage.setMaxHeight(POPUP_HEIGHT);
+        stage.setMinHeight(POPUP_HEIGHT);
+        stage.setWidth(POPUP_WIDTH);
+        stage.setMaxWidth(POPUP_WIDTH);
+        stage.setMinWidth(POPUP_WIDTH);
         stage.setScene(scene);
         stage.show();
     }
