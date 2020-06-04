@@ -180,10 +180,14 @@ public class Globe {
             try {
                 String newText = change.getControlNewText();
                 double newDeg = stringConverter.fromString(newText).doubleValue();
-                if (lon) {
-                    return GeographicCoordinates.isValidLonDeg(newDeg) && newDeg != 0 ? change : null;
+                if(newDeg != 0 && newDeg !=90){
+                    if (lon) {
+                        return GeographicCoordinates.isValidLonDeg(newDeg) ? change : null;
+                    } else {
+                        return GeographicCoordinates.isValidLatDeg(newDeg) ? change : null;
+                    }
                 } else {
-                    return GeographicCoordinates.isValidLatDeg(newDeg) && newDeg != 0 ? change : null;
+                    return null;
                 }
             } catch (Exception e) {
                 return null;
