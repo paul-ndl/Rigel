@@ -69,6 +69,7 @@ public class Globe {
         gridPane.setPadding(new Insets(40, 40, 40, 40));
         gridPane.setHgap(10);
         gridPane.setVgap(10);
+
         //Information sur la longitude
         Label lonLabel = new Label("Longitude (°) : ");
         TextField lonField = new TextField();
@@ -77,6 +78,7 @@ public class Globe {
         lonField.setStyle("-fx-pref-width: 60; -fx-alignment: baseline-right;");
         gridPane.add(lonLabel, 0, 1);
         gridPane.add(lonField, 0, 2);
+
         //Information sur la latitude
         Label latLabel = new Label("Latitude (°) : ");
         TextField latField = new TextField();
@@ -85,10 +87,11 @@ public class Globe {
         latField.setStyle("-fx-pref-width: 60; -fx-alignment: baseline-right;");
         gridPane.add(latLabel, 0, 3);
         gridPane.add(latField, 0, 4);
+
         //Bouton de sélection
         Button select = new Button(SKY_BUTTON);
         select.setPrefHeight(BUTTON_HEIGHT);
-        select.setPrefWidth(BUTTON_HEIGHT);
+        select.setPrefWidth(BUTTON_WIDTH);
         select.setStyle("-fx-text-fill: white; -fx-background-color: black");
         select.setOnMouseEntered(me -> select.setStyle("-fx-text-fill: white; -fx-background-color: red"));
         select.setOnMouseExited(me -> select.setStyle("-fx-text-fill: white; -fx-background-color: black"));
@@ -100,6 +103,7 @@ public class Globe {
             }
         });
         gridPane.add(select, 0, 5);
+
         //Bouton de retour au menu
         Button menu = new Button(MENU_BUTTON);
         menu.setPrefHeight(BUTTON_HEIGHT);
@@ -109,6 +113,12 @@ public class Globe {
         menu.setOnMouseExited(me -> menu.setStyle("-fx-text-fill: white; -fx-background-color: black"));
         menu.setOnAction(me -> new Menu(primaryStage));
         gridPane.add(menu, 0, 6);
+
+        //Information sur la rotation
+        Label rotation = new Label("(Utilisez les flèches directionnelles");
+        Label rotation2 = new Label("pour faire pivoter  le globe)");
+        gridPane.add(rotation, 0, 7);
+        gridPane.add(rotation2, 0, 8);
 
         //Choix du point sur le globe
         meshView.setOnMousePressed(e ->
