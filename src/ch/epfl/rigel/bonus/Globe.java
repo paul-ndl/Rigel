@@ -99,8 +99,8 @@ public class Globe {
         select.setOnMouseEntered(me -> select.setStyle("-fx-text-fill: white; -fx-background-color: red"));
         select.setOnMouseExited(me -> select.setStyle("-fx-text-fill: white; -fx-background-color: black"));
         select.setOnAction(me -> {
-                new Main(primaryStage, lonTextFormatter.getValue().doubleValue(), latTextFormatter.getValue().doubleValue());
-                popupStage.close();
+            new Main(primaryStage, lonTextFormatter.getValue().doubleValue(), latTextFormatter.getValue().doubleValue());
+            popupStage.close();
         });
         gridPane.add(select, 0, 6);
 

@@ -80,32 +80,32 @@ public final class Main {
      * @param lat          la latitude par défaut
      */
     public Main(Stage primaryStage, double lon, double lat) {
-            this.primaryStage = primaryStage;
+        this.primaryStage = primaryStage;
 
-            observerLocationBean.setCoordinates(GeographicCoordinates.ofDeg(lon, lat));
-            dateTimeBean.setZonedDateTime(ZonedDateTime.now(ZoneId.systemDefault()));
-            viewingParametersBean.setCenter(HorizontalCoordinates.ofDeg(INIT_AZ, INIT_ALT));
-            viewingParametersBean.setFieldOfViewDeg(INIT_FOV);
+        observerLocationBean.setCoordinates(GeographicCoordinates.ofDeg(lon, lat));
+        dateTimeBean.setZonedDateTime(ZonedDateTime.now(ZoneId.systemDefault()));
+        viewingParametersBean.setCenter(HorizontalCoordinates.ofDeg(INIT_AZ, INIT_ALT));
+        viewingParametersBean.setFieldOfViewDeg(INIT_FOV);
 
-            SkyCanvasManager canvasManager = new SkyCanvasManager(catalogue,
-                    dateTimeBean,
-                    observerLocationBean,
-                    viewingParametersBean);
-            Canvas sky = canvasManager.canvas();
-            Pane skyPane = new Pane(sky);
-            sky.widthProperty().bind(skyPane.widthProperty());
-            sky.heightProperty().bind(skyPane.heightProperty());
+        SkyCanvasManager canvasManager = new SkyCanvasManager(catalogue,
+                dateTimeBean,
+                observerLocationBean,
+                viewingParametersBean);
+        Canvas sky = canvasManager.canvas();
+        Pane skyPane = new Pane(sky);
+        sky.widthProperty().bind(skyPane.widthProperty());
+        sky.heightProperty().bind(skyPane.heightProperty());
 
-            HBox panel = controlPanel();
-            BorderPane infoPanel = InfoPanel(canvasManager);
-            BorderPane root = new BorderPane(skyPane, panel, null, infoPanel, null);
+        HBox panel = controlPanel();
+        BorderPane infoPanel = InfoPanel(canvasManager);
+        BorderPane root = new BorderPane(skyPane, panel, null, infoPanel, null);
 
-            Scene scene = new Scene(root, primaryStage.getWidth(), primaryStage.getHeight());
-            primaryStage.setTitle(TITLE);
-            primaryStage.setScene(scene);
+        Scene scene = new Scene(root, primaryStage.getWidth(), primaryStage.getHeight());
+        primaryStage.setTitle(TITLE);
+        primaryStage.setScene(scene);
     }
 
-    private static StarCatalogue catalogueLoader(){
+    private static StarCatalogue catalogueLoader() {
         try (InputStream hs = Main.class.getResourceAsStream(HYG_FILE); InputStream as = Main.class.getResourceAsStream(AST_FILE)) {
             StarCatalogue.Builder builder = new StarCatalogue.Builder();
             StarCatalogue catalogue = builder.loadFrom(hs, HygDatabaseLoader.INSTANCE)
