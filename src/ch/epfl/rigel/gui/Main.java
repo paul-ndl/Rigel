@@ -78,9 +78,8 @@ public final class Main {
      * @param primaryStage la scène
      * @param lon          la longitude par défaut
      * @param lat          la latitude par défaut
-     * @throws IOException en cas d'erreur entrée/sortie
      */
-    public Main(Stage primaryStage, double lon, double lat) throws IOException {
+    public Main(Stage primaryStage, double lon, double lat) {
             this.primaryStage = primaryStage;
 
             observerLocationBean.setCoordinates(GeographicCoordinates.ofDeg(lon, lat));

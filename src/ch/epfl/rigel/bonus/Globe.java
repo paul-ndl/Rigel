@@ -19,7 +19,6 @@ import javafx.scene.shape.Sphere;
 import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
 
-import java.io.IOException;
 import java.util.function.UnaryOperator;
 
 /**
@@ -100,12 +99,8 @@ public class Globe {
         select.setOnMouseEntered(me -> select.setStyle("-fx-text-fill: white; -fx-background-color: red"));
         select.setOnMouseExited(me -> select.setStyle("-fx-text-fill: white; -fx-background-color: black"));
         select.setOnAction(me -> {
-            try {
                 new Main(primaryStage, lonTextFormatter.getValue().doubleValue(), latTextFormatter.getValue().doubleValue());
                 popupStage.close();
-            } catch (IOException ignored) {
-
-            }
         });
         gridPane.add(select, 0, 6);
 

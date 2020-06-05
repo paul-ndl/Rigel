@@ -13,8 +13,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-
 /**
  * Un menu
  *
@@ -74,13 +72,7 @@ public class Menu {
         sky.setStyle("-fx-text-fill: white; -fx-background-color: black");
         sky.setOnMouseEntered(me -> sky.setStyle("-fx-text-fill: white; -fx-background-color: red"));
         sky.setOnMouseExited(me -> sky.setStyle("-fx-text-fill: white; -fx-background-color: black"));
-        sky.setOnAction(me -> {
-            try {
-                new Main(primaryStage, INIT_LON, INIT_LAT);
-            } catch (IOException ignored) {
-
-            }
-        });
+        sky.setOnAction(me -> new Main(primaryStage, INIT_LON, INIT_LAT));
         gridPane.add(sky, 0, 2);
 
 
