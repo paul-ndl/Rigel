@@ -178,6 +178,7 @@ public class Globe {
                 lon = -lonB;
             }
         }
+        lon = lon == 180 ? 179.99 : lon;
         return GeographicCoordinates.ofDeg(lon, lat);
     }
 
@@ -189,7 +190,7 @@ public class Globe {
                 String newText = change.getControlNewText();
                 double newDeg = stringConverter.fromString(newText).doubleValue();
                 if (lon) {
-                    return GeographicCoordinates.isValidLonDeg(newDeg) ? change : null;
+                    return GeographicCoordinates.isValidLonDeg(newDeg) && newDeg != 180 ? change : null;
                 } else {
                     return GeographicCoordinates.isValidLatDeg(newDeg) ? change : null;
                 }
