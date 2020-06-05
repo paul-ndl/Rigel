@@ -50,6 +50,7 @@ public final class Main {
     private final ViewingParametersBean viewingParametersBean = new ViewingParametersBean();
     private final TimeAnimator timeAnimator = new TimeAnimator(dateTimeBean);
 
+    private static final StarCatalogue catalogue = catalogueLoader();
     private static final String TITLE = "Rigel";
 
     private static final String HYG_FILE = "/hygdata_v3.csv";
@@ -80,12 +81,6 @@ public final class Main {
      * @throws IOException en cas d'erreur entrée/sortie
      */
     public Main(Stage primaryStage, double lon, double lat) throws IOException {
-        try (InputStream hs = resourceStream(HYG_FILE); InputStream as = resourceStream(AST_FILE)) {
-            StarCatalogue.Builder builder = new StarCatalogue.Builder();
-            StarCatalogue catalogue = builder.loadFrom(hs, HygDatabaseLoader.INSTANCE)
-                    .loadFrom(as, AsterismLoader.INSTANCE)
-                    .build();
-
             this.primaryStage = primaryStage;
 
             observerLocationBean.setCoordinates(GeographicCoordinates.ofDeg(lon, lat));
@@ -109,6 +104,17 @@ public final class Main {
             Scene scene = new Scene(root, primaryStage.getWidth(), primaryStage.getHeight());
             primaryStage.setTitle(TITLE);
             primaryStage.setScene(scene);
+    }
+
+    private static StarCatalogue catalogueLoader(){
+        try (InputStream hs = Main.class.getResourceAsStream(HYG_FILE); InputStream as = Main.class.getResourceAsStream(AST_FILE)) {
+            StarCatalogue.Builder builder = new StarCatalogue.Builder();
+            StarCatalogue catalogue = builder.loadFrom(hs, HygDatabaseLoader.INSTANCE)
+                    .loadFrom(as, AsterismLoader.INSTANCE)
+                    .build();
+            return catalogue;
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -258,10 +264,6 @@ public final class Main {
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
-    }
-
-    private InputStream resourceStream(String resourceName) {
-        return getClass().getResourceAsStream(resourceName);
     }
 
 }
